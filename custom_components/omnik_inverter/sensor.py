@@ -22,7 +22,7 @@ from urllib.request import urlopen
 import re
 import pickle
 
-VERSION = '0.0.1'
+VERSION = '0.0.2'
 
 BASE_URL = 'http://{0}/js/status.js'
 BASE_CACHE_NAME = '.{0}.pickle'
@@ -34,6 +34,7 @@ MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=60)
 SENSOR_TYPES = {
     'powercurrent': ['Solar Power Current', 'Watt', 'mdi:weather-sunny'],
     'powertoday': ['Solar Power Today', 'kWh', 'mdi:flash'],
+    'powertotal': ['Solar Power Total', 'kWh', 'mdi:chart-line'],
 }
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
@@ -166,3 +167,6 @@ class OmnikInverterSensor(Entity):
 
             """Update the sensor state, divide by 100 to make it kWh."""
             self._state = (nextValue / 100)
+        elif self.type == 'powertotal':
+            """Update the sensor state, divide by 10 to make it kWh."""
+            self._state = (int(result[7]) / 10)
