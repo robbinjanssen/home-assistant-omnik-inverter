@@ -22,7 +22,7 @@ from urllib.request import urlopen
 import re
 import pickle
 
-VERSION = '0.0.1'
+VERSION = '0.0.2'
 
 BASE_URL = 'http://{0}/js/status.js'
 BASE_CACHE_NAME = '.{0}.pickle'
@@ -167,6 +167,6 @@ class OmnikInverterSensor(Entity):
 
             """Update the sensor state, divide by 100 to make it kWh."""
             self._state = (nextValue / 100)
-        if self.type == 'powertotal':
+        elif self.type == 'powertotal':
             """Update the sensor state, divide by 10 to make it kWh."""
             self._state = (int(result[7]) / 10)
