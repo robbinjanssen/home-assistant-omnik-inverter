@@ -78,8 +78,11 @@ class OmnikInverterWeb(object):
         """Remove strange characters from the result."""
         result = r.decode('ascii', 'ignore')
 
-        """Find the webData."""
-        matches = re.search('webData="(.*),";function', result)
+        """Find the data."""
+        if result.find('webData') != -1:
+            matches = re.search('webData="(.*),";function', result)
+        else
+            matches = re.search('myDeviceArray[0]="(.*),";function', result)
 
         """Split the values."""
         self.result = matches.group(1).split(',')
