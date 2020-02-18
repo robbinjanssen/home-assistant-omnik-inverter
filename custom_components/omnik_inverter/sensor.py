@@ -34,6 +34,7 @@ MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=60)
 SENSOR_TYPES = {
     'powercurrent': ['Solar Power Current', 'Watt', 'mdi:weather-sunny'],
     'powertoday': ['Solar Power Today', 'kWh', 'mdi:flash'],
+    'powertotal': ['Solar Power Total', 'kWh', 'mdi:chart-line'],
 }
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
@@ -166,3 +167,6 @@ class OmnikInverterSensor(Entity):
 
             """Update the sensor state, divide by 100 to make it kWh."""
             self._state = (nextValue / 100)
+        if self.type == 'powertotal':
+            """Update the sensor state, divide by 10 to make it kWh."""
+            self._state = (int(result[7]) / 10)
