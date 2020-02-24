@@ -62,6 +62,6 @@ This custom component basically requests the URL, looks for the _webData_ part a
 
 ## References
 
-Got my inspiration from:
 - https://community.home-assistant.io/t/omink-inverter-in-home-assistant/102455/36
 - https://github.com/heinoldenhuis/home_assistant_omnik_solar (This uses omnikportal.com to get data for your inverter, check it out!)
+- https://github.com/sincze/Domoticz-Omnik-Local-Web-Plugin
