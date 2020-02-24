@@ -22,7 +22,7 @@ from urllib.request import urlopen
 import re
 import pickle
 
-VERSION = '0.0.2'
+VERSION = '0.0.3'
 
 BASE_URL = 'http://{0}/js/status.js'
 BASE_CACHE_NAME = '.{0}.pickle'
@@ -79,10 +79,13 @@ class OmnikInverterWeb(object):
         result = r.decode('ascii', 'ignore')
 
         """Find the webData."""
-        matches = re.search('webData="(.*),";function', result)
+        if result.find('webData="') != -1:
+            matches = re.search(r'(?<=webData=").*?(?=";)', result)
+        else:
+            matches = re.search(r'(?<=myDeviceArray\[0\]=").*?(?=";)', result)
 
         """Split the values."""
-        self.result = matches.group(1).split(',')
+        self.result = matches.group(0).split(',')
 
         _LOGGER.debug("Data = %s", self.result)
 

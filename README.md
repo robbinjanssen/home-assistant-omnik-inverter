@@ -1,6 +1,6 @@
 # Home Assistant Omnik Inverter
 The Omnik Inverter Sensor component will retrieve data from an Omnik inverter connected to your local network.
-It has been tested and developed on an Omnik 4K TL2 and it is currently unknown if it works for other inverters.
+It has been tested and developed on an Omnik 4K TL2 and it might work for other inverters as well.
 
 The values will be presented as sensors in [Home Assistant](https://home-assistant.io/).
 
@@ -46,6 +46,8 @@ The result contains a lot of information, but there is one part we're interested
 ```js
 // ... Bunch of data
 var webData="NLBN1234567A1234,iv4-V6.5-140-4,V5.2-42819,omnik4000tl2,4000,1920,429,87419,,3,";
+// Or for some inverters:
+var myDeviceArray=new Array(); myDeviceArray[0]="AANN3020,V5.04Build230,V4.13Build253,Omnik3000tl,3000,1313,685,9429,,1,";
 // ... Even more data
 ```
 
@@ -60,6 +62,6 @@ This custom component basically requests the URL, looks for the _webData_ part a
 
 ## References
 
-Got my inspiration from:
 - https://community.home-assistant.io/t/omink-inverter-in-home-assistant/102455/36
 - https://github.com/heinoldenhuis/home_assistant_omnik_solar (This uses omnikportal.com to get data for your inverter, check it out!)
+- https://github.com/sincze/Domoticz-Omnik-Local-Web-Plugin
