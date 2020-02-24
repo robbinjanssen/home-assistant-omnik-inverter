@@ -12,7 +12,7 @@ Your Omnik Inverter needs to be connected to your local network, as this custom 
 
 Add this component using HACS by adding this repository as a custom repository in your settings.
 - URL: https://github.com/robbinjanssen/home-assistant-omnik-inverter
-- Category: Intergration
+- Category: Integration
 
 ## Manual installation
 
