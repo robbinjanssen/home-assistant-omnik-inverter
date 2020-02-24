@@ -13,7 +13,7 @@ import voluptuous as vol
 
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 import homeassistant.helpers.config_validation as cv
-from homeassistant.const import (CONF_HOST)
+from homeassistant.const import (CONF_HOST, POWER_WATT, ENERGY_KILO_WATT_HOUR)
 from homeassistant.util import Throttle
 from homeassistant.helpers.entity import Entity
 
@@ -32,9 +32,9 @@ _LOGGER = logging.getLogger(__name__)
 MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=60)
 
 SENSOR_TYPES = {
-    'powercurrent': ['Solar Power Current', 'Watt', 'mdi:weather-sunny'],
-    'powertoday': ['Solar Power Today', 'kWh', 'mdi:flash'],
-    'powertotal': ['Solar Power Total', 'kWh', 'mdi:chart-line'],
+    'powercurrent': ['Solar Power Current', POWER_WATT, 'mdi:weather-sunny'],
+    'powertoday': ['Solar Power Today', ENERGY_KILO_WATT_HOUR, 'mdi:flash'],
+    'powertotal': ['Solar Power Total', ENERGY_KILO_WATT_HOUR, 'mdi:chart-line'],
 }
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
