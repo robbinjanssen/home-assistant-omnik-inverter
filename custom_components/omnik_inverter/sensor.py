@@ -22,7 +22,7 @@ from urllib.request import urlopen
 import re
 import pickle
 
-VERSION = '0.0.4'
+VERSION = '0.0.5'
 
 BASE_URL = 'http://{0}/js/status.js'
 BASE_CACHE_NAME = '.{0}.pickle'
@@ -37,9 +37,7 @@ SENSOR_TYPES = {
     'powertotal': ['Solar Power Total', ENERGY_KILO_WATT_HOUR, 'mdi:chart-line'],
 }
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
-    vol.Required(CONF_HOST): cv.string,
-})
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({vol.Required(CONF_HOST): cv.string})
 
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
@@ -48,9 +46,8 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
 
     try:
         data = OmnikInverterWeb(host)
-    except RunTimeError:
-        _LOGGER.error("Unable to connect fetch data from Omnik Inverter %s",
-                      host)
+    except RuntimeError:
+        _LOGGER.error("Unable to connect fetch data from Omnik Inverter %s", host)
         return False
 
     entities = []
@@ -75,16 +72,16 @@ class OmnikInverterWeb(object):
         dataurl = BASE_URL.format(self._host)
         r = urlopen(dataurl).read()
 
-        """Remove strange characters from the result."""
+        # Remove strange characters from the result
         result = r.decode('ascii', 'ignore')
 
-        """Find the webData."""
+        # Find the webData
         if result.find('webData="') != -1:
             matches = re.search(r'(?<=webData=").*?(?=";)', result)
         else:
             matches = re.search(r'(?<=myDeviceArray\[0\]=").*?(?=";)', result)
 
-        """Split the values."""
+        # Split the values
         self.result = matches.group(0).split(',')
 
         _LOGGER.debug("Data = %s", self.result)
@@ -110,7 +107,7 @@ class OmnikInverterSensor(Entity):
 
     @property
     def icon(self):
-        """Icon to use in the frontend, if any."""
+        """Return the icon of the sensor."""
         return self._icon
 
     @property
@@ -120,56 +117,51 @@ class OmnikInverterSensor(Entity):
 
     @property
     def unit_of_measurement(self):
-        """Return the unit of measurement of this entity, if any."""
+        """Return the unit of measurement of this entity."""
         return self._unit_of_measurement
 
     def update(self):
         """Get the latest data and use it to update our sensor state."""
         self.data.update()
 
-        """Get the result data."""
+        # Get the result data
         result = self.data.result
 
         if self.type == 'powercurrent':
-            """Update the sensor state."""
+            # Update the sensor state
             self._state = int(result[5])
         elif self.type == 'powertoday':
-            """Define the cache name."""
+            # Define the cache name
             cacheName = BASE_CACHE_NAME.format(self.type)
 
-            """Prepare the next values."""
+            # Prepare the next values
             nextValue = int(result[6])
             nextTime = int(datetime.now().strftime('%H%M'))
 
-            """Fetch data from the cache."""
+            # Fetch data from the cache
             try:
                 cache = pickle.load(open(cacheName, 'rb'))
-            except (OSError, IOError, EOFError) as e:
+            except (OSError, IOError, EOFError):
                 cache = [0, 0]
 
-            """Set the cache values."""
+            # Set the cache values
             cacheValue = int(cache[0])
             cacheTime = int(cache[1])
 
-            """
-            If somehow the currentPowerToday is lower than the cached
-            version, keep the cached version.
-            """
-            if (nextValue < cacheValue):
+            # If somehow the currentPowerToday is lower than the cached version,
+            # keep the cached version
+            if nextValue < cacheValue:
                 nextValue = cacheValue
 
-            """
-            If today has passed, use the actual value from the
-            omnik inverter.
-            """
-            if (cacheTime > nextTime):
+            # If today has passed, use the actual value from the Omnik inverter
+            if cacheTime > nextTime:
                 nextValue = int(result[6])
 
-            """Store new stats."""
+            # Store new stats
             pickle.dump([nextValue, nextTime], open(cacheName, 'wb'))
 
-            """Update the sensor state, divide by 100 to make it kWh."""
+            # Update the sensor state, divide by 100 to make it kWh
             self._state = (nextValue / 100)
         elif self.type == 'powertotal':
-            """Update the sensor state, divide by 10 to make it kWh."""
+            # Update the sensor state, divide by 10 to make it kWh
             self._state = (int(result[7]) / 10)
