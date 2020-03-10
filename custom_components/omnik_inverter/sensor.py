@@ -47,7 +47,7 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     try:
         data = OmnikInverterWeb(host)
     except RuntimeError:
-        _LOGGER.error("Unable to connect fetch data from Omnik Inverter %s", host)
+        _LOGGER.error("Unable to fetch data from Omnik Inverter %s", host)
         return False
 
     entities = []
@@ -70,7 +70,11 @@ class OmnikInverterWeb(object):
     def update(self):
         """Update the data from the omnik inverter."""
         dataurl = BASE_URL.format(self._host)
-        r = urlopen(dataurl).read()
+        try:
+            r = urlopen(dataurl).read()
+        except OSError:
+            _LOGGER.error("Unable to fetch data from Omnik Inverter %s", self._host)
+            return False
 
         # Remove strange characters from the result
         result = r.decode('ascii', 'ignore')
@@ -82,7 +86,10 @@ class OmnikInverterWeb(object):
             matches = re.search(r'(?<=myDeviceArray\[0\]=").*?(?=";)', result)
 
         # Split the values
-        self.result = matches.group(0).split(',')
+        if matches is not None:
+            self.result = matches.group(0).split(',')
+        else:
+            _LOGGER.error("Empty data from Omnik Inverter %s", self._host)
 
         _LOGGER.debug("Data = %s", self.result)
 
