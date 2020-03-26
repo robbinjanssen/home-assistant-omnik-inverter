@@ -22,7 +22,7 @@ from urllib.request import urlopen
 import re
 import pickle
 
-VERSION = '1.0.0'
+VERSION = '1.0.1'
 
 BASE_URL = 'http://{0}/js/status.js'
 BASE_CACHE_NAME = '.{0}.pickle'
@@ -106,6 +106,12 @@ class OmnikInverterSensor(Entity):
         self._icon = SENSOR_TYPES[self.type][2]
         self._state = None
         self.update()
+        self._unique_id = f"{self.data.result[0]}-{self._name}"
+
+    @property
+    def unique_id(self):
+        """Return the unique ID of the sensor."""
+        return self._unique_id
 
     @property
     def name(self):
