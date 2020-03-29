@@ -38,7 +38,7 @@ sensor:
     host: 192.168.100.100
 ```
 
-You can enable caching the power today value using the `cache_power_today` configuration attribute. See how does it work when you might need to use this.
+You can enable caching the power today value using the `cache_power_today` configuration attribute. You probably won't need this but check "How does it work?" when/why you might.
 
 ``` YAML
 sensor:
