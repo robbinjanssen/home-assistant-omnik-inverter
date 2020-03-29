@@ -4,6 +4,7 @@ configuration.yaml
 sensor:
   - platform: omnik_inverter
     host: 192.168.100.100
+    cache_power_today: false
 """
 import logging
 from datetime import timedelta
@@ -22,7 +23,9 @@ from urllib.request import urlopen
 import re
 import pickle
 
-VERSION = '1.0.1'
+VERSION = '2.0.0'
+
+CONF_CACHE_POWER_TODAY = 'cache_power_today'
 
 BASE_URL = 'http://{0}/js/status.js'
 BASE_CACHE_NAME = '.{0}.pickle'
@@ -37,12 +40,16 @@ SENSOR_TYPES = {
     'powertotal': ['Solar Power Total', ENERGY_KILO_WATT_HOUR, 'mdi:chart-line'],
 }
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({vol.Required(CONF_HOST): cv.string})
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST): cv.string,
+    vol.Optional(CONF_CACHE_POWER_TODAY, default=False): cv.boolean
+})
 
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
     """Setup the Solar Portal sensors."""
     host = config.get(CONF_HOST)
+    cache = config.get(CONF_CACHE_POWER_TODAY)
 
     try:
         data = OmnikInverterWeb(host)
@@ -53,7 +60,7 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     entities = []
 
     for sensor_type in SENSOR_TYPES:
-        entities.append(OmnikInverterSensor(data, sensor_type))
+        entities.append(OmnikInverterSensor(data, sensor_type, cache))
 
     add_devices(entities)
 
@@ -97,10 +104,11 @@ class OmnikInverterWeb(object):
 class OmnikInverterSensor(Entity):
     """Representation of a OmnikInverter sensor from the web data."""
 
-    def __init__(self, data, sensor_type):
+    def __init__(self, data, sensor_type, cache):
         """Initialize the sensor."""
         self.data = data
         self.type = sensor_type
+        self.cache = cache
         self._name = SENSOR_TYPES[self.type][0]
         self._unit_of_measurement = SENSOR_TYPES[self.type][1]
         self._icon = SENSOR_TYPES[self.type][2]
@@ -151,6 +159,15 @@ class OmnikInverterSensor(Entity):
             nextValue = int(result[6])
             nextTime = int(datetime.now().strftime('%H%M'))
 
+            # Check if caching is disabled
+            if (self.cache == False):
+                _LOGGER.debug("Cache disabled, returning early.")
+
+                # Update the sensor state, divide by 100 to make it kWh
+                self._state = (nextValue / 100)
+                return
+
+            _LOGGER.debug("Cache enabled.")
             # Fetch data from the cache
             try:
                 cache = pickle.load(open(cacheName, 'rb'))
