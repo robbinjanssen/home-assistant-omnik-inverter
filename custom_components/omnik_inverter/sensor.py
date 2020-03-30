@@ -23,7 +23,7 @@ from urllib.request import urlopen
 import re
 import pickle
 
-VERSION = '1.1.0'
+VERSION = '1.1.1'
 
 CONF_CACHE_POWER_TODAY = 'cache_power_today'
 
@@ -159,36 +159,35 @@ class OmnikInverterSensor(Entity):
             nextValue = int(result[6])
             nextTime = int(datetime.now().strftime('%H%M'))
 
-            # Check if caching is disabled
-            if (self.cache == False):
+            # Check if caching is enabled
+            if self.cache:
+                # Fetch data from the cache
+                try:
+                    cache = pickle.load(open(cacheName, 'rb'))
+                except (OSError, IOError, EOFError):
+                    cache = [0, 0]
+
+                # Set the cache values
+                cacheValue = int(cache[0])
+                cacheTime = int(cache[1])
+
+                # If somehow the currentPowerToday is lower than the cached version,
+                # keep the cached version
+                if nextValue < cacheValue:
+                    nextValue = cacheValue
+
+                # If today has passed, use the actual value from the Omnik inverter
+                if cacheTime > nextTime:
+                    nextValue = int(result[6])
+
+                # Store new stats
+                pickle.dump([nextValue, nextTime], open(cacheName, 'wb'))
+
                 # Update the sensor state, divide by 100 to make it kWh
                 self._state = (nextValue / 100)
-                return
-
-            # Fetch data from the cache
-            try:
-                cache = pickle.load(open(cacheName, 'rb'))
-            except (OSError, IOError, EOFError):
-                cache = [0, 0]
-
-            # Set the cache values
-            cacheValue = int(cache[0])
-            cacheTime = int(cache[1])
-
-            # If somehow the currentPowerToday is lower than the cached version,
-            # keep the cached version
-            if nextValue < cacheValue:
-                nextValue = cacheValue
-
-            # If today has passed, use the actual value from the Omnik inverter
-            if cacheTime > nextTime:
-                nextValue = int(result[6])
-
-            # Store new stats
-            pickle.dump([nextValue, nextTime], open(cacheName, 'wb'))
-
-            # Update the sensor state, divide by 100 to make it kWh
-            self._state = (nextValue / 100)
+            else:
+                # Update the sensor state, divide by 100 to make it kWh
+                self._state = (nextValue / 100)
         elif self.type == 'powertotal':
             # Update the sensor state, divide by 10 to make it kWh
             self._state = (int(result[7]) / 10)
