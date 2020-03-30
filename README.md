@@ -38,6 +38,15 @@ sensor:
     host: 192.168.100.100
 ```
 
+By default caching the power today value is enabled, you can disable it using the `cache_power_today` configuration attribute. Check "How does it work?" when/why you might need to disable it.
+
+``` YAML
+sensor:
+  - platform: omnik_inverter
+    host: 192.168.100.100
+    cache_power_today: false
+```
+
 ## How does it work?
 
 The web interface has a javascript file that contains the actual values. This is updated every minute (afaik). Check it out in your browser at `http://<your omnik ip address>/js/status.js`
@@ -58,7 +67,9 @@ This custom component basically requests the URL, looks for the _webData_ part a
 - `sensor.solar_power_today` (kWh)
 - `sensor.solar_power_total` (kWh)
 
-> Note: I ran into the problem that my Omnik inverter resets the `solar_power_today` to 0.0 after 21:00. This component therefor caches the value and only resets to 0.0 after midnight.
+### Caching power today.
+
+In a few cases the Omnik inverter resets the `solar_power_today` to 0.0 after for example 21:00. By setting the `cache_power_today` config attribute to `true` (default) this component will cache the the value and only resets to 0.0 after midnight. If you do not experience this, then disable the cache by setting the config variable to `false`.
 
 ## References
 
