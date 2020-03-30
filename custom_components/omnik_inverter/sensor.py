@@ -4,7 +4,7 @@ configuration.yaml
 sensor:
   - platform: omnik_inverter
     host: 192.168.100.100
-    cache_power_today: false
+    cache_power_today: true
 """
 import logging
 from datetime import timedelta
@@ -23,7 +23,7 @@ from urllib.request import urlopen
 import re
 import pickle
 
-VERSION = '2.0.0'
+VERSION = '1.1.0'
 
 CONF_CACHE_POWER_TODAY = 'cache_power_today'
 
@@ -42,7 +42,7 @@ SENSOR_TYPES = {
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_HOST): cv.string,
-    vol.Optional(CONF_CACHE_POWER_TODAY, default=False): cv.boolean
+    vol.Optional(CONF_CACHE_POWER_TODAY, default=True): cv.boolean
 })
 
 
@@ -161,13 +161,10 @@ class OmnikInverterSensor(Entity):
 
             # Check if caching is disabled
             if (self.cache == False):
-                _LOGGER.debug("Cache disabled, returning early.")
-
                 # Update the sensor state, divide by 100 to make it kWh
                 self._state = (nextValue / 100)
                 return
 
-            _LOGGER.debug("Cache enabled.")
             # Fetch data from the cache
             try:
                 cache = pickle.load(open(cacheName, 'rb'))
