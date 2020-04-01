@@ -183,11 +183,8 @@ class OmnikInverterSensor(Entity):
                 # Store new stats
                 pickle.dump([nextValue, nextTime], open(cacheName, 'wb'))
 
-                # Update the sensor state, divide by 100 to make it kWh
-                self._state = (nextValue / 100)
-            else:
-                # Update the sensor state, divide by 100 to make it kWh
-                self._state = (nextValue / 100)
+            # Update the sensor state, divide by 100 to make it kWh
+            self._state = (nextValue / 100)
         elif self.type == 'powertotal':
             # Update the sensor state, divide by 10 to make it kWh
             self._state = (int(result[7]) / 10)
