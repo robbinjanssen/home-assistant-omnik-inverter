@@ -23,7 +23,7 @@ from urllib.request import urlopen
 import re
 import pickle
 
-VERSION = '1.1.1'
+VERSION = '1.2.0'
 
 CONF_CACHE_POWER_TODAY = 'cache_power_today'
 
@@ -155,36 +155,54 @@ class OmnikInverterSensor(Entity):
             # Define the cache name
             cacheName = BASE_CACHE_NAME.format(self.type)
 
-            # Prepare the next values
-            nextValue = int(result[6])
-            nextTime = int(datetime.now().strftime('%H%M'))
+            # Prepare the current actual values
+            currentValue = int(result[6])
+            currentDay = int(datetime.now().strftime('%Y%m%d'))
 
             # Check if caching is enabled
             if self.cache:
-                # Fetch data from the cache
                 try:
+                    # Fetch the cache from the storage.
                     cache = pickle.load(open(cacheName, 'rb'))
+
                 except (OSError, IOError, EOFError):
                     cache = [0, 0]
 
-                # Set the cache values
+                # Extract the cache values
                 cacheValue = int(cache[0])
-                cacheTime = int(cache[1])
+                cacheDay = int(cache[1])
 
-                # If somehow the currentPowerToday is lower than the cached version,
-                # keep the cached version
-                if nextValue < cacheValue:
-                    nextValue = cacheValue
+                # If the day has not yet passed, and the current value is bigger then
+                # the cached value, then we update the cached value to the current
+                # value.
+                if currentDay == cacheDay and currentValue >= cacheValue:
+                    cacheValue = currentValue
+                    cacheDay = currentDay
 
-                # If today has passed, use the actual value from the Omnik inverter
-                if cacheTime > nextTime:
-                    nextValue = int(result[6])
+                # Else if the day has not yet passed but the cache value is bigger then
+                # the current value, the inverter might have reset the current value
+                # to 0 to early. Therefor the cached value is used as output.
+                elif currentDay == cacheDay and cacheValue > currentValue:
+                    currentValue = cacheValue
+
+                # Else if the day has passed, but the current value is the same as the
+                # cached value, then the inverter has NOT reset the current value to
+                # 0 yet. Therefor manually output the value 0.
+                elif currentDay > cacheDay and currentValue == cacheValue:
+                    currentValue = 0
+
+                # Lastly if the day has passed and the current value does not match
+                # the cached value, it is probably reset to 0. So update the cache
+                # value to the current value.
+                elif currentDay > cacheDay and currentValue != cacheValue:
+                    cacheValue = currentValue
+                    cacheDay = currentDay
 
                 # Store new stats
-                pickle.dump([nextValue, nextTime], open(cacheName, 'wb'))
+                pickle.dump([cacheValue, cacheDay], open(cacheName, 'wb'))
 
             # Update the sensor state, divide by 100 to make it kWh
-            self._state = (nextValue / 100)
+            self._state = (currentValue / 100)
         elif self.type == 'powertotal':
             # Update the sensor state, divide by 10 to make it kWh
             self._state = (int(result[7]) / 10)
