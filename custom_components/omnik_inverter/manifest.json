@@ -1,8 +1,10 @@
 {
   "domain": "omnik_inverter",
   "name": "Omnik Inverter",
-  "documentation": "https://github.com/robbinjanssen/home-assistant-omnik-inverter/blob/master/README.md",
+  "documentation": "https://github.com/robbinjanssen/home-assistant-omnik-inverter",
   "dependencies": [],
-  "codeowners": [],
+  "codeowners": [
+    "@robbinjanssen"
+  ],
   "requirements": []
 }

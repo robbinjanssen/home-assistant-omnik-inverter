@@ -1,3 +1,5 @@
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
+
 # Home Assistant Omnik Inverter
 The Omnik Inverter Sensor component will retrieve data from an Omnik inverter connected to your local network.
 It has been tested and developed on an Omnik 4K TL2 and it might work for other inverters as well.

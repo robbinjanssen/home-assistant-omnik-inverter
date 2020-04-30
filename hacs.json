@@ -1,0 +1,6 @@
+{
+  "name": "My awesome thing",
+  "country": "NL",
+  "domains": ["sensor"],
+  "homeassistant": "0.109.0"
+}
