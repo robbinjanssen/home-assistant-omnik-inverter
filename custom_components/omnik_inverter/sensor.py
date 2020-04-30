@@ -23,7 +23,7 @@ from urllib.request import urlopen
 import re
 import pickle
 
-VERSION = '1.2.1'
+VERSION = '1.2.2'
 
 CONF_CACHE_POWER_TODAY = 'cache_power_today'
 

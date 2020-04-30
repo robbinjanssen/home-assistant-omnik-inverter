@@ -1,5 +1,5 @@
 {
-  "name": "My awesome thing",
+  "name": "Omnik Inverter",
   "country": "NL",
   "domains": ["sensor"],
   "homeassistant": "0.109.0"
