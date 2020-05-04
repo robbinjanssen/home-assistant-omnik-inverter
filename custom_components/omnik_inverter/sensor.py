@@ -32,7 +32,7 @@ BASE_CACHE_NAME = '.{0}.pickle'
 
 _LOGGER = logging.getLogger(__name__)
 
-MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=60)
+MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=500)
 
 SENSOR_TYPES = {
     'powercurrent': ['Solar Power Current', POWER_WATT, 'mdi:weather-sunny'],
