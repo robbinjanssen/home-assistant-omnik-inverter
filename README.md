@@ -12,9 +12,7 @@ Your Omnik Inverter needs to be connected to your local network, as this custom 
 
 ## HACS installation
 
-Add this component using HACS by adding this repository as a custom repository in your settings.
-- URL: https://github.com/robbinjanssen/home-assistant-omnik-inverter
-- Category: Integration
+Add this component using HACS, search for the `Omnik Inverter` integration.
 
 ## Manual installation
 
@@ -51,7 +49,8 @@ sensor:
 
 ## How does it work?
 
-The web interface has a javascript file that contains the actual values. This is updated every minute (afaik). Check it out in your browser at `http://<your omnik ip address>/js/status.js`
+The web interface has a javascript file that contains the actual values. This is updated every 
+5 minutes. Check it out in your browser at `http://<your omnik ip address>/js/status.js`
 
 The result contains a lot of information, but there is one part we're interested in:
 ```js
@@ -62,16 +61,21 @@ var myDeviceArray=new Array(); myDeviceArray[0]="AANN3020,V5.04Build230,V4.13Bui
 // ... Even more data
 ```
 
-This variable declaration contains your serial number, firmware versions, hardware information, the current power output: 1920, the energy generated today: 429 and the total energy generated: 87419.
+This variable declaration contains your serial number, firmware versions, hardware information, the 
+current power output: 1920, the energy generated today: 429 and the total energy generated: 87419.
 
-This custom component basically requests the URL, looks for the _webData_ part and extracts the values as the following sensors:
+This custom component basically requests the URL, looks for the _webData_ part and extracts the 
+values as the following sensors:
 - `sensor.solar_power_current` (Watt)
 - `sensor.solar_power_today` (kWh)
 - `sensor.solar_power_total` (kWh)
 
-### Caching power today.
+### Caching "power today".
 
-In a few cases the Omnik inverter resets the `solar_power_today` to 0.0 after for example 21:00. By setting the `cache_power_today` config attribute to `true` (default) this component will cache the the value and only resets to 0.0 after midnight. If you do not experience this, then disable the cache by setting the config variable to `false`.
+In a few cases the Omnik inverter resets the `solar_power_today` to 0.0 after for example 21:00. By 
+setting the `cache_power_today` config attribute to `true` (default) this component will cache the 
+value and only resets to 0.0 after midnight. If you do not experience this, then disable the 
+cache by setting the config variable to `false`.
 
 ## References
 
