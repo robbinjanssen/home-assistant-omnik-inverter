@@ -78,7 +78,9 @@ class OmnikInverterWeb(object):
         """Update the data from the omnik inverter."""
         dataurl = BASE_URL.format(self._host)
         try:
-            r = urlopen(dataurl).read()
+            fp = urlopen(dataurl)
+            r = fp.read()
+            fp.close()
         except OSError:
             _LOGGER.error("Unable to fetch data from Omnik Inverter %s", self._host)
             return False
