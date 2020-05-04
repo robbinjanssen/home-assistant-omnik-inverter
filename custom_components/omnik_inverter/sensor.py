@@ -150,6 +150,10 @@ class OmnikInverterSensor(Entity):
         # Get the result data
         result = self.data.result
 
+        if result is None:
+          _LOGGER.debug("No data found for %s", self.type)
+          return False
+
         if self.type == 'powercurrent':
             # Update the sensor state
             self._state = int(result[5])
