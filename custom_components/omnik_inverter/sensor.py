@@ -6,7 +6,9 @@ sensor:
     host: 192.168.100.100
     cache_power_today: true
 """
+import json
 import logging
+from random import random
 from datetime import timedelta
 from datetime import datetime
 
@@ -26,9 +28,11 @@ import pickle
 VERSION = '1.3.0'
 
 CONF_CACHE_POWER_TODAY = 'cache_power_today'
+CONF_USE_JSON = 'use_json'
 
-BASE_URL = 'http://{0}/js/status.js'
-BASE_CACHE_NAME = '.{0}.pickle'
+JS_URL = 'http://{0}/js/status.js'
+JSON_URL = 'http://{0}/status.json?CMD=inv_query&rand={1}'
+CACHE_NAME = '.{0}.pickle'
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -43,6 +47,7 @@ SENSOR_TYPES = {
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_HOST): cv.string,
     vol.Optional(CONF_CACHE_POWER_TODAY, default=True): cv.boolean
+    vol.Optional(CONF_USE_JSON, default=False): cv.boolean
 })
 
 
@@ -50,9 +55,13 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     """Setup the Solar Portal sensors."""
     host = config.get(CONF_HOST)
     cache = config.get(CONF_CACHE_POWER_TODAY)
+    use_json = config.get(CONF_USE_JSON)
 
     try:
-        data = OmnikInverterWeb(host)
+        if use_json is False:
+            data = OmnikInverterWeb(host)
+        else:
+            data = OmnikInverterJson(host)
     except RuntimeError:
         _LOGGER.error("Unable to fetch data from Omnik Inverter %s", host)
         return False
@@ -75,8 +84,8 @@ class OmnikInverterWeb(object):
 
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
     def update(self):
-        """Update the data from the omnik inverter."""
-        dataurl = BASE_URL.format(self._host)
+        """Update the data from the Omnik Inverter."""
+        dataurl = JS_URL.format(self._host)
         try:
             fp = urlopen(dataurl)
             r = fp.read()
@@ -96,7 +105,44 @@ class OmnikInverterWeb(object):
 
         # Split the values
         if matches is not None:
-            self.result = matches.group(0).split(',')
+            data = matches.group(0).split(',')
+            self.result = [
+                int(data[5]),
+                int(data[6]),
+                int(data[7])
+            ]
+        else:
+            _LOGGER.error("Empty data from Omnik Inverter %s", self._host)
+
+        _LOGGER.debug("Data = %s", self.result)
+
+class OmnikInverterJson(object):
+    """Representation of the Omnik Inverter Json."""
+
+    def __init__(self, host):
+        """Initialize the inverter."""
+        self._host = host
+        self.result = None
+
+    @Throttle(MIN_TIME_BETWEEN_UPDATES)
+    def update(self):
+        """Update the data from the Omnik Inverter."""
+        dataurl = JSON_URL.format(self._host, random())
+        try:
+            fp = urlopen(dataurl)
+            data = json.load(fp)
+            fp.close()
+        except (OSError, JSONDecodeError):
+            _LOGGER.error("Unable to fetch data from Omnik Inverter %s", self._host)
+            return False
+
+        # Split the values
+        if data is not None:
+            self.result = [
+                int(data["i_pow_n"]),
+                int(float(data["i_eday"]) * 100),
+                int(float(data["i_eall"]) * 10)
+            ]
         else:
             _LOGGER.error("Empty data from Omnik Inverter %s", self._host)
 
@@ -156,13 +202,13 @@ class OmnikInverterSensor(Entity):
 
         if self.type == 'powercurrent':
             # Update the sensor state
-            self._state = int(result[5])
+            self._state = result[0]
         elif self.type == 'powertoday':
             # Define the cache name
-            cacheName = BASE_CACHE_NAME.format(self.type)
+            cacheName = CACHE_NAME.format(self.type)
 
             # Prepare the current actual values
-            currentValue = int(result[6])
+            currentValue = result[1]
             currentDay = int(datetime.now().strftime('%Y%m%d'))
 
             # Check if caching is enabled
@@ -211,4 +257,4 @@ class OmnikInverterSensor(Entity):
             self._state = (currentValue / 100)
         elif self.type == 'powertotal':
             # Update the sensor state, divide by 10 to make it kWh
-            self._state = (int(result[7]) / 10)
+            self._state = (int(result[2]) / 10)
