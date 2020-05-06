@@ -116,6 +116,7 @@ class OmnikInverterWeb(object):
 
         _LOGGER.debug("Data = %s", self.result)
 
+
 class OmnikInverterJson(object):
     """Representation of the Omnik Inverter Json."""
 
@@ -197,8 +198,8 @@ class OmnikInverterSensor(Entity):
         result = self.data.result
 
         if result is None:
-          _LOGGER.debug("No data found for %s", self.type)
-          return False
+            _LOGGER.debug("No data found for %s", self.type)
+            return False
 
         if self.type == 'powercurrent':
             # Update the sensor state
@@ -257,4 +258,4 @@ class OmnikInverterSensor(Entity):
             self._state = (currentValue / 100)
         elif self.type == 'powertotal':
             # Update the sensor state, divide by 10 to make it kWh
-            self._state = (int(result[2]) / 10)
+            self._state = (result[2]) / 10)

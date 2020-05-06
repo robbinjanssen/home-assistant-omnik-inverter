@@ -61,14 +61,28 @@ var myDeviceArray=new Array(); myDeviceArray[0]="AANN3020,V5.04Build230,V4.13Bui
 // ... Even more data
 ```
 
-This variable declaration contains your serial number, firmware versions, hardware information, the 
+This output  contains your serial number, firmware versions, hardware information, the 
 current power output: 1920, the energy generated today: 429 and the total energy generated: 87419.
 
-This custom component basically requests the URL, looks for the _webData_ part and extracts the 
+The custom component basically requests the URL, looks for the _webData_ part and extracts the 
 values as the following sensors:
 - `sensor.solar_power_current` (Watt)
 - `sensor.solar_power_today` (kWh)
 - `sensor.solar_power_total` (kWh)
+
+### My inverter doesn't show any output when I go to the URL.
+
+Some inverters use a JSON status file to output the values. Check if your 
+inverter outputs JSON data by navigating to: `http://<your omnik ip address>/status.json?CMD=inv_query&rand=0.1234567`.
+
+If so, then use the `use_json` config boolean to make the component use the URL above.
+
+``` YAML
+sensor:
+  - platform: omnik_inverter
+    host: 192.168.100.100
+    use_json: true
+```
 
 ### Caching "power today".
 
