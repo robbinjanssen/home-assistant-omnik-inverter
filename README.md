@@ -91,6 +91,13 @@ setting the `cache_power_today` config attribute to `true` (default) this compon
 value and only resets to 0.0 after midnight. If you do not experience this, then disable the 
 cache by setting the config variable to `false`.
 
+``` YAML
+sensor:
+  - platform: omnik_inverter
+    host: 192.168.100.100
+    cache_power_today: false
+```
+
 ## References
 
 - https://community.home-assistant.io/t/omink-inverter-in-home-assistant/102455/36
