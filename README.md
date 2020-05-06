@@ -12,7 +12,7 @@ Your Omnik Inverter needs to be connected to your local network, as this custom 
 
 ## HACS installation
 
-Add this component using HACS, search for the `Omnik Inverter` integration.
+Add this component using HACS by searching for `Omnik Inverter` on the `Integrations` page.
 
 ## Manual installation
 
