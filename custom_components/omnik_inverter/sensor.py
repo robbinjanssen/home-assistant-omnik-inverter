@@ -5,6 +5,7 @@ sensor:
   - platform: omnik_inverter
     host: 192.168.100.100
     cache_power_today: true
+    use_json: false
 """
 import json
 import logging
