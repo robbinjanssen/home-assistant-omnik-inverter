@@ -47,7 +47,7 @@ SENSOR_TYPES = {
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_HOST): cv.string,
-    vol.Optional(CONF_CACHE_POWER_TODAY, default=True): cv.boolean
+    vol.Optional(CONF_CACHE_POWER_TODAY, default=True): cv.boolean,
     vol.Optional(CONF_USE_JSON, default=False): cv.boolean
 })
 
@@ -259,4 +259,4 @@ class OmnikInverterSensor(Entity):
             self._state = (currentValue / 100)
         elif self.type == 'powertotal':
             # Update the sensor state, divide by 10 to make it kWh
-            self._state = (result[2]) / 10)
+            self._state = (result[2] / 10)
