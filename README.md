@@ -2,7 +2,7 @@
 
 # Home Assistant Omnik Inverter
 The Omnik Inverter Sensor component will retrieve data from an Omnik inverter connected to your local network.
-It has been tested and developed on an Omnik 4K TL2 and it might work for other inverters as well.
+It has been tested and developed on an Omnik 4k TL2, 2k TL2 and it might work for other inverters as well.
 
 The values will be presented as sensors in [Home Assistant](https://home-assistant.io/).
 
@@ -71,6 +71,8 @@ values as the following sensors:
 - `sensor.solar_power_total` (kWh)
 
 ### My inverter doesn't show any output when I go to the URL.
+
+> Use this if you have an Omnik Inverter 2k TL2.
 
 Some inverters use a JSON status file to output the values. Check if your 
 inverter outputs JSON data by navigating to: `http://<your omnik ip address>/status.json?CMD=inv_query&rand=0.1234567`.
