@@ -26,7 +26,7 @@ from urllib.request import urlopen
 import re
 import pickle
 
-VERSION = '1.3.0'
+VERSION = '1.3.1'
 
 CONF_CACHE_POWER_TODAY = 'cache_power_today'
 CONF_USE_JSON = 'use_json'
@@ -108,6 +108,7 @@ class OmnikInverterWeb(object):
         if matches is not None:
             data = matches.group(0).split(',')
             self.result = [
+                data[0],
                 int(data[5]),
                 int(data[6]),
                 int(data[7])
@@ -141,6 +142,7 @@ class OmnikInverterJson(object):
         # Split the values
         if data is not None:
             self.result = [
+                data["g_sn"],
                 int(data["i_pow_n"]),
                 int(float(data["i_eday"]) * 100),
                 int(float(data["i_eall"]) * 10)
@@ -204,13 +206,13 @@ class OmnikInverterSensor(Entity):
 
         if self.type == 'powercurrent':
             # Update the sensor state
-            self._state = result[0]
+            self._state = result[1]
         elif self.type == 'powertoday':
             # Define the cache name
             cacheName = CACHE_NAME.format(self.type)
 
             # Prepare the current actual values
-            currentValue = result[1]
+            currentValue = result[2]
             currentDay = int(datetime.now().strftime('%Y%m%d'))
 
             # Check if caching is enabled
@@ -259,4 +261,4 @@ class OmnikInverterSensor(Entity):
             self._state = (currentValue / 100)
         elif self.type == 'powertotal':
             # Update the sensor state, divide by 10 to make it kWh
-            self._state = (result[2] / 10)
+            self._state = (result[3] / 10)
