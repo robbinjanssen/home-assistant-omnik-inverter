@@ -26,7 +26,7 @@ from urllib.request import urlopen
 import re
 import pickle
 
-VERSION = '1.3.1'
+VERSION = '1.3.2'
 
 CONF_CACHE_POWER_TODAY = 'cache_power_today'
 CONF_USE_JSON = 'use_json'
@@ -37,7 +37,7 @@ CACHE_NAME = '.{0}.pickle'
 
 _LOGGER = logging.getLogger(__name__)
 
-MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=500)
+MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=300)
 
 SENSOR_TYPES = {
     'powercurrent': ['Solar Power Current', POWER_WATT, 'mdi:weather-sunny'],
