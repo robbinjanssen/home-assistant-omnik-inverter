@@ -10,7 +10,6 @@ sensor:
 import json
 import logging
 from random import random
-from datetime import timedelta
 from datetime import datetime
 
 import voluptuous as vol
@@ -26,18 +25,17 @@ from urllib.request import urlopen
 import re
 import pickle
 
-VERSION = '1.3.2'
+VERSION = '1.4.0'
 
 CONF_CACHE_POWER_TODAY = 'cache_power_today'
 CONF_USE_JSON = 'use_json'
+CONF_SCAN_INTERVAL = 'scan_interval'
 
 JS_URL = 'http://{0}/js/status.js'
 JSON_URL = 'http://{0}/status.json?CMD=inv_query&rand={1}'
 CACHE_NAME = '.{0}.pickle'
 
 _LOGGER = logging.getLogger(__name__)
-
-MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=300)
 
 SENSOR_TYPES = {
     'powercurrent': ['Solar Power Current', POWER_WATT, 'mdi:weather-sunny'],
@@ -48,7 +46,8 @@ SENSOR_TYPES = {
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_HOST): cv.string,
     vol.Optional(CONF_CACHE_POWER_TODAY, default=True): cv.boolean,
-    vol.Optional(CONF_USE_JSON, default=False): cv.boolean
+    vol.Optional(CONF_USE_JSON, default=False): cv.boolean,
+    vol.Optional(CONF_SCAN_INTERVAL, default=300): cv.time_period_seconds
 })
 
 
@@ -57,12 +56,13 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     host = config.get(CONF_HOST)
     cache = config.get(CONF_CACHE_POWER_TODAY)
     use_json = config.get(CONF_USE_JSON)
+    scan_interval = config.get(CONF_SCAN_INTERVAL)
 
     try:
         if use_json is False:
-            data = OmnikInverterWeb(host)
+            data = OmnikInverterWeb(host, scan_interval)
         else:
-            data = OmnikInverterJson(host)
+            data = OmnikInverterJson(host, scan_interval)
     except RuntimeError:
         _LOGGER.error("Unable to fetch data from Omnik Inverter %s", host)
         return False
@@ -78,13 +78,16 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
 class OmnikInverterWeb(object):
     """Representation of the Omnik Inverter Web."""
 
-    def __init__(self, host):
+    def __init__(self, host, scan_interval):
         """Initialize the inverter."""
         self._host = host
+        self._scan_interval = scan_interval
         self.result = None
 
-    @Throttle(MIN_TIME_BETWEEN_UPDATES)
-    def update(self):
+        # Throttle the update method.
+        self.update = Throttle(self._scan_interval)(self._update)
+
+    def _update(self):
         """Update the data from the Omnik Inverter."""
         dataurl = JS_URL.format(self._host)
         try:
@@ -122,13 +125,16 @@ class OmnikInverterWeb(object):
 class OmnikInverterJson(object):
     """Representation of the Omnik Inverter Json."""
 
-    def __init__(self, host):
+    def __init__(self, host, scan_interval):
         """Initialize the inverter."""
         self._host = host
+        self._scan_interval = scan_interval
         self.result = None
 
-    @Throttle(MIN_TIME_BETWEEN_UPDATES)
-    def update(self):
+        # Throttle the update method.
+        self.update = Throttle(self._scan_interval)(self._update)
+
+    def _update(self):
         """Update the data from the Omnik Inverter."""
         dataurl = JSON_URL.format(self._host, random())
         try:
