@@ -25,7 +25,7 @@ from urllib.request import urlopen
 import re
 import pickle
 
-VERSION = '1.4.0'
+VERSION = '1.4.1'
 
 CONF_CACHE_POWER_TODAY = 'cache_power_today'
 CONF_USE_JSON = 'use_json'
@@ -47,7 +47,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_HOST): cv.string,
     vol.Optional(CONF_CACHE_POWER_TODAY, default=True): cv.boolean,
     vol.Optional(CONF_USE_JSON, default=False): cv.boolean,
-    vol.Optional(CONF_SCAN_INTERVAL, default=300): cv.time_period_seconds
+    vol.Optional(CONF_SCAN_INTERVAL, default=300): cv.time_period
 })
 
 
