@@ -1,6 +1,6 @@
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
 
-# Home Assistant Omnik Inverter
+# Omnik Inverter Sensor Component for Home Assistant
 The Omnik Inverter Sensor component will retrieve data from an Omnik inverter connected to your local network.
 It has been tested and developed on an Omnik 4k TL2, 2k TL2 and it might work for other inverters as well.
 
@@ -12,7 +12,7 @@ Your Omnik Inverter needs to be connected to your local network, as this custom 
 
 ## HACS installation
 
-Add this component using HACS by searching for `Omnik Inverter` on the `Integrations` page.
+Add this component using HACS by searching for `Omnik Inverter Solar Sensor (No Cloud)` on the `Integrations` page.
 
 ## Manual installation
 
@@ -45,6 +45,16 @@ sensor:
   - platform: omnik_inverter
     host: 192.168.100.100
     cache_power_today: false
+```
+
+Most inverters update the JS or JSON every 5 minutes. You increase or decrease this scan interval by setting the `scan_interval` config variable to the number of seconds you want.
+The default is set to 300 seconds (5 minutes).
+
+``` YAML
+sensor:
+  - platform: omnik_inverter
+    host: 192.168.100.100
+    scan_interval: 900
 ```
 
 ## How does it work?
