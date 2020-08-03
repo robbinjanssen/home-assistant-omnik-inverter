@@ -94,10 +94,11 @@ class OmnikInverterWeb(object):
         try:
             fp = urlopen(dataurl)
             r = fp.read()
-            fp.close()
         except OSError:
             _LOGGER.error("Unable to fetch data from Omnik Inverter %s", self._host)
             return False
+        finally:
+            fp.close()
 
         # Remove strange characters from the result
         result = r.decode('ascii', 'ignore')
@@ -141,10 +142,11 @@ class OmnikInverterJson(object):
         try:
             fp = urlopen(dataurl)
             data = json.load(fp)
-            fp.close()
         except (OSError, JSONDecodeError):
             _LOGGER.error("Unable to fetch data from Omnik Inverter %s", self._host)
             return False
+        finally:
+            fp.close()
 
         # Split the values
         if data is not None:
