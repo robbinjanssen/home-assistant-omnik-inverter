@@ -92,7 +92,7 @@ class OmnikInverterWeb(object):
         """Update the data from the Omnik Inverter."""
         dataurl = JS_URL.format(self._host)
         try:
-            fp = urlopen(dataurl)
+            fp = urlopen(dataurl, 30)
             r = fp.read()
         except OSError:
             _LOGGER.error("Unable to fetch data from Omnik Inverter %s", self._host)
@@ -140,7 +140,7 @@ class OmnikInverterJson(object):
         """Update the data from the Omnik Inverter."""
         dataurl = JSON_URL.format(self._host, random())
         try:
-            fp = urlopen(dataurl)
+            fp = urlopen(dataurl, 30)
             data = json.load(fp)
         except (OSError, JSONDecodeError):
             _LOGGER.error("Unable to fetch data from Omnik Inverter %s", self._host)
