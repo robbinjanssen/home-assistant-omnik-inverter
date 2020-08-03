@@ -226,6 +226,7 @@ class OmnikInverterSensor(Entity):
             if self.cache:
                 try:
                     cache = load_json(cacheName)
+                    _LOGGER.debug("Loaded cache: %s", json.dumps(cache))
                 except HomeAssistantError as error:
                     cache = {"cacheValue": 0, "cacheDay": 0}
                     _LOGGER.error("Failed to load cache file: %s", error)
@@ -262,7 +263,9 @@ class OmnikInverterSensor(Entity):
 
                 # Store new stats
                 try:
-                    save_json(cacheName, {"cacheValue": cacheValue, "cacheDay": cacheDay})
+                    nextCache = {"cacheValue": cacheValue, "cacheDay": cacheDay}
+                    save_json(cacheName, nextCache)
+                    _LOGGER.debug("Saved cache: %s", json.dumps(nextCache))
                 except OSError as error:
                     _LOGGER.error("Could not save cache, %s", error)
 
