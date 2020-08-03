@@ -18,12 +18,13 @@ from homeassistant.components.sensor import PLATFORM_SCHEMA
 import homeassistant.helpers.config_validation as cv
 from homeassistant.const import CONF_HOST, POWER_WATT, ENERGY_KILO_WATT_HOUR
 from homeassistant.util import Throttle
+from homeassistant.util.json import load_json, save_json
 from homeassistant.helpers.entity import Entity
+from homeassistant.exceptions import HomeAssistantError
 
 from urllib.request import urlopen
 
 import re
-import pickle
 
 VERSION = '1.4.1'
 
@@ -33,7 +34,7 @@ CONF_SCAN_INTERVAL = 'scan_interval'
 
 JS_URL = 'http://{0}/js/status.js'
 JSON_URL = 'http://{0}/status.json?CMD=inv_query&rand={1}'
-CACHE_NAME = '.{0}.pickle'
+CACHE_NAME = '.{0}.json'
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -224,15 +225,14 @@ class OmnikInverterSensor(Entity):
             # Check if caching is enabled
             if self.cache:
                 try:
-                    # Fetch the cache from the storage.
-                    cache = pickle.load(open(cacheName, 'rb'))
-
-                except (OSError, IOError, EOFError):
-                    cache = [0, 0]
+                    cache = load_json(cacheName)
+                except HomeAssistantError as error:
+                    cache = {"cacheValue": 0, "cacheDay": 0}
+                    _LOGGER.error("Failed to load cache file: %s", error)
 
                 # Extract the cache values
-                cacheValue = int(cache[0])
-                cacheDay = int(cache[1])
+                cacheValue = int(cache["cacheValue"])
+                cacheDay = int(cache["cacheDay"])
 
                 # If the day has not yet passed, and the current value is bigger then
                 # the cached value, then we update the cached value to the current
@@ -261,7 +261,10 @@ class OmnikInverterSensor(Entity):
                     cacheDay = currentDay
 
                 # Store new stats
-                pickle.dump([cacheValue, cacheDay], open(cacheName, 'wb'))
+                try:
+                    save_json(cacheName, {"cacheValue": cacheValue, "cacheDay": cacheDay})
+                except OSError as error:
+                    _LOGGER.error("Could not save cache, %s", error)
 
             # Update the sensor state, divide by 100 to make it kWh
             self._state = (currentValue / 100)
