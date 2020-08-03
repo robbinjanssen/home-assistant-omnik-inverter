@@ -216,7 +216,7 @@ class OmnikInverterSensor(Entity):
             self._state = result[1]
         elif self.type == 'powertoday':
             # Define the cache name
-            cacheName = CACHE_NAME.format(self.type)
+            cacheName = self.hass.config.path(CACHE_NAME.format(self.type))
 
             # Prepare the current actual values
             currentValue = result[2]
