@@ -55,6 +55,7 @@ sensor:
   - platform: omnik_inverter
     host: 192.168.100.100
     scan_interval: 900
+
 ```
 
 ## How does it work?
