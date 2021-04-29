@@ -26,7 +26,7 @@ from urllib.request import urlopen
 
 import re
 
-VERSION = '1.5.1'
+VERSION = '1.5.2'
 
 CONF_CACHE_POWER_TODAY = 'cache_power_today'
 CONF_USE_JSON = 'use_json'
