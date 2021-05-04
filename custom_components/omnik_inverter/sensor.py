@@ -6,6 +6,7 @@ sensor:
     host: 192.168.100.100
     cache_power_today: true
     use_json: false
+    name: somename
 """
 import json
 import logging
@@ -26,11 +27,12 @@ from urllib.request import urlopen
 
 import re
 
-VERSION = '1.5.2'
+VERSION = '1.5.3'
 
 CONF_CACHE_POWER_TODAY = 'cache_power_today'
 CONF_USE_JSON = 'use_json'
 CONF_SCAN_INTERVAL = 'scan_interval'
+CONF_NAME = 'name'
 
 JS_URL = 'http://{0}/js/status.js'
 JSON_URL = 'http://{0}/status.json?CMD=inv_query&rand={1}'
@@ -41,16 +43,17 @@ CACHE_DAY_KEY = "cache_day"
 _LOGGER = logging.getLogger(__name__)
 
 SENSOR_TYPES = {
-    'powercurrent': ['Solar Power Current', POWER_WATT, 'mdi:weather-sunny'],
-    'powertoday': ['Solar Power Today', ENERGY_KILO_WATT_HOUR, 'mdi:flash'],
-    'powertotal': ['Solar Power Total', ENERGY_KILO_WATT_HOUR, 'mdi:chart-line'],
+    'powercurrent': ['{name} Current', POWER_WATT, 'mdi:weather-sunny'],
+    'powertoday': ['{name} Today', ENERGY_KILO_WATT_HOUR, 'mdi:flash'],
+    'powertotal': ['{name} Total', ENERGY_KILO_WATT_HOUR, 'mdi:chart-line'],
 }
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_HOST): cv.string,
     vol.Optional(CONF_CACHE_POWER_TODAY, default=True): cv.boolean,
     vol.Optional(CONF_USE_JSON, default=False): cv.boolean,
-    vol.Optional(CONF_SCAN_INTERVAL, default=300): cv.time_period
+    vol.Optional(CONF_SCAN_INTERVAL, default=300): cv.time_period,
+    vol.Optional(CONF_NAME, default='Solar Power'): cv.string
 })
 
 
@@ -60,6 +63,7 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     cache = config.get(CONF_CACHE_POWER_TODAY)
     use_json = config.get(CONF_USE_JSON)
     scan_interval = config.get(CONF_SCAN_INTERVAL)
+    name = config.get(CONF_NAME)
     cache_name = hass.config.path(CACHE_NAME)
 
     try:
@@ -74,7 +78,7 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     entities = []
 
     for sensor_type in SENSOR_TYPES:
-        entities.append(OmnikInverterSensor(data, sensor_type, cache, cache_name))
+        entities.append(OmnikInverterSensor(data, sensor_type, name, cache, cache_name))
 
     add_devices(entities)
 
@@ -168,11 +172,11 @@ class OmnikInverterJson(object):
 class OmnikInverterSensor(Entity):
     """Representation of a OmnikInverter sensor from the web data."""
 
-    def __init__(self, data, sensor_type, cache, cache_name):
+    def __init__(self, data, sensor_type, name, cache, cache_name):
         """Initialize the sensor."""
         self._data = data
         self._type = sensor_type
-        self._name = SENSOR_TYPES[self._type][0]
+        self._name = SENSOR_TYPES[self._type][0].format(name=name)
         self._unit_of_measurement = SENSOR_TYPES[self._type][1]
         self._icon = SENSOR_TYPES[self._type][2]
         self._state = None
