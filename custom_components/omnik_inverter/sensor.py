@@ -27,7 +27,7 @@ from urllib.request import urlopen
 
 import re
 
-VERSION = '1.5.3'
+VERSION = '1.5.4'
 
 CONF_CACHE_POWER_TODAY = 'cache_power_today'
 CONF_USE_JSON = 'use_json'
@@ -36,7 +36,7 @@ CONF_NAME = 'name'
 
 JS_URL = 'http://{0}/js/status.js'
 JSON_URL = 'http://{0}/status.json?CMD=inv_query&rand={1}'
-CACHE_NAME = '.{0}.json'
+CACHE_NAME = '.{0}{1}.json'
 CACHE_VALUE_KEY = "cache_value"
 CACHE_DAY_KEY = "cache_day"
 
@@ -183,7 +183,7 @@ class OmnikInverterSensor(Entity):
 
         # Set caching data.
         self._cache = cache
-        self._cache_name = cache_name.format(self._type)
+        self._cache_name = cache_name.format(name, self._type)
 
         # Trigger an update to get the unique ID.
         self.update()
