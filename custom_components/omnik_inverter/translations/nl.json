@@ -1,0 +1,28 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Kon niet verbinden",
+            "unknown": "Onverwachte fout"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "name": "Naam",
+                    "use json": "Gebruik JSON"
+                },
+                "description": "Stel Omnik Inverter in om te integreren met Home Assistant."
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "use json": "Gebruik JSON"
+                },
+                "description": "Verander de manier waarop de integratie uw Omnik-omvormer data ophaalt."
+            }
+        }
+    }
+}
