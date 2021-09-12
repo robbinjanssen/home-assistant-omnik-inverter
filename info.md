@@ -7,5 +7,5 @@ Find the full documentation [here](https://github.com/robbinjanssen/home-assista
 
 ### Example
 
-![Omnik Inverter Sensor Entities](https://github.com/robbinjanssen/home-assistant-omnik-inverter/blob/master/images/entities.png)
+![Omnik Inverter Sensor Entities](https://github.com/robbinjanssen/home-assistant-omnik-inverter/blob/master/images/all_entities.png)
 
