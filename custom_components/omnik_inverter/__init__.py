@@ -11,7 +11,8 @@ from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from omnikinverter.exceptions import OmnikInverterError
 
 from .const import (
     CONF_USE_JSON,
@@ -90,9 +91,11 @@ class OmnikInverterDataUpdateCoordinator(DataUpdateCoordinator[OmnikInverterData
 
     async def _async_update_data(self) -> OmnikInverterData:
         """Fetch data from Omnik Inverter."""
-        data: OmnikInverterData = {
-            SERVICE_INVERTER: await self.omnikinverter.inverter(),
-            SERVICE_DEVICE: await self.omnikinverter.device(),
-        }
-
-        return data
+        try:
+            data: OmnikInverterData = {
+                SERVICE_INVERTER: await self.omnikinverter.inverter(),
+                SERVICE_DEVICE: await self.omnikinverter.device(),
+            }
+            return data
+        except OmnikInverterError as err:
+            raise UpdateFailed(err) from err

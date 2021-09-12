@@ -7,7 +7,7 @@ from typing import Final
 
 DOMAIN: Final = "omnik_inverter"
 LOGGER = logging.getLogger(__package__)
-SCAN_INTERVAL = timedelta(minutes=1)
+SCAN_INTERVAL = timedelta(minutes=4)
 
 CONF_USE_JSON = "use json"
 
