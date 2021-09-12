@@ -57,10 +57,10 @@ var myDeviceArray=new Array(); myDeviceArray[0]="AANN3020,V5.04Build230,V4.13Bui
 // ... Even more data
 ```
 
-This output  contains your serial number, firmware versions, hardware information, the 
-current power output: 1920, the energy generated today: 429 and the total energy generated: 87419.
+This output contains your serial number, firmware versions, hardware information, the 
+current power output: 1920, the Wh generated today: 429 and the total Wh generated: 87419.
 
-The custom component basically requests the URL, looks for the _webData_ part and extracts the 
+The component basically requests the URL, looks for the _webData_ part and extracts the 
 values as sensors.
 
 ### My inverter doesn't show any output when I go to the URL.
@@ -73,7 +73,7 @@ inverter outputs JSON data by navigating to: `http://<your omnik ip address>/sta
 If so, then use the `use_json` config boolean to make the component use the URL above.
 
 ### Thanks
-Special thank you to [@klaasnicolaas](https://github.com/klaasnicolaas) for taking this component to the next level, and [@relout](https://github.com/relout) for testing :-)
+Special thank you to [@klaasnicolaas](https://github.com/klaasnicolaas) for taking this component to the next level 🚀 and [@relout](https://github.com/relout) for testing :-)
 
 ## References
 
