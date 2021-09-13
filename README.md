@@ -1,10 +1,18 @@
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
 
-# Omnik Inverter Sensor Component for Home Assistant
-The Omnik Inverter Sensor component will retrieve data from an Omnik inverter connected to your local network.
-It has been tested and developed on an Omnik 4k TL2, 2k TL2 and it might work for other inverters as well.
+# Omnik Inverter Sensor for Home Assistant
+The Omnik Inverter Sensor component will scrape data from an Omnik inverter connected to your local network.
+It has been tested and developed on the following inverters:
 
-The values will be presented as sensors in [Home Assistant](https://home-assistant.io/).
+## Supported models
+- Omnik1000TL
+- Omnik1500TL
+- Omnik2000TL
+- Omnik2000TL2
+- Omnik4000TL2
+- Ginlong stick (JSON)
+
+After installation you can add the sensors through the integration page. The values will be presented as sensors in [Home Assistant](https://home-assistant.io/).
 
 ## Requirements
 
@@ -23,40 +31,17 @@ This is how your custom_components directory should be:
 ```bash
 custom_components
 ├── omnik_inverter
+│   ├── translations
+│   │   ├── en.json
+│   │   └── nl.json
 │   ├── __init__.py
+│   ├── config_flow.py
+│   ├── const.py
 │   ├── manifest.json
-│   └── sensor.py
+│   ├── sensor.py
+│   └── strings.json
 ```
 
-## Configuration example
-
-To enable this sensor, add the following lines to your configuration.yaml file:
-
-``` YAML
-sensor:
-  - platform: omnik_inverter
-    host: 192.168.100.100
-```
-
-By default caching the power today value is enabled, you can disable it using the `cache_power_today` configuration attribute. Check "How does it work?" when/why you might need to disable it.
-
-``` YAML
-sensor:
-  - platform: omnik_inverter
-    host: 192.168.100.100
-    cache_power_today: false
-```
-
-Most inverters update the JS or JSON every 5 minutes. You increase or decrease this scan interval by setting the `scan_interval` config variable to the number of seconds you want.
-The default is set to 300 seconds (5 minutes).
-
-``` YAML
-sensor:
-  - platform: omnik_inverter
-    host: 192.168.100.100
-    scan_interval: 900
-
-```
 
 ## How does it work?
 
@@ -72,14 +57,11 @@ var myDeviceArray=new Array(); myDeviceArray[0]="AANN3020,V5.04Build230,V4.13Bui
 // ... Even more data
 ```
 
-This output  contains your serial number, firmware versions, hardware information, the 
-current power output: 1920, the energy generated today: 429 and the total energy generated: 87419.
+This output contains your serial number, firmware versions, hardware information, the 
+current power output: 1920, the energy (kWh) generated today: 429 and the total energy (kWh) generated: 87419.
 
-The custom component basically requests the URL, looks for the _webData_ part and extracts the 
-values as the following sensors:
-- `sensor.solar_power_current` (Watt)
-- `sensor.solar_power_today` (kWh)
-- `sensor.solar_power_total` (kWh)
+The component basically requests the URL, looks for the _webData_ part and extracts the 
+values as sensors.
 
 ### My inverter doesn't show any output when I go to the URL.
 
@@ -90,29 +72,12 @@ inverter outputs JSON data by navigating to: `http://<your omnik ip address>/sta
 
 If so, then use the `use_json` config boolean to make the component use the URL above.
 
-``` YAML
-sensor:
-  - platform: omnik_inverter
-    host: 192.168.100.100
-    use_json: true
-```
-
-### Caching "power today".
-
-In a few cases the Omnik inverter resets the `solar_power_today` to 0.0 after for example 21:00. By 
-setting the `cache_power_today` config attribute to `true` (default) this component will cache the 
-value and only resets to 0.0 after midnight. If you do not experience this, then disable the 
-cache by setting the config variable to `false`.
-
-``` YAML
-sensor:
-  - platform: omnik_inverter
-    host: 192.168.100.100
-    cache_power_today: false
-```
+### Thanks
+Special thank you to [@klaasnicolaas](https://github.com/klaasnicolaas) for taking this component to the next level 🚀 and [@relout](https://github.com/relout) for testing :-)
 
 ## References
 
 - https://community.home-assistant.io/t/omink-inverter-in-home-assistant/102455/36
 - https://github.com/heinoldenhuis/home_assistant_omnik_solar (This uses omnikportal.com to get data for your inverter, check it out!)
 - https://github.com/sincze/Domoticz-Omnik-Local-Web-Plugin
+- https://github.com/klaasnicolaas/python-omnikinverter
