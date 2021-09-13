@@ -58,7 +58,7 @@ var myDeviceArray=new Array(); myDeviceArray[0]="AANN3020,V5.04Build230,V4.13Bui
 ```
 
 This output contains your serial number, firmware versions, hardware information, the 
-current power output: 1920, the Wh generated today: 429 and the total Wh generated: 87419.
+current power output: 1920, the energy (kWh) generated today: 429 and the total energy (kWh) generated: 87419.
 
 The component basically requests the URL, looks for the _webData_ part and extracts the 
 values as sensors.
