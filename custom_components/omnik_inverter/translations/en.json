@@ -9,7 +9,7 @@
                 "data": {
                     "host": "Host",
                     "name": "Name",
-                    "use json": "Use JSON"
+                    "use_json": "JSON supported inverter"
                 },
                 "description": "Set up Omnik Inverter to integrate with Home Assistant."
             }

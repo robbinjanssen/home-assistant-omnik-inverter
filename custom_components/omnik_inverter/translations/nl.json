@@ -9,7 +9,7 @@
                 "data": {
                     "host": "Host",
                     "name": "Naam",
-                    "use json": "Gebruik JSON"
+                    "use_json": "Omvormer met JSON ondersteuning"
                 },
                 "description": "Stel Omnik Inverter in om te integreren met Home Assistant."
             }

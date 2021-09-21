@@ -9,7 +9,7 @@ DOMAIN: Final = "omnik_inverter"
 LOGGER = logging.getLogger(__package__)
 SCAN_INTERVAL = timedelta(minutes=4)
 
-CONF_USE_JSON = "use json"
+CONF_USE_JSON = "use_json"
 
 ATTR_ENTRY_TYPE: Final = "entry_type"
 ENTRY_TYPE_SERVICE: Final = "service"

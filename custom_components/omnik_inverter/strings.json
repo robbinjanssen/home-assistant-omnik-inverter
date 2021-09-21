@@ -6,7 +6,7 @@
         "data": {
           "host": "[%key:common::config_flow::data::host%]",
           "name": "[%key:common::config_flow::data::name%]",
-          "use json": "Use JSON"
+          "use_json": "JSON supported inverter"
         }
       }
     },
