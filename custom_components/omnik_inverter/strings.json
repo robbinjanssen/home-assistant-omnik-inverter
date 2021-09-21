@@ -6,7 +6,7 @@
         "data": {
           "host": "[%key:common::config_flow::data::host%]",
           "name": "[%key:common::config_flow::data::name%]",
-          "use json": "Use JSON"
+          "use_json": "JSON supported inverter"
         }
       }
     },
@@ -19,7 +19,7 @@
       "init": {
         "description": "Change the way the integration fetches your Omnik Inverter.",
         "data": {
-          "use json": "Use JSON"
+          "scan_interval": "Minimum time between entity updates [m]"
         }
       }
     }

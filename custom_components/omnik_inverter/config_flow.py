@@ -12,7 +12,7 @@ from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from .const import CONF_USE_JSON, DOMAIN
+from .const import CONF_SCAN_INTERVAL, CONF_USE_JSON, DEFAULT_SCAN_INTERVAL, DOMAIN
 
 
 class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
@@ -91,13 +91,11 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
             data_schema=vol.Schema(
                 {
                     vol.Optional(
-                        CONF_USE_JSON,
-                        description={
-                            "suggested_value": self.config_entry.options.get(
-                                CONF_USE_JSON
-                            )
-                        },
-                    ): bool,
+                        CONF_SCAN_INTERVAL,
+                        default=self.config_entry.options.get(
+                            CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
+                        ),
+                    ): vol.All(vol.Coerce(int), vol.Range(min=1)),
                 }
             ),
         )

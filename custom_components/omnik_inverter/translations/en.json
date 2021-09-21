@@ -9,7 +9,7 @@
                 "data": {
                     "host": "Host",
                     "name": "Name",
-                    "use json": "Use JSON"
+                    "use_json": "JSON supported inverter"
                 },
                 "description": "Set up Omnik Inverter to integrate with Home Assistant."
             }
@@ -19,7 +19,7 @@
         "step": {
             "init": {
                 "data": {
-                    "use json": "Use JSON"
+                    "scan_interval": "Minimum time between entity updates [m]"
                 },
                 "description": "Change the way the integration fetches your Omnik Inverter."
             }
