@@ -1,6 +1,7 @@
 """The Omnik Inverter integration."""
 from __future__ import annotations
 
+from datetime import timedelta
 from typing import TypedDict
 
 from omnikinverter import Device, Inverter, OmnikInverter
@@ -15,10 +16,11 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from omnikinverter.exceptions import OmnikInverterError
 
 from .const import (
+    CONF_SCAN_INTERVAL,
     CONF_USE_JSON,
+    DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     LOGGER,
-    SCAN_INTERVAL,
     SERVICE_DEVICE,
     SERVICE_INVERTER,
 )
@@ -29,7 +31,10 @@ PLATFORMS = (SENSOR_DOMAIN,)
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Omnik Inverter from a config entry."""
 
-    coordinator = OmnikInverterDataUpdateCoordinator(hass)
+    scan_interval = timedelta(
+        minutes=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+    )
+    coordinator = OmnikInverterDataUpdateCoordinator(hass, scan_interval)
     try:
         await coordinator.async_config_entry_first_refresh()
     except ConfigEntryNotReady:
@@ -74,13 +79,14 @@ class OmnikInverterDataUpdateCoordinator(DataUpdateCoordinator[OmnikInverterData
     def __init__(
         self,
         hass: HomeAssistant,
+        scan_interval: timedelta,
     ) -> None:
         """Initialize global Omnik Inverter data updater."""
         super().__init__(
             hass,
             LOGGER,
             name=DOMAIN,
-            update_interval=SCAN_INTERVAL,
+            update_interval=scan_interval,
         )
 
         self.omnikinverter = OmnikInverter(
@@ -96,6 +102,8 @@ class OmnikInverterDataUpdateCoordinator(DataUpdateCoordinator[OmnikInverterData
                 SERVICE_INVERTER: await self.omnikinverter.inverter(),
                 SERVICE_DEVICE: await self.omnikinverter.device(),
             }
+            # LOGGER.error("Omnik Data: %s", self.data)
             return data
         except OmnikInverterError as err:
+            # LOGGER.error("Exception - Omnik Data: %s", self.data)
             raise UpdateFailed(err) from err

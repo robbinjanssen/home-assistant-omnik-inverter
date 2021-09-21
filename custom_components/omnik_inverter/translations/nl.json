@@ -19,7 +19,7 @@
         "step": {
             "init": {
                 "data": {
-                    "use json": "Gebruik JSON"
+                    "scan_interval": "Minimale tijd tussen entiteitsupdates [m]"
                 },
                 "description": "Verander de manier waarop de integratie uw Omnik-omvormer data ophaalt."
             }

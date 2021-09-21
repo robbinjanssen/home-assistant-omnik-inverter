@@ -19,7 +19,7 @@
       "init": {
         "description": "Change the way the integration fetches your Omnik Inverter.",
         "data": {
-          "use json": "Use JSON"
+          "scan_interval": "Minimum time between entity updates [m]"
         }
       }
     }
