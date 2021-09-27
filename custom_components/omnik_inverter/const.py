@@ -8,7 +8,7 @@ DOMAIN: Final = "omnik_inverter"
 LOGGER = logging.getLogger(__package__)
 DEFAULT_SCAN_INTERVAL = 4
 
-CONF_USE_JSON = "use_json"
+CONF_SOURCE_TYPE = "source_type"
 CONF_SCAN_INTERVAL = "scan_interval"
 
 ATTR_ENTRY_TYPE: Final = "entry_type"

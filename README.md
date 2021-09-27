@@ -1,13 +1,22 @@
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
+<!-- PROJECT SHIELDS -->
+[![hacs_badge][hacs-shield]][hacs-url]
+![Project Stage][project-stage-shield]
+
+![Project Maintenance][maintenance-shield]
+[![Maintainability][maintainability-shield]][maintainability-url]
+[![Code Quality][code-quality-shield]][code-quality-url]
 
 # Omnik Inverter Sensor for Home Assistant
+
 The Omnik Inverter Sensor component will scrape data from an Omnik inverter connected to your local network.
 It has been tested and developed on the following inverters:
 
 ## Supported models
+
 - Omnik1000TL
 - Omnik1500TL
 - Omnik2000TL
+- Omnik2500TL (HTML)
 - Omnik2000TL2
 - Omnik4000TL2
 - Ginlong stick (JSON)
@@ -73,6 +82,7 @@ inverter outputs JSON data by navigating to: `http://<your omnik ip address>/sta
 If so, then use the `use_json` config boolean to make the component use the URL above.
 
 ### Thanks
+
 Special thank you to [@klaasnicolaas](https://github.com/klaasnicolaas) for taking this component to the next level 🚀 and [@relout](https://github.com/relout) for testing :-)
 
 ## References
@@ -81,3 +91,13 @@ Special thank you to [@klaasnicolaas](https://github.com/klaasnicolaas) for taki
 - https://github.com/heinoldenhuis/home_assistant_omnik_solar (This uses omnikportal.com to get data for your inverter, check it out!)
 - https://github.com/sincze/Domoticz-Omnik-Local-Web-Plugin
 - https://github.com/klaasnicolaas/python-omnikinverter
+
+[code-quality-shield]: https://img.shields.io/lgtm/grade/python/g/robbinjanssen/home-assistant-omnik-inverter.svg
+[code-quality-url]: https://lgtm.com/projects/g/robbinjanssen/home-assistant-omnik-inverter/context:python
+[maintainability-shield]: https://api.codeclimate.com/v1/badges/08d56a884fe1971d1c12/maintainability
+[maintainability-url]: https://codeclimate.com/github/robbinjanssen/home-assistant-omnik-inverter/maintainability
+[maintenance-shield]: https://img.shields.io/maintenance/yes/2021.svg
+[project-stage-shield]: https://img.shields.io/badge/project%20stage-stable-brightgreen.svg?style=for-the-badge
+
+[hacs-url]: https://github.com/custom-components/hacs
+[hacs-shield]: https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge
