@@ -1,9 +1,10 @@
 <!-- PROJECT SHIELDS -->
-[![hacs_badge][hacs-shield]][hacs]
-
+[![hacs_badge][hacs-shield]][hacs-url]
 ![Project Stage][project-stage-shield]
+
 ![Project Maintenance][maintenance-shield]
-[![Code Quality][code-quality-shield]][code-quality]
+[![Maintainability][maintainability-shield]][maintainability-url]
+[![Code Quality][code-quality-shield]][code-quality-url]
 
 # Omnik Inverter Sensor for Home Assistant
 
@@ -91,10 +92,12 @@ Special thank you to [@klaasnicolaas](https://github.com/klaasnicolaas) for taki
 - https://github.com/sincze/Domoticz-Omnik-Local-Web-Plugin
 - https://github.com/klaasnicolaas/python-omnikinverter
 
-[code-quality-shield]: https://img.shields.io/lgtm/grade/python/g/robbinjanssen/home-assistant-omnik-inverter.svg?style=for-the-badge
-[code-quality]: https://lgtm.com/projects/g/robbinjanssen/home-assistant-omnik-inverter/context:python
-[maintenance-shield]: https://img.shields.io/maintenance/yes/2021.svg?style=for-the-badge
+[code-quality-shield]: https://img.shields.io/lgtm/grade/python/g/robbinjanssen/home-assistant-omnik-inverter.svg
+[code-quality-url]: https://lgtm.com/projects/g/robbinjanssen/home-assistant-omnik-inverter/context:python
+[maintainability-shield]: https://api.codeclimate.com/v1/badges/08d56a884fe1971d1c12/maintainability
+[maintainability-url]: https://codeclimate.com/github/robbinjanssen/home-assistant-omnik-inverter/maintainability
+[maintenance-shield]: https://img.shields.io/maintenance/yes/2021.svg
 [project-stage-shield]: https://img.shields.io/badge/project%20stage-stable-brightgreen.svg?style=for-the-badge
 
-[hacs]: https://github.com/custom-components/hacs
+[hacs-url]: https://github.com/custom-components/hacs
 [hacs-shield]: https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge
