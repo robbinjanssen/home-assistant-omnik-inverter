@@ -1,7 +1,7 @@
 {
   "config": {
     "step": {
-      "setup_normal": {
+      "setup": {
         "title": "Omnik Inverter - JS or JSON",
         "description": "Set up Omnik Inverter to integrate with Home Assistant.",
         "data": {

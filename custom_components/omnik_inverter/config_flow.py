@@ -49,17 +49,17 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
             self.source_type = user_selection.lower()
             if user_selection == "HTML":
                 return await self.async_step_setup_html()
-            return await self.async_step_setup_normal()
+            return await self.async_step_setup()
 
         list_of_types = ["Javascript", "JSON", "HTML"]
 
         schema = vol.Schema({vol.Required(CONF_TYPE): vol.In(list_of_types)})
         return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
 
-    async def async_step_setup_normal(
+    async def async_step_setup(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
-        """Handle setup flow for normal route."""
+        """Handle setup flow for the JS and JSON route."""
         errors = {}
 
         if user_input is not None:
@@ -83,7 +83,7 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
                 )
 
         return self.async_show_form(
-            step_id="setup_normal",
+            step_id="setup",
             data_schema=vol.Schema(
                 {
                     vol.Optional(
