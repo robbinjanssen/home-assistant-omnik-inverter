@@ -87,6 +87,9 @@ If this doesn't work for your, try if the HTML data source works for you.
 
 If none of the methods work, please open an issue and we might be able to make it work for your inverter :-)
 
+## Contributing
+Please see [CONTRIBUTING](.github/CONTRIBUTING.md) and [CODE_OF_CONDUCT](.github/CODE_OF_CONDUCT.md) for details.
+
 ### Thanks
 
 Special thank you to [@klaasnicolaas](https://github.com/klaasnicolaas) for taking this component to the next level 🚀 and [@relout](https://github.com/relout) for testing :-)
