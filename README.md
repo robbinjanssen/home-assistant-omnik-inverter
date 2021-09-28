@@ -52,6 +52,7 @@ custom_components
 ```
 
 ## Configuration
+
 To configure the component, add it using [Home Assistant integrations](https://my.home-assistant.io/redirect/integrations/). This will provide you with a configuration screen where you can first select the data source. Again, most inverters use JS. Some use JSON and in some rare cases HTML is used.
 
 After selecting the data source, enter a name and IP address and you're good to go!
@@ -88,6 +89,7 @@ If this doesn't work for your, try if the HTML data source works for you.
 If none of the methods work, please open an issue and we might be able to make it work for your inverter :-)
 
 ## Contributing
+
 Please see [CONTRIBUTING](.github/CONTRIBUTING.md) and [CODE_OF_CONDUCT](.github/CODE_OF_CONDUCT.md) for details.
 
 ### Thanks
