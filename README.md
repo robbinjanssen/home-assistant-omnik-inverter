@@ -53,7 +53,9 @@ custom_components
 
 ## Configuration
 
-To configure the component, add it using [Home Assistant integrations](https://my.home-assistant.io/redirect/integrations/). This will provide you with a configuration screen where you can first select the data source. Again, most inverters use JS. Some use JSON and in some rare cases HTML is used.
+[![ha_badge][ha-add-shield]][ha-add-url]
+
+To configure the component, add it using [Home Assistant integrations][ha-add-url]. This will provide you with a configuration screen where you can first select the data source. Again, most inverters use JS. Some use JSON and in some rare cases HTML is used.
 
 After selecting the data source, enter a name and IP address and you're good to go!
 
@@ -112,3 +114,6 @@ Special thank you to [@klaasnicolaas](https://github.com/klaasnicolaas) for taki
 
 [hacs-url]: https://github.com/custom-components/hacs
 [hacs-shield]: https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge
+
+[ha-add-url]: https://my.home-assistant.io/redirect/config_flow_start/?domain=omnik_inverter
+[ha-add-shield]: https://my.home-assistant.io/badges/config_flow_start.svg
