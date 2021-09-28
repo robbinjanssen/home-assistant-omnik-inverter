@@ -17,7 +17,7 @@ It has been tested and developed on the following inverters:
 - Omnik1500TL
 - Omnik2000TL
 - Omnik2500TL (HTML)
-- Omnik2000TL2
+- Omnik2000TL2 (JSON)
 - Omnik4000TL2
 - Ginlong stick (JSON)
 
@@ -51,11 +51,18 @@ custom_components
 │   └── strings.json
 ```
 
+## Configuration
+
+[![ha_badge][ha-add-shield]][ha-add-url]
+
+To configure the component, add it using [Home Assistant integrations][ha-add-url]. This will provide you with a configuration screen where you can first select the data source. Again, most inverters use JS. Some use JSON and in some rare cases HTML is used.
+
+After selecting the data source, enter a name and IP address and you're good to go!
 
 ## How does it work?
 
-The web interface has a javascript file that contains the actual values. This is updated every 
-5 minutes. Check it out in your browser at `http://<your omnik ip address>/js/status.js`
+The web interface has a javascript, JSON or HTML file that contains the actual values. This is updated every 
+5 minutes. Most inverters have a JS file, try accessing `http://<your omnik ip address>/js/status.js` in your browser.
 
 The result contains a lot of information, but there is one part we're interested in:
 ```js
@@ -69,17 +76,23 @@ var myDeviceArray=new Array(); myDeviceArray[0]="AANN3020,V5.04Build230,V4.13Bui
 This output contains your serial number, firmware versions, hardware information, the 
 current power output: 1920, the energy (kWh) generated today: 429 and the total energy (kWh) generated: 87419.
 
-The component basically requests the URL, looks for the _webData_ part and extracts the 
+The component basically requests the URL, looks for the relevant data and extracts the 
 values as sensors.
 
-### My inverter doesn't show any output when I go to the URL.
+### My inverter doesn't show any output when I go to the JS URL.
 
-> Use this if you have an Omnik Inverter 2k TL2.
+> Use this if you have an Omnik Inverter 2000TL2 or a Ginlong stick.
 
 Some inverters use a JSON status file to output the values. Check if your 
 inverter outputs JSON data by navigating to: `http://<your omnik ip address>/status.json?CMD=inv_query&rand=0.1234567`.
 
-If so, then use the `use_json` config boolean to make the component use the URL above.
+If this doesn't work for your, try if the HTML data source works for you.
+
+If none of the methods work, please open an issue and we might be able to make it work for your inverter :-)
+
+## Contributing
+
+Please see [CONTRIBUTING](.github/CONTRIBUTING.md) and [CODE_OF_CONDUCT](.github/CODE_OF_CONDUCT.md) for details.
 
 ### Thanks
 
@@ -88,7 +101,7 @@ Special thank you to [@klaasnicolaas](https://github.com/klaasnicolaas) for taki
 ## References
 
 - https://community.home-assistant.io/t/omink-inverter-in-home-assistant/102455/36
-- https://github.com/heinoldenhuis/home_assistant_omnik_solar (This uses omnikportal.com to get data for your inverter, check it out!)
+- https://github.com/heinoldenhuis/home_assistant_omnik_solar
 - https://github.com/sincze/Domoticz-Omnik-Local-Web-Plugin
 - https://github.com/klaasnicolaas/python-omnikinverter
 
@@ -101,3 +114,6 @@ Special thank you to [@klaasnicolaas](https://github.com/klaasnicolaas) for taki
 
 [hacs-url]: https://github.com/custom-components/hacs
 [hacs-shield]: https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge
+
+[ha-add-url]: https://my.home-assistant.io/redirect/config_flow_start/?domain=omnik_inverter
+[ha-add-shield]: https://my.home-assistant.io/badges/config_flow_start.svg
