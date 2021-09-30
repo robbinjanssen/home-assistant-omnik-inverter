@@ -18,13 +18,19 @@ from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from .const import CONF_SCAN_INTERVAL, CONF_SOURCE_TYPE, DEFAULT_SCAN_INTERVAL, DOMAIN
+from .const import (
+    DOMAIN,
+    CONFIGFLOW_VERSION,
+    CONF_SCAN_INTERVAL,
+    CONF_SOURCE_TYPE,
+    DEFAULT_SCAN_INTERVAL,
+)
 
 
 class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
     """Config flow for Omnik Inverter."""
 
-    VERSION = 1
+    VERSION = CONFIGFLOW_VERSION
 
     def __init__(self):
         """Initialize with empty source type."""
