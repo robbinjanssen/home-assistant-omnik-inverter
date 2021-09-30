@@ -76,10 +76,10 @@ _Optionally you can update the scan interval in the integration settings._
 The web interface has a javascript, JSON or HTML file that contains the actual values. These values are updated every few minutes. 
 
 - Most inverters have a JS file, try accessing `http://<your omnik ip address>/js/status.js` in your browser.
-- Some inverters use a JSON status file to output the values. Check if your inverter outputs JSON data by navigating to: `http://<your omnik ip address>/status.json?CMD=inv_query&rand=0.1234567`.
+- Some inverters use a JSON status file to output the values. Check if your inverter outputs JSON data by navigating to: `http://<your omnik ip address>/status.json?CMD=inv_query`.
 - A few inverters dont have JS or JSON but output the values directly in a HTML files. Check if your inverter supports the following URL: `http://<your omnik ip address>/status.html`. _Note that this will work for almost all inverters, but you need to check the HTML source for a `<script>` tag that contains the relevant `webData`. _
 
-If none of the methods work, please open a [new issue](../../issues/new) and we might be able to make it work for your inverter :-) Make sure you let us know what inverter you use.
+If none of the methods work, please open a [new issue](https://github.com/robbinjanssen/home-assistant-omnik-inverter/issues/new) and we might be able to make it work for your inverter :-) Make sure you let us know what inverter you use.
 
 ## Contributing
 
