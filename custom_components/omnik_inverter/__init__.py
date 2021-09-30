@@ -23,6 +23,7 @@ from .const import (
     LOGGER,
     SERVICE_DEVICE,
     SERVICE_INVERTER,
+    CONFIGFLOW_VERSION,
 )
 
 PLATFORMS = (SENSOR_DOMAIN,)
@@ -57,6 +58,12 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         await coordinator.omnikinverter.close()
 
     return unload_ok
+
+async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
+    """Migrate old entry."""
+    if config_entry.version <= 2:
+        LOGGER.warning("Impossible to migrate config version from version %s to version %s.\r\nPlease consider to delete and re-add the integration.", config_entry.version, CONFIGFLOW_VERSION)
+        return False
 
 
 async def async_update_options(hass: HomeAssistant, entry: ConfigEntry) -> None:
