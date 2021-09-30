@@ -14,7 +14,7 @@ _Optionally you can update the scan interval in the integration settings._
 
 ### Config flow
 
-<img src="https://github.com/robbinjanssen/home-assistant-omnik-inverter/blob/master/images/config-flow.gif" width="500" />
+<img src="https://github.com/robbinjanssen/home-assistant-omnik-inverter/blob/master/images/config_flow.gif" width="500" />
 
 ### Entities
 

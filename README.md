@@ -65,7 +65,7 @@ _Optionally you can update the scan interval in the integration settings._
 
 ### Config flow
 
-<img src="/images/config-flow.gif" width="500" />
+<img src="/images/config_flow.gif" width="500" />
 
 ### Entities
 
