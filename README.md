@@ -21,7 +21,7 @@ It has been tested and developed on the following inverters:
 - Omnik4000TL2
 - Ginlong stick (JSON)
 
-After installation you can add the sensors through the integration page. The values will be presented as sensors in [Home Assistant](https://home-assistant.io/).
+After installation you can add the inverter through the integration page. The values will be presented by two devices in Home Assistant. One is the inverter containing the actual solar power, and one is the device containing information about the wifi signal.
 
 ## Requirements
 
@@ -59,36 +59,27 @@ To configure the component, add it using [Home Assistant integrations][ha-add-ur
 
 After selecting the data source, enter a name and IP address and you're good to go!
 
-## How does it work?
+_Optionally you can update the scan interval in the integration settings._
 
-The web interface has a javascript, JSON or HTML file that contains the actual values. This is updated every 
-5 minutes. Most inverters have a JS file, try accessing `http://<your omnik ip address>/js/status.js` in your browser.
+## Examples
 
-The result contains a lot of information, but there is one part we're interested in:
-```js
-// ... Bunch of data
-var webData="NLBN1234567A1234,iv4-V6.5-140-4,V5.2-42819,omnik4000tl2,4000,1920,429,87419,,3,";
-// Or for some inverters:
-var myDeviceArray=new Array(); myDeviceArray[0]="AANN3020,V5.04Build230,V4.13Build253,Omnik3000tl,3000,1313,685,9429,,1,";
-// ... Even more data
-```
+### Config flow
 
-This output contains your serial number, firmware versions, hardware information, the 
-current power output: 1920, the energy (kWh) generated today: 429 and the total energy (kWh) generated: 87419.
+<img src="/images/config-flow.gif" width="500" />
 
-The component basically requests the URL, looks for the relevant data and extracts the 
-values as sensors.
+### Entities
 
-### My inverter doesn't show any output when I go to the JS URL.
+<img src="/images/all_entities.png" width="500" />
 
-> Use this if you have an Omnik Inverter 2000TL2 or a Ginlong stick.
+## What data source do I use?
 
-Some inverters use a JSON status file to output the values. Check if your 
-inverter outputs JSON data by navigating to: `http://<your omnik ip address>/status.json?CMD=inv_query&rand=0.1234567`.
+The web interface has a javascript, JSON or HTML file that contains the actual values. These values are updated every few minutes. 
 
-If this doesn't work for your, try if the HTML data source works for you.
+- Most inverters have a JS file, try accessing `http://<your omnik ip address>/js/status.js` in your browser.
+- Some inverters use a JSON status file to output the values. Check if your inverter outputs JSON data by navigating to: `http://<your omnik ip address>/status.json?CMD=inv_query&rand=0.1234567`.
+- A few inverters dont have JS or JSON but output the values directly in a HTML files. Check if your inverter supports the following URL: `http://<your omnik ip address>/status.html`. _Note that this will work for almost all inverters, but you need to check the HTML source for a `<script>` tag that contains the relevant `webData`. _
 
-If none of the methods work, please open an issue and we might be able to make it work for your inverter :-)
+If none of the methods work, please open a [new issue](../../issues/new) and we might be able to make it work for your inverter :-) Make sure you let us know what inverter you use.
 
 ## Contributing
 
