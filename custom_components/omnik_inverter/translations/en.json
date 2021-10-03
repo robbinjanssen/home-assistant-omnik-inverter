@@ -1,0 +1,44 @@
+{
+    "config": {
+        "step": {
+            "setup": {
+                "title": "Omnik Inverter - JS or JSON",
+                "description": "Set up Omnik Inverter to integrate with Home Assistant.",
+                "data": {
+                    "name": "Name",
+                    "host": "Host"
+                }
+            },
+            "setup_html": {
+                "title": "Omnik Inverter - HTML",
+                "description": "Set up Omnik Inverter to integrate with Home Assistant.",
+                "data": {
+                    "name": "Name",
+                    "host": "Host",
+                    "username": "Username",
+                    "Password": "Password"
+                }
+            },
+            "user": {
+                "description": "Choose which data source applies to your Omnik Inverter.",
+                "data": {
+                    "type": "Data source type"
+                }
+            }
+        },
+        "error": {
+            "cannot_connect": "Failed to connect",
+            "unknown": "Unexpected error"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "scan_interval": "Minimum time between entity updates [m]"
+                },
+                "description": "Change the way the integration fetches your Omnik Inverter."
+            }
+        }
+    }
+}
