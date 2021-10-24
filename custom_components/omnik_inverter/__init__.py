@@ -104,11 +104,12 @@ class OmnikInverterDataUpdateCoordinator(DataUpdateCoordinator[OmnikInverterData
                 password=self.config_entry.data[CONF_PASSWORD],
                 session=async_get_clientsession(hass),
             )
-        self.omnikinverter = OmnikInverter(
-            host=self.config_entry.data[CONF_HOST],
-            source_type=self.config_entry.data[CONF_SOURCE_TYPE],
-            session=async_get_clientsession(hass),
-        )
+        else:
+          self.omnikinverter = OmnikInverter(
+              host=self.config_entry.data[CONF_HOST],
+              source_type=self.config_entry.data[CONF_SOURCE_TYPE],
+              session=async_get_clientsession(hass),
+          )
 
     async def _async_update_data(self) -> OmnikInverterData:
         """Fetch data from Omnik Inverter."""
