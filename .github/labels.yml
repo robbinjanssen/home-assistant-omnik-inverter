@@ -38,7 +38,7 @@
   description: "There has not been activity on this issue or PR for quite some time."
 - name: "no-stale"
   color: fef2c0
-  description: "This issue or PR is exempted from the stable bot."
+  description: "This issue or PR is exempted from the stale bot."
 
 - name: "security"
   color: ee0701
