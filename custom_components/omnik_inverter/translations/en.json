@@ -16,7 +16,7 @@
                     "name": "Name",
                     "host": "Host",
                     "username": "Username",
-                    "Password": "Password"
+                    "password": "Password"
                 }
             },
             "user": {
