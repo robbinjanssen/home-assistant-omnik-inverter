@@ -74,7 +74,6 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
                 async with OmnikInverter(
                     host=user_input[CONF_HOST],
                     source_type=self.source_type,
-                    session=session,
                 ) as client:
                     await client.inverter()
             except OmnikInverterError:
@@ -115,7 +114,6 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
                     source_type=self.source_type,
                     username=user_input[CONF_USERNAME],
                     password=user_input[CONF_PASSWORD],
-                    session=session,
                 ) as client:
                     await client.inverter()
             except OmnikInverterError:
