@@ -9,6 +9,6 @@
     "@robbinjanssen",
     "@klaasnicolaas"
   ],
-  "requirements": ["omnikinverter==0.6.1"],
+  "requirements": ["git+https://github.com/mvdwetering/python-omnikinverter.git@solis_wifistick#omnikinverter==0.0.0"],
   "iot_class": "local_polling"
 }
