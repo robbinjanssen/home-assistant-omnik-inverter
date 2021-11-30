@@ -12,7 +12,6 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
@@ -107,10 +106,10 @@ class OmnikInverterDataUpdateCoordinator(DataUpdateCoordinator[OmnikInverterData
                 password=self.config_entry.data[CONF_PASSWORD],
             )
         else:
-          self.omnikinverter = OmnikInverter(
-              host=self.config_entry.data[CONF_HOST],
-              source_type=self.config_entry.data[CONF_SOURCE_TYPE],
-          )
+            self.omnikinverter = OmnikInverter(
+                host=self.config_entry.data[CONF_HOST],
+                source_type=self.config_entry.data[CONF_SOURCE_TYPE],
+            )
 
     async def _async_update_data(self) -> OmnikInverterData:
         """Fetch data from Omnik Inverter."""
