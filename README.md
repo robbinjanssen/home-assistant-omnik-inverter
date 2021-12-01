@@ -19,7 +19,7 @@ It has been tested and developed on the following inverters:
 - Omnik2500TL (HTML)
 - Omnik2000TL2 (JSON)
 - Omnik4000TL2
-- Ginlong stick (JSON)
+- Ginlong stick (JSON and HTML)
 - Ginlong stick (HTML)
 - Hosola 1500TL
 
