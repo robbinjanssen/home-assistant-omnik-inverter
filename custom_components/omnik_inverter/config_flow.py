@@ -16,7 +16,6 @@ from homeassistant.const import (
 )
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     CONF_SCAN_INTERVAL,
@@ -69,7 +68,6 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
         errors = {}
 
         if user_input is not None:
-            session = async_get_clientsession(self.hass)
             try:
                 async with OmnikInverter(
                     host=user_input[CONF_HOST],
@@ -107,7 +105,6 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
         errors = {}
 
         if user_input is not None:
-            session = async_get_clientsession(self.hass)
             try:
                 async with OmnikInverter(
                     host=user_input[CONF_HOST],
