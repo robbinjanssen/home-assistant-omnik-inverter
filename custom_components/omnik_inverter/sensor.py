@@ -15,6 +15,7 @@ from homeassistant.const import (
     DEVICE_CLASS_ENERGY,
     DEVICE_CLASS_POWER,
     ENERGY_KILO_WATT_HOUR,
+    ENTITY_CATEGORY_DIAGNOSTIC,
     PERCENTAGE,
     POWER_WATT,
 )
@@ -60,11 +61,13 @@ SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]
             name="Signal Quality",
             icon="mdi:wifi",
             native_unit_of_measurement=PERCENTAGE,
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
         ),
         SensorEntityDescription(
             key="ip_address",
             name="IP Address",
             icon="mdi:network",
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
         ),
     ),
 }
