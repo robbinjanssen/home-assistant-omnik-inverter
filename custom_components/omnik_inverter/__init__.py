@@ -18,12 +18,12 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from .const import (
     CONF_SCAN_INTERVAL,
     CONF_SOURCE_TYPE,
+    CONFIGFLOW_VERSION,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     LOGGER,
     SERVICE_DEVICE,
     SERVICE_INVERTER,
-    CONFIGFLOW_VERSION,
 )
 
 PLATFORMS = (SENSOR_DOMAIN,)
@@ -59,10 +59,15 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     return unload_ok
 
+
 async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     """Migrate old entry."""
     if config_entry.version <= 2:
-        LOGGER.warning("Impossible to migrate config version from version %s to version %s.\r\nPlease consider to delete and re-add the integration.", config_entry.version, CONFIGFLOW_VERSION)
+        LOGGER.warning(
+            "Impossible to migrate config version from version %s to version %s.\r\nPlease consider to delete and re-add the integration.",
+            config_entry.version,
+            CONFIGFLOW_VERSION,
+        )
         return False
 
 
@@ -105,11 +110,11 @@ class OmnikInverterDataUpdateCoordinator(DataUpdateCoordinator[OmnikInverterData
                 session=async_get_clientsession(hass),
             )
         else:
-          self.omnikinverter = OmnikInverter(
-              host=self.config_entry.data[CONF_HOST],
-              source_type=self.config_entry.data[CONF_SOURCE_TYPE],
-              session=async_get_clientsession(hass),
-          )
+            self.omnikinverter = OmnikInverter(
+                host=self.config_entry.data[CONF_HOST],
+                source_type=self.config_entry.data[CONF_SOURCE_TYPE],
+                session=async_get_clientsession(hass),
+            )
 
     async def _async_update_data(self) -> OmnikInverterData:
         """Fetch data from Omnik Inverter."""

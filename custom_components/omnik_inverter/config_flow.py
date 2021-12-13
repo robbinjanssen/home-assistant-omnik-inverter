@@ -19,11 +19,11 @@ from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
-    DOMAIN,
-    CONFIGFLOW_VERSION,
     CONF_SCAN_INTERVAL,
     CONF_SOURCE_TYPE,
+    CONFIGFLOW_VERSION,
     DEFAULT_SCAN_INTERVAL,
+    DOMAIN,
 )
 
 

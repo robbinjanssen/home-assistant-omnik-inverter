@@ -5,38 +5,22 @@ from typing import Literal
 
 from homeassistant.components.sensor import (
     DOMAIN as SENSOR_DOMAIN,
-    STATE_CLASS_MEASUREMENT,
-    STATE_CLASS_TOTAL_INCREASING,
+    SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
+    SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import (
-    ATTR_IDENTIFIERS,
-    ATTR_MANUFACTURER,
-    ATTR_MODEL,
-    ATTR_NAME,
-    ATTR_SW_VERSION,
-    DEVICE_CLASS_ENERGY,
-    DEVICE_CLASS_POWER,
-    ENERGY_KILO_WATT_HOUR,
-    PERCENTAGE,
-    POWER_WATT,
-)
+from homeassistant.const import ENERGY_KILO_WATT_HOUR, PERCENTAGE, POWER_WATT
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.device_registry import DeviceEntryType
+from homeassistant.helpers.entity import DeviceInfo, EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import OmnikInverterDataUpdateCoordinator
-from .const import (
-    ATTR_ENTRY_TYPE,
-    DOMAIN,
-    ENTRY_TYPE_SERVICE,
-    SERVICE_DEVICE,
-    SERVICE_INVERTER,
-    SERVICES,
-)
+from .const import DOMAIN, MANUFACTURER, SERVICE_DEVICE, SERVICE_INVERTER, SERVICES
 
 SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]] = {
     SERVICE_INVERTER: (
@@ -45,23 +29,23 @@ SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]
             name="Current Power Production",
             icon="mdi:weather-sunny",
             native_unit_of_measurement=POWER_WATT,
-            device_class=DEVICE_CLASS_POWER,
-            state_class=STATE_CLASS_MEASUREMENT,
+            device_class=SensorDeviceClass.POWER,
+            state_class=SensorStateClass.MEASUREMENT,
         ),
         SensorEntityDescription(
             key="solar_energy_today",
             name="Solar Production - Today",
             native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
-            device_class=DEVICE_CLASS_ENERGY,
-            state_class=STATE_CLASS_TOTAL_INCREASING,
+            device_class=SensorDeviceClass.ENERGY,
+            state_class=SensorStateClass.TOTAL_INCREASING,
         ),
         SensorEntityDescription(
             key="solar_energy_total",
             name="Solar Production - Total",
             icon="mdi:chart-line",
             native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
-            device_class=DEVICE_CLASS_ENERGY,
-            state_class=STATE_CLASS_TOTAL_INCREASING,
+            device_class=SensorDeviceClass.ENERGY,
+            state_class=SensorStateClass.TOTAL_INCREASING,
         ),
     ),
     SERVICE_DEVICE: (
@@ -70,11 +54,13 @@ SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]
             name="Signal Quality",
             icon="mdi:wifi",
             native_unit_of_measurement=PERCENTAGE,
+            entity_category=EntityCategory.DIAGNOSTIC,
         ),
         SensorEntityDescription(
             key="ip_address",
             name="IP Address",
             icon="mdi:network",
+            entity_category=EntityCategory.DIAGNOSTIC,
         ),
     ),
 }
@@ -121,16 +107,17 @@ class OmnikInverterSensorEntity(CoordinatorEntity, SensorEntity):
             f"{coordinator.config_entry.entry_id}_{service_key}_{description.key}"
         )
 
-        self._attr_device_info = {
-            ATTR_IDENTIFIERS: {
+        self._attr_device_info = DeviceInfo(
+            identifiers={
                 (DOMAIN, f"{coordinator.config_entry.entry_id}_{service_key}")
             },
-            ATTR_NAME: service,
-            ATTR_MANUFACTURER: "Omnik",
-            ATTR_MODEL: coordinator.data["inverter"].model,
-            ATTR_SW_VERSION: coordinator.data[service_key].firmware,
-            ATTR_ENTRY_TYPE: ENTRY_TYPE_SERVICE,
-        }
+            name=service,
+            manufacturer=MANUFACTURER,
+            entry_type=DeviceEntryType.SERVICE,
+            sw_version=coordinator.data[service_key].firmware,
+            model=coordinator.data["inverter"].model,
+            configuration_url=f'http://{coordinator.data["device"].ip_address}',
+        )
 
     @property
     def native_value(self) -> StateType:
