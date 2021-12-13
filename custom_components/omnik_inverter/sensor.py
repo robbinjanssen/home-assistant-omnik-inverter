@@ -12,11 +12,6 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
-    ATTR_IDENTIFIERS,
-    ATTR_MANUFACTURER,
-    ATTR_MODEL,
-    ATTR_NAME,
-    ATTR_SW_VERSION,
     DEVICE_CLASS_ENERGY,
     DEVICE_CLASS_POWER,
     ENERGY_KILO_WATT_HOUR,
@@ -24,19 +19,14 @@ from homeassistant.const import (
     POWER_WATT,
 )
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.device_registry import DeviceEntryType
+from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import OmnikInverterDataUpdateCoordinator
-from .const import (
-    ATTR_ENTRY_TYPE,
-    DOMAIN,
-    ENTRY_TYPE_SERVICE,
-    SERVICE_DEVICE,
-    SERVICE_INVERTER,
-    SERVICES,
-)
+from .const import DOMAIN, MANUFACTURER, SERVICE_DEVICE, SERVICE_INVERTER, SERVICES
 
 SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]] = {
     SERVICE_INVERTER: (
@@ -121,16 +111,17 @@ class OmnikInverterSensorEntity(CoordinatorEntity, SensorEntity):
             f"{coordinator.config_entry.entry_id}_{service_key}_{description.key}"
         )
 
-        self._attr_device_info = {
-            ATTR_IDENTIFIERS: {
+        self._attr_device_info = DeviceInfo(
+            identifiers={
                 (DOMAIN, f"{coordinator.config_entry.entry_id}_{service_key}")
             },
-            ATTR_NAME: service,
-            ATTR_MANUFACTURER: "Omnik",
-            ATTR_MODEL: coordinator.data["inverter"].model,
-            ATTR_SW_VERSION: coordinator.data[service_key].firmware,
-            ATTR_ENTRY_TYPE: ENTRY_TYPE_SERVICE,
-        }
+            name=service,
+            manufacturer=MANUFACTURER,
+            entry_type=DeviceEntryType.SERVICE,
+            sw_version=coordinator.data[service_key].firmware,
+            model=coordinator.data["inverter"].model,
+            configuration_url=f'http://{coordinator.data["device"].ip_address}',
+        )
 
     @property
     def native_value(self) -> StateType:

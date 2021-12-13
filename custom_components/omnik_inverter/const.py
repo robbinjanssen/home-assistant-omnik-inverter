@@ -5,7 +5,8 @@ import logging
 from typing import Final
 
 DOMAIN: Final = "omnik_inverter"
-CONFIGFLOW_VERSION = 2;
+MANUFACTURER: Final = "Omnik"
+CONFIGFLOW_VERSION = 2
 LOGGER = logging.getLogger(__package__)
 DEFAULT_SCAN_INTERVAL = 4
 
