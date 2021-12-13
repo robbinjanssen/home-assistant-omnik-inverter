@@ -5,23 +5,16 @@ from typing import Literal
 
 from homeassistant.components.sensor import (
     DOMAIN as SENSOR_DOMAIN,
-    STATE_CLASS_MEASUREMENT,
-    STATE_CLASS_TOTAL_INCREASING,
+    SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
+    SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import (
-    DEVICE_CLASS_ENERGY,
-    DEVICE_CLASS_POWER,
-    ENERGY_KILO_WATT_HOUR,
-    ENTITY_CATEGORY_DIAGNOSTIC,
-    PERCENTAGE,
-    POWER_WATT,
-)
+from homeassistant.const import ENERGY_KILO_WATT_HOUR, PERCENTAGE, POWER_WATT
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceEntryType
-from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.entity import DeviceInfo, EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -36,23 +29,23 @@ SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]
             name="Current Power Production",
             icon="mdi:weather-sunny",
             native_unit_of_measurement=POWER_WATT,
-            device_class=DEVICE_CLASS_POWER,
-            state_class=STATE_CLASS_MEASUREMENT,
+            device_class=SensorDeviceClass.POWER,
+            state_class=SensorStateClass.MEASUREMENT,
         ),
         SensorEntityDescription(
             key="solar_energy_today",
             name="Solar Production - Today",
             native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
-            device_class=DEVICE_CLASS_ENERGY,
-            state_class=STATE_CLASS_TOTAL_INCREASING,
+            device_class=SensorDeviceClass.ENERGY,
+            state_class=SensorStateClass.TOTAL_INCREASING,
         ),
         SensorEntityDescription(
             key="solar_energy_total",
             name="Solar Production - Total",
             icon="mdi:chart-line",
             native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
-            device_class=DEVICE_CLASS_ENERGY,
-            state_class=STATE_CLASS_TOTAL_INCREASING,
+            device_class=SensorDeviceClass.ENERGY,
+            state_class=SensorStateClass.TOTAL_INCREASING,
         ),
     ),
     SERVICE_DEVICE: (
@@ -61,13 +54,13 @@ SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]
             name="Signal Quality",
             icon="mdi:wifi",
             native_unit_of_measurement=PERCENTAGE,
-            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+            entity_category=EntityCategory.DIAGNOSTIC,
         ),
         SensorEntityDescription(
             key="ip_address",
             name="IP Address",
             icon="mdi:network",
-            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+            entity_category=EntityCategory.DIAGNOSTIC,
         ),
     ),
 }
