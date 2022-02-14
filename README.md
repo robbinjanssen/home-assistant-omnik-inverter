@@ -20,6 +20,7 @@ It has been tested and developed on the following inverters:
 - Omnik2000TL2 (JSON)
 - Omnik4000TL2
 - Ginlong stick (JSON)
+- Hosola 1500TL
 
 After installation you can add the inverter through the integration page. The values will be presented by two devices in Home Assistant. One is the inverter containing the actual solar power, and one is the device containing information about the wifi signal.
 
