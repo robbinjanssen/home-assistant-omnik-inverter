@@ -2,7 +2,7 @@
   "domain": "omnik_inverter",
   "name": "Omnik Inverter",
   "config_flow": true,
-  "version": "2.2.1",
+  "version": "2.3.0",
   "documentation": "https://github.com/robbinjanssen/home-assistant-omnik-inverter",
   "issue_tracker": "https://github.com/robbinjanssen/home-assistant-omnik-inverter/issues",
   "codeowners": [
