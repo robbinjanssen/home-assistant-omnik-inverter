@@ -16,11 +16,13 @@ It has been tested and developed on the following inverters:
 - Omnik1000TL
 - Omnik1500TL
 - Omnik2000TL
-- Omnik2500TL (HTML)
 - Omnik2000TL2 (JSON)
+- Omnik2500TL (HTML)
+- Omnik3000TL
 - Omnik4000TL2
 - Ginlong stick (JSON and HTML)
 - Hosola 1500TL
+- Bosswerk MI600 (HTML)
 
 After installation you can add the inverter through the integration page. The values will be presented by two devices in Home Assistant. One is the inverter containing the actual solar power, and one is the device containing information about the wifi signal.
 
