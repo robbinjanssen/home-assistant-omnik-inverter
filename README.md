@@ -25,6 +25,7 @@ It has been tested and developed on the following inverters:
 | Ginlong  | Solis-DLS-WiFi   | JSON/HTML  |
 | Hosola   | 1500TL           | JS         |
 | Bosswerk | BW-MI600         | HTML       |
+| Sofar    | 3600TLM          | HTML       |
 
 After installation you can add the inverter through the integration page. The values will be presented by two devices in Home Assistant. One is the inverter containing the actual solar power, and one is the device containing information about the wifi signal.
 
@@ -62,7 +63,7 @@ custom_components
 
 To configure the component, add it using [Home Assistant integrations][ha-add-url]. This will provide you with a configuration screen where you can first select the data source. Again, most inverters use JS. Some use JSON and in some rare cases HTML is used.
 
-After selecting the data source, enter a name and IP address and you're good to go!
+After selecting the data source, enter a name and IP address as host and you're good to go!
 
 _Optionally you can update the scan interval in the integration settings._
 
