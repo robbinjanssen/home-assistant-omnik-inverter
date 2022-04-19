@@ -26,6 +26,7 @@ It has been tested and developed on the following inverters:
 | Hosola   | 1500TL           | JS         |
 | Bosswerk | BW-MI600         | HTML       |
 | Sofar    | 3600TLM          | HTML       |
+| Huayu    | HY-600-Pro       | HTML       |
 
 After installation you can add the inverter through the integration page. The values will be presented by two devices in Home Assistant. One is the inverter containing the actual solar power, and one is the device containing information about the wifi signal.
 
