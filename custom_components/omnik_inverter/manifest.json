@@ -9,6 +9,6 @@
     "@robbinjanssen",
     "@klaasnicolaas"
   ],
-  "requirements": ["omnikinverter==0.7.0"],
+  "requirements": ["git+https://github.com/MarijnS95/python-omnikinverter@tcp#omnikinverter==0.8.0"],
   "iot_class": "local_polling"
 }
