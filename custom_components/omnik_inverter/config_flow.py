@@ -147,7 +147,7 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
     async def async_step_setup_tcp(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
-        """Handle setup flow for tcp route."""
+        """Handle setup flow for TCP route."""
         errors = {}
 
         if user_input is not None:
