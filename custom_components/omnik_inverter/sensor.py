@@ -3,7 +3,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 import dataclasses
 
-import logging
 from typing import Literal
 
 from homeassistant.components.sensor import (
@@ -33,9 +32,6 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import OmnikInverterDataUpdateCoordinator
 from .const import DOMAIN, MANUFACTURER, SERVICE_DEVICE, SERVICE_INVERTER, SERVICES
-
-
-_LOGGER = logging.getLogger(__name__)
 
 
 @dataclass
@@ -75,7 +71,6 @@ SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]
             name="Solar Production - Uptime",
             icon="mdi:clock",
             native_unit_of_measurement=TIME_HOURS,
-            device_class=None,
             state_class=SensorStateClass.TOTAL_INCREASING,
         ),
         SensorEntityDescription(
@@ -286,4 +281,5 @@ class OmnikInverterArraySensorEntity(OmnikInverterSensorEntity):
     def native_value(self) -> StateType:
         """Return the state of the sensor."""
         value = getattr(self.coordinator.data[self._service_key], self.data_key)
-        return value[self.index]
+        if value is not None:
+            return value[self.index]
