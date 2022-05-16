@@ -39,8 +39,6 @@ class ArraySensorEntityDescription(SensorEntityDescription):
     range: range | None = None
     data_key: str | None = None
 
-
-entity_registry_enabled_default = (False,)
 SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]] = {
     SERVICE_INVERTER: (
         SensorEntityDescription(
