@@ -20,7 +20,7 @@ It has been tested and developed on the following inverters:
 | Omnik    | Omniksol 2000TL  | JS         |
 | Omnik    | Omniksol 2000TL2 | JSON       |
 | Omnik    | Omniksol 2500TL  | HTML       |
-| Omnik    | Omniksol 3000TL  | JS         |
+| Omnik    | Omniksol 3000TL  | JS/TCP     |
 | Omnik    | Omniksol 4000TL2 | JS         |
 | Ginlong  | Solis-DLS-WiFi   | JSON/HTML  |
 | Hosola   | 1500TL           | JS         |
@@ -62,7 +62,7 @@ custom_components
 
 [![ha_badge][ha-add-shield]][ha-add-url]
 
-To configure the component, add it using [Home Assistant integrations][ha-add-url]. This will provide you with a configuration screen where you can first select the data source. Again, most inverters use JS. Some use JSON and in some rare cases HTML is used.
+To configure the component, add it using [Home Assistant integrations][ha-add-url]. This will provide you with a configuration screen where you can first select the data source. Again, most inverters use JS. Some use JSON and in some rare cases HTML is used. The TCP backend contains additional electrical statistics but lacks information about the WiFi module.
 
 After selecting the data source, enter a name and IP address as host and you're good to go!
 
@@ -84,7 +84,7 @@ The web interface has a javascript, JSON or HTML file that contains the actual v
 
 - Most inverters have a JS file, try accessing `http://<your omnik ip address>/js/status.js` in your browser.
 - Some inverters use a JSON status file to output the values. Check if your inverter outputs JSON data by navigating to: `http://<your omnik ip address>/status.json?CMD=inv_query`.
-- A few inverters dont have JS or JSON but output the values directly in a HTML files. Check if your inverter supports the following URL: `http://<your omnik ip address>/status.html`. _Note that this will work for almost all inverters, but you need to check the HTML source for a `<script>` tag that contains the relevant `webData`._
+- A few inverters don't have JS or JSON but output the values directly in a HTML files. Check if your inverter supports the following URL: `http://<your omnik ip address>/status.html`. _Note that this will work for almost all inverters, but you need to check the HTML source for a `<script>` tag that contains the relevant `webData`._
 
 If none of the methods work, please open a [new issue](https://github.com/robbinjanssen/home-assistant-omnik-inverter/issues/new) and we might be able to make it work for your inverter 😄 Make sure you let us know what inverter you use.
 

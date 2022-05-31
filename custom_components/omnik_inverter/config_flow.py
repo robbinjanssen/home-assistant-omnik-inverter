@@ -20,6 +20,7 @@ from homeassistant.data_entry_flow import FlowResult
 from .const import (
     CONF_SCAN_INTERVAL,
     CONF_SOURCE_TYPE,
+    CONF_SERIAL,
     CONFIGFLOW_VERSION,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
@@ -54,9 +55,11 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
             self.source_type = user_selection.lower()
             if user_selection == "HTML":
                 return await self.async_step_setup_html()
+            elif user_selection == "TCP":
+                return await self.async_step_setup_tcp()
             return await self.async_step_setup()
 
-        list_of_types = ["Javascript", "JSON", "HTML"]
+        list_of_types = ["Javascript", "JSON", "HTML", "TCP"]
 
         schema = vol.Schema({vol.Required(CONF_TYPE): vol.In(list_of_types)})
         return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
@@ -136,6 +139,46 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
                     vol.Required(CONF_HOST): str,
                     vol.Required(CONF_USERNAME): str,
                     vol.Required(CONF_PASSWORD): str,
+                }
+            ),
+            errors=errors,
+        )
+
+    async def async_step_setup_tcp(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        """Handle setup flow for TCP route."""
+        errors = {}
+
+        if user_input is not None:
+            try:
+                async with OmnikInverter(
+                    host=user_input[CONF_HOST],
+                    source_type=self.source_type,
+                    serial_number=user_input[CONF_SERIAL],
+                ) as client:
+                    await client.inverter()
+            except OmnikInverterError:
+                errors["base"] = "cannot_connect"
+            else:
+                return self.async_create_entry(
+                    title=user_input[CONF_NAME],
+                    data={
+                        CONF_HOST: user_input[CONF_HOST],
+                        CONF_SOURCE_TYPE: self.source_type,
+                        CONF_SERIAL: user_input[CONF_SERIAL],
+                    },
+                )
+
+        return self.async_show_form(
+            step_id="setup_tcp",
+            data_schema=vol.Schema(
+                {
+                    vol.Optional(
+                        CONF_NAME, default=self.hass.config.location_name
+                    ): str,
+                    vol.Required(CONF_HOST): str,
+                    vol.Required(CONF_SERIAL): int,
                 }
             ),
             errors=errors,

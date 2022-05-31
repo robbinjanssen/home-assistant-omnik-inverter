@@ -10,9 +10,9 @@ from homeassistant.const import CONF_HOST, CONF_IP_ADDRESS
 from homeassistant.core import HomeAssistant
 
 from . import OmnikInverterDataUpdateCoordinator
-from .const import DOMAIN, SERVICE_DEVICE, SERVICE_INVERTER
+from .const import CONF_SERIAL, DOMAIN, SERVICE_DEVICE, SERVICE_INVERTER
 
-TO_REDACT = {CONF_HOST, CONF_IP_ADDRESS}
+TO_REDACT = {CONF_HOST, CONF_IP_ADDRESS, CONF_SERIAL}
 
 
 async def async_get_config_entry_diagnostics(

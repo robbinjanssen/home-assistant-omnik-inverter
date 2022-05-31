@@ -19,6 +19,15 @@
                     "password": "Password"
                 }
             },
+            "setup_tcp": {
+                "title": "Omnik Inverter - TCP",
+                "description": "Set up Omnik Inverter to integrate with Home Assistant.",
+                "data": {
+                    "name": "Name",
+                    "host": "Host",
+                    "serial": "Serial Number"
+                }
+            },
             "user": {
                 "description": "Choose which data source applies to your Omnik Inverter.",
                 "data": {

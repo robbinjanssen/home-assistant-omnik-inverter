@@ -16,6 +16,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .const import (
     CONF_SCAN_INTERVAL,
+    CONF_SERIAL,
     CONF_SOURCE_TYPE,
     CONFIGFLOW_VERSION,
     DEFAULT_SCAN_INTERVAL,
@@ -104,6 +105,12 @@ class OmnikInverterDataUpdateCoordinator(DataUpdateCoordinator[OmnikInverterData
                 source_type=self.config_entry.data[CONF_SOURCE_TYPE],
                 username=self.config_entry.data[CONF_USERNAME],
                 password=self.config_entry.data[CONF_PASSWORD],
+            )
+        if self.config_entry.data[CONF_SOURCE_TYPE] == "tcp":
+            self.omnikinverter = OmnikInverter(
+                host=self.config_entry.data[CONF_HOST],
+                source_type=self.config_entry.data[CONF_SOURCE_TYPE],
+                serial_number=self.config_entry.data[CONF_SERIAL],
             )
         else:
             self.omnikinverter = OmnikInverter(
