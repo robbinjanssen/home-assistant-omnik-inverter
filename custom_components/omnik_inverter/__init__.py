@@ -106,7 +106,7 @@ class OmnikInverterDataUpdateCoordinator(DataUpdateCoordinator[OmnikInverterData
                 username=self.config_entry.data[CONF_USERNAME],
                 password=self.config_entry.data[CONF_PASSWORD],
             )
-        if self.config_entry.data[CONF_SOURCE_TYPE] == "tcp":
+        elif self.config_entry.data[CONF_SOURCE_TYPE] == "tcp":
             self.omnikinverter = OmnikInverter(
                 host=self.config_entry.data[CONF_HOST],
                 source_type=self.config_entry.data[CONF_SOURCE_TYPE],
