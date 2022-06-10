@@ -110,7 +110,7 @@ Special thank you to [@klaasnicolaas](https://github.com/klaasnicolaas) for taki
 [maintenance-shield]: https://img.shields.io/maintenance/yes/2022.svg
 [project-stage-shield]: https://img.shields.io/badge/project%20stage-stable-brightgreen.svg?style=for-the-badge
 
-[hacs-url]: https://github.com/custom-components/hacs
+[hacs-url]: https://github.com/hacs/integration
 [hacs-shield]: https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge
 
 [ha-add-url]: https://my.home-assistant.io/redirect/config_flow_start/?domain=omnik_inverter
