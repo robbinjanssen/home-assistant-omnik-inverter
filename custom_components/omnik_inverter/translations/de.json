@@ -1,0 +1,53 @@
+{
+    "config": {
+        "step": {
+            "setup": {
+                "title": "Omnik Inverter - JS oder JSON",
+                "description": "Konfiguriere die Verbindung zu deiner Datenquelle, die für Omnik Inverter verwendet werden soll.",
+                "data": {
+                    "name": "Name",
+                    "host": "Host"
+                }
+            },
+            "setup_html": {
+                "title": "Omnik Inverter - HTML",
+                "description": "Konfiguriere die Verbindung zu deiner Datenquelle, die für Omnik Inverter verwendet werden soll.",
+                "data": {
+                    "name": "Name",
+                    "host": "Host",
+                    "username": "Benutzername",
+                    "password": "Passwort"
+                }
+            },
+            "setup_tcp": {
+                "title": "Omnik Inverter - TCP",
+                "description": "Konfiguriere die Verbindung zu deiner Datenquelle, die für Omnik Inverter verwendet werden soll.",
+                "data": {
+                    "name": "Name",
+                    "host": "Host",
+                    "serial": "Seriennummer"
+                }
+            },
+            "user": {
+                "description": "Wähle die Art der Datenquelle aus, die für Omnik Inverter verwendet werden soll.",
+                "data": {
+                    "type": "Datenquelle"
+                }
+            }
+        },
+        "error": {
+            "cannot_connect": "Verbindung fehlgeschlagen",
+            "unknown": "Unerwarteter Fehler"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "scan_interval": "Aktualisierungsintervall der Daten (Minuten)"
+                },
+                "description": "Ändere deine Omnik Inverter Integration."
+            }
+        }
+    }
+}
