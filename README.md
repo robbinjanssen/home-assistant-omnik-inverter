@@ -24,6 +24,7 @@ It has been tested and developed on the following inverters:
 | Omnik    | Omniksol 4000TL2 | JS         |
 | Ginlong  | Solis-DLS-WiFi   | JSON/HTML  |
 | Hosola   | 1500TL           | JS         |
+| Bosswerk | BW-MI300         | HTML       |
 | Bosswerk | BW-MI600         | HTML       |
 | Sofar    | 3600TLM          | HTML       |
 | Huayu    | HY-600-Pro       | HTML       |
