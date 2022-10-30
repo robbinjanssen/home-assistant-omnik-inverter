@@ -6,9 +6,9 @@
 [![Maintainability][maintainability-shield]][maintainability-url]
 [![Code Quality][code-quality-shield]][code-quality-url]
 
-# Omnik Inverter Sensor for Home Assistant
+# Omnik Inverter Integration for Home Assistant
 
-The Omnik Inverter Sensor component will scrape data from an Omnik inverter connected to your local network.
+The Omnik Inverter integration will scrape data from an Omnik inverter connected to your local network.
 It has been tested and developed on the following inverters:
 
 ## Supported models
@@ -33,16 +33,16 @@ After installation you can add the inverter through the integration page. The va
 
 ## Requirements
 
-Your Omnik Inverter needs to be connected to your local network, as this custom component will utilise the web interface of the Omnik inverter to read data. All you need to know is the IP address of the Omnik inverter and you are good to go.
+Your Omnik Inverter needs to be connected to your local network, as this custom integration will utilise the web interface of the Omnik inverter to read data. All you need to know is the IP address of the Omnik inverter and you are good to go.
 
 ## HACS installation
 
-Add this component using HACS by searching for `Omnik Inverter Solar Sensor (No Cloud)` on the `Integrations` page.
+Add this integration using HACS by searching for `Omnik Inverter Solar Sensor (No Cloud)` on the `Integrations` page.
 
 ## Manual installation
 
 Create a directory called `omnik_inverter` in the `<config directory>/custom_components/` directory on your Home Assistant instance.
-Install this component by copying all files in `/custom_components/omnik_inverter/` folder from this repo into the new `<config directory>/custom_components/omnik_inverter/` directory you just created.
+Install this integration by copying all files in `/custom_components/omnik_inverter/` folder from this repo into the new `<config directory>/custom_components/omnik_inverter/` directory you just created.
 
 This is how your custom_components directory should be:
 ```bash
@@ -63,9 +63,9 @@ custom_components
 
 [![ha_badge][ha-add-shield]][ha-add-url]
 
-To configure the component, add it using [Home Assistant integrations][ha-add-url]. This will provide you with a configuration screen where you can first select the data source. Again, most inverters use JS. Some use JSON and in some rare cases HTML is used. The TCP backend contains additional electrical statistics but lacks information about the WiFi module.
+To configure the integration, add it using [Home Assistant integrations][ha-add-url]. This will provide you with a configuration screen where you can first select the data source. Again, most inverters use JS. Some use JSON and in some rare cases HTML is used. The TCP backend contains additional electrical statistics but lacks information about the WiFi module.
 
-After selecting the data source, enter a name and IP address as host and you're good to go!
+After selecting the data source, enter a **name** and IP address as **host** and you're good to go!
 
 _Optionally you can update the scan interval in the integration settings._
 
@@ -95,7 +95,7 @@ Please see [CONTRIBUTING](.github/CONTRIBUTING.md) and [CODE_OF_CONDUCT](.github
 
 ### Thanks
 
-Special thank you to [@klaasnicolaas](https://github.com/klaasnicolaas) for taking this component to the next level 🚀 and [@relout](https://github.com/relout) for testing 👍
+Special thank you to [@klaasnicolaas](https://github.com/klaasnicolaas) for taking this integration to the next level 🚀 and [@relout](https://github.com/relout) for testing 👍
 
 ## References
 
