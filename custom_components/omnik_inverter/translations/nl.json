@@ -37,7 +37,8 @@
         },
         "error": {
             "cannot_connect": "Kon niet verbinden",
-            "unknown": "Onverwachte fout"
+            "unknown": "Onverwachte fout",
+            "invalid_host": "Ongeldige hostnaam of IP-adres (gebruik niet de webbrowser URL)"
         }
     },
     "options": {

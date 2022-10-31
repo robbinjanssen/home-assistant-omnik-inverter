@@ -1,6 +1,7 @@
 """Config flow for Omnik Inverter integration."""
 from __future__ import annotations
 
+import socket
 from typing import Any
 
 from omnikinverter import OmnikInverter, OmnikInverterError
@@ -25,6 +26,15 @@ from .const import (
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
 )
+
+
+async def validate_input(user_input: dict[str, Any]) -> str | None:
+    """Validate the user input."""
+    host = user_input[CONF_HOST]
+    try:
+        return socket.gethostbyname(host)
+    except socket.gaierror:
+        raise Exception("invalid_host")
 
 
 class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
@@ -72,6 +82,7 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             try:
+                await validate_input(user_input)
                 async with OmnikInverter(
                     host=user_input[CONF_HOST],
                     source_type=self.source_type,
@@ -79,6 +90,8 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
                     await client.inverter()
             except OmnikInverterError:
                 errors["base"] = "cannot_connect"
+            except Exception as error:  # pylint: disable=broad-except
+                errors["base"] = str(error)
             else:
                 return self.async_create_entry(
                     title=user_input[CONF_NAME],
@@ -109,6 +122,7 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             try:
+                await validate_input(user_input)
                 async with OmnikInverter(
                     host=user_input[CONF_HOST],
                     source_type=self.source_type,
@@ -118,6 +132,8 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
                     await client.inverter()
             except OmnikInverterError:
                 errors["base"] = "cannot_connect"
+            except Exception as error:  # pylint: disable=broad-except
+                errors["base"] = str(error)
             else:
                 return self.async_create_entry(
                     title=user_input[CONF_NAME],
@@ -152,6 +168,7 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             try:
+                await validate_input(user_input)
                 async with OmnikInverter(
                     host=user_input[CONF_HOST],
                     source_type=self.source_type,
@@ -160,6 +177,8 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
                     await client.inverter()
             except OmnikInverterError:
                 errors["base"] = "cannot_connect"
+            except Exception as error:  # pylint: disable=broad-except
+                errors["base"] = str(error)
             else:
                 return self.async_create_entry(
                     title=user_input[CONF_NAME],

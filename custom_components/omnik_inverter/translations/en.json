@@ -37,7 +37,8 @@
         },
         "error": {
             "cannot_connect": "Failed to connect",
-            "unknown": "Unexpected error"
+            "unknown": "Unexpected error",
+            "invalid_host": "Invalid hostname or IP address (do not use the web browser URL)"
         }
     },
     "options": {
