@@ -86,6 +86,11 @@ SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]
             device_class=SensorDeviceClass.TEMPERATURE,
             state_class=SensorStateClass.MEASUREMENT,
         ),
+        SensorEntityDescription(
+            key="alarm_code",
+            name="Alarm Code",
+            icon="mdi:alert",
+        ),
         RangedSensorEntityDescription(  # pylint: disable=unexpected-keyword-arg
             key="dc_input_{}_voltage",
             size=range(3),
