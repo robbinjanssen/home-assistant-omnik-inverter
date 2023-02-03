@@ -40,7 +40,8 @@ SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]
             entity_category=EntityCategory.DIAGNOSTIC,
         ),
         SensorEntityDescription(
-            name="ip_address Floor",
+            key="ip_address",
+            name="IP Address",
             icon="mdi:network",
             entity_category=EntityCategory.DIAGNOSTIC,
         ),
@@ -79,6 +80,7 @@ SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]
         SensorEntityDescription(
             key="temperature",
             name="Inverter temperature",
+            entity_registry_enabled_default=False,
             icon="mdi:thermometer",
             native_unit_of_measurement=UnitOfTemperature.CELSIUS,
             device_class=SensorDeviceClass.TEMPERATURE,
@@ -86,7 +88,7 @@ SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]
         ),
         RangedSensorEntityDescription(  # pylint: disable=unexpected-keyword-arg
             key="dc_input_{}_voltage",
-            range=range(3),
+            size=range(3),
             data_key="dc_input_voltage",
             name="DC Input {} - Voltage",
             entity_registry_enabled_default=False,
@@ -97,7 +99,7 @@ SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]
         ),
         RangedSensorEntityDescription(  # pylint: disable=unexpected-keyword-arg
             key="dc_input_{}_current",
-            range=range(3),
+            size=range(3),
             data_key="dc_input_current",
             name="DC Input {} - Current",
             entity_registry_enabled_default=False,
@@ -108,7 +110,7 @@ SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]
         ),
         RangedSensorEntityDescription(  # pylint: disable=unexpected-keyword-arg
             key="ac_output_{}_voltage",
-            range=range(3),
+            size=range(3),
             data_key="ac_output_voltage",
             name="AC Output {} - Voltage",
             entity_registry_enabled_default=False,
@@ -119,7 +121,7 @@ SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]
         ),
         RangedSensorEntityDescription(  # pylint: disable=unexpected-keyword-arg
             key="ac_output_{}_current",
-            range=range(3),
+            size=range(3),
             data_key="ac_output_current",
             name="AC Output {} - Current",
             entity_registry_enabled_default=False,
@@ -130,7 +132,7 @@ SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]
         ),
         RangedSensorEntityDescription(  # pylint: disable=unexpected-keyword-arg
             key="ac_output_{}_power",
-            range=range(3),
+            size=range(3),
             data_key="ac_output_power",
             name="AC Output {} - Power",
             entity_registry_enabled_default=False,
@@ -141,7 +143,7 @@ SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]
         ),
         RangedSensorEntityDescription(  # pylint: disable=unexpected-keyword-arg
             key="ac_output_{}_frequency",
-            range=range(3),
+            size=range(3),
             data_key="ac_output_frequency",
             name="AC Output {} - Frequency",
             entity_registry_enabled_default=False,
@@ -167,17 +169,16 @@ async def async_setup_entry(
         entry: The ConfigEntry containing the user input.
         async_add_entities: The callback to provide the created entities to.
     """
-
     coordinator = hass.data[DOMAIN][entry.entry_id]
     options = entry.options
 
-    def create_sensor_entities(idx, description, service):
+    def create_sensor_entities(description, service):
         if isinstance(description, RangedSensorEntityDescription):
-            for i in description.range:
+            for i in description.size:
                 yield OmnikInverterRangedSensor(
                     coordinator=coordinator,
                     index=i,
-                    idx=idx,
+                    name=entry.title,
                     description=description,
                     service=service,
                     options=options,
@@ -185,20 +186,18 @@ async def async_setup_entry(
         else:
             yield OmnikInverterSensor(
                 coordinator=coordinator,
-                idx=idx,
+                name=entry.title,
                 description=description,
                 service=service,
                 options=options,
             )
 
-    entities = []
-    for idx, _ in coordinator.data.items():
-        entities.extend(
-            sensor_entity
-            for service, service_sensors in SENSORS.items()
-            for description in service_sensors
-            for sensor_entity in create_sensor_entities(idx, description, service)
-        )
+    entities = (
+        sensor_entity
+        for service, service_sensors in SENSORS.items()
+        for description in service_sensors
+        for sensor_entity in create_sensor_entities(description, service)
+    )
 
     async_add_entities(entities)
 
@@ -206,13 +205,13 @@ async def async_setup_entry(
 class OmnikInverterSensor(OmnikInverterEntity, SensorEntity):
     """Defines an Omnik Inverter Sensor."""
 
-    _entity_description: SensorEntityDescription
+    entity_description: SensorEntityDescription
     _options: dict[Any]
 
     def __init__(  # pylint: disable=too-many-arguments
         self,
         coordinator: OmnikInverterDataUpdateCoordinator,
-        idx: str,
+        name: str,
         description: SensorEntityDescription,
         service: str,
         options: dict[Any],
@@ -222,18 +221,20 @@ class OmnikInverterSensor(OmnikInverterEntity, SensorEntity):
 
         Args:
             coordinator: The data coordinator updating the models.
-            idx: The identifier for this entity.
+            name: The identifier for this entity.
             description: The entity description for the sensor.
             service: The service to create the sensor for.
             options: The options provided by the user.
         """
-        super().__init__(coordinator, idx, service)
+        super().__init__(coordinator=coordinator, name=name, service=service)
 
-        self._entity_description = description
+        self.entity_description = description
         self._options = options
 
-        self.entity_id = f"{SENSOR_DOMAIN}.{self.entity_description.name}_{self.entity_description.key}"  # noqa: E501
-        self._attr_unique_id = f"{idx}_{service}_{self._entity_description.key}"
+        self.entity_id = (
+            f"{SENSOR_DOMAIN}.{self._name}_{self.entity_description.key}"  # noqa: E501
+        )
+        self._attr_unique_id = f"{self._name}_{service}_{self.entity_description.key}"
         self._attr_name = self.entity_description.name
 
     @property
@@ -264,7 +265,7 @@ class OmnikInverterRangedSensor(OmnikInverterSensor):
         self,
         coordinator: OmnikInverterDataUpdateCoordinator,
         index: int,
-        idx: str,
+        name: str,
         description: RangedSensorEntityDescription,
         service: str,
         options: dict[Any],
@@ -275,13 +276,13 @@ class OmnikInverterRangedSensor(OmnikInverterSensor):
         Args:
             coordinator: The data coordinator updating the models.
             index: The index for the ranged sensor.
-            idx: The identifier for this entity.
+            name: The identifier for this entity.
             description: The entity description for the sensor.
             service: The service to create the sensor for.
             options: The options provided by the user.
         """
         self._index = index
-        self._data_key = (description.data_key,)
+        self._data_key = description.data_key
         description = dataclasses.replace(
             description,
             key=description.key.format(index + 1),
@@ -290,7 +291,7 @@ class OmnikInverterRangedSensor(OmnikInverterSensor):
 
         super().__init__(
             coordinator=coordinator,
-            idx=idx,
+            name=name,
             description=description,
             service=service,
             options=options,

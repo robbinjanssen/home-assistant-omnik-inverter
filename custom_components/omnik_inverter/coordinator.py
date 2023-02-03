@@ -1,10 +1,7 @@
 """Omnik Inverter platform configuration."""
 import logging
 from datetime import timedelta
-
 from typing import TypedDict
-from omnikinverter import Device, Inverter, OmnikInverter
-from omnikinverter.exceptions import OmnikInverterError, OmnikInverterAuthError
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
@@ -12,6 +9,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from omnikinverter import Device, Inverter, OmnikInverter
+from omnikinverter.exceptions import OmnikInverterAuthError, OmnikInverterError
 
 from .const import (
     CONF_SCAN_INTERVAL,
@@ -23,8 +22,8 @@ from .const import (
     SERVICE_INVERTER,
 )
 
-
 _LOGGER = logging.getLogger(__name__)
+
 
 class OmnikInverterData(TypedDict):
     """Class for defining data in dict."""
@@ -51,10 +50,7 @@ class OmnikInverterDataUpdateCoordinator(DataUpdateCoordinator):
             _LOGGER,
             name=DOMAIN,
             update_interval=timedelta(
-                minutes=entry.options.get(
-                    CONF_SCAN_INTERVAL, 
-                    DEFAULT_SCAN_INTERVAL
-                )
+                minutes=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
             ),
         )
 
@@ -78,7 +74,7 @@ class OmnikInverterDataUpdateCoordinator(DataUpdateCoordinator):
                 host=self.config_entry.data[CONF_HOST],
                 source_type=self.config_entry.data[CONF_SOURCE_TYPE],
                 session=async_create_clientsession(hass),
-            )        
+            )
 
     async def _async_update_data(self) -> OmnikInverterData:
         """
