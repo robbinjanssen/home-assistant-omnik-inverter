@@ -19,4 +19,3 @@ _Optionally you can update the scan interval in the integration settings._
 ### Entities
 
 <img src="https://github.com/robbinjanssen/home-assistant-omnik-inverter/blob/master/images/all_entities.png" width="500" />
-

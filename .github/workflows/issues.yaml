@@ -1,22 +1,35 @@
 ---
-name: Stale
+name: Issues
 
-# yamllint disable-line rule:truthy
 on:
   schedule:
     - cron: "0 8 * * *"
   workflow_dispatch:
 
 jobs:
-  stale:
-    name: 🧹 Clean up stale issues and PRs
+  lock:
+    name: Lock closed issues and PRs
     runs-on: ubuntu-latest
+
     steps:
-      - name: 🚀 Run stale
+      - uses: dessant/lock-threads@v4
+        with:
+          github-token: ${{ github.token }}
+          issue-inactive-days: "30"
+          issue-lock-reason: ""
+          pr-inactive-days: "1"
+          pr-lock-reason: ""
+
+  stale:
+    name: Clean up stale issues and PRs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run stale
         uses: actions/stale@v7
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          days-before-stale: 14
+          days-before-stale: 30
           days-before-close: 7
           remove-stale-when-updated: true
           stale-issue-label: "stale"

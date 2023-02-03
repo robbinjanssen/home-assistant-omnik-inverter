@@ -1,6 +1,8 @@
 {
   "name": "Omnik Inverter Solar Sensor (No Cloud)",
   "country": "NL",
-  "domains": ["sensor"],
-  "homeassistant": "2021.9.0"
+  "domains": [
+    "sensor"
+  ],
+  "homeassistant": "2023.2.0"
 }

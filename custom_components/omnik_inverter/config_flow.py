@@ -4,9 +4,7 @@ from __future__ import annotations
 import socket
 from typing import Any
 
-from omnikinverter import OmnikInverter, OmnikInverterError
 import voluptuous as vol
-
 from homeassistant.config_entries import ConfigEntry, ConfigFlow, OptionsFlow
 from homeassistant.const import (
     CONF_HOST,
@@ -17,11 +15,13 @@ from homeassistant.const import (
 )
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
+from omnikinverter import OmnikInverter, OmnikInverterError
 
 from .const import (
     CONF_SCAN_INTERVAL,
-    CONF_SOURCE_TYPE,
     CONF_SERIAL,
+    CONF_SOURCE_TYPE,
+    CONF_USE_CACHE,
     CONFIGFLOW_VERSION,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
@@ -29,12 +29,25 @@ from .const import (
 
 
 async def validate_input(user_input: dict[str, Any]) -> str | None:
-    """Validate the user input."""
+    """
+    Validate the given user input.
+
+    Args:
+        user_input: The user input.
+
+    Returns:
+        The host name of the inverter
+
+    Raises:
+        Exception: If the host could not be validated.
+    """
     host = user_input[CONF_HOST]
     try:
         return socket.gethostbyname(host)
-    except socket.gaierror:
-        raise Exception("invalid_host")
+    except socket.gaierror as exc:
+        raise Exception(  # pylint: disable=broad-exception-raised
+            "invalid_host"
+        ) from exc
 
 
 class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
@@ -51,22 +64,40 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
     def async_get_options_flow(
         config_entry: ConfigEntry,
     ) -> OmnikInverterOptionsFlowHandler:
-        """Get the options flow for this handler."""
+        """
+        Get the options flow for this handler.
+
+        Args:
+            config_entry: The ConfigEntry instance.
+
+        Returns:
+            The created config flow.
+        """
         return OmnikInverterOptionsFlowHandler(config_entry)
 
     async def async_step_user(
         self, user_input=None, errors: dict[str, str] | None = None
     ) -> FlowResult:
-        """Handle a flow initialized by the user."""
+        """
+        Handle a flow initialized by the user.
 
+        Args:
+            user_input: The input received from the user or none.
+            errors: A dict containing errors or none.
+
+        Returns:
+            The created config entry or a form to re-enter the user input with errors.
+        """
         errors = {}
         if user_input is not None:
             user_selection = user_input[CONF_TYPE]
             self.source_type = user_selection.lower()
             if user_selection == "HTML":
                 return await self.async_step_setup_html()
-            elif user_selection == "TCP":
+
+            if user_selection == "TCP":
                 return await self.async_step_setup_tcp()
+
             return await self.async_step_setup()
 
         list_of_types = ["Javascript", "JSON", "HTML", "TCP"]
@@ -77,7 +108,15 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
     async def async_step_setup(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
-        """Handle setup flow for the JS and JSON route."""
+        """
+        Handle setup flow for the JS and JSON route.
+
+        Args:
+            user_input: The input received from the user or none.
+
+        Returns:
+            The created config entry or a form to re-enter the user input with errors.
+        """
         errors = {}
 
         if user_input is not None:
@@ -90,7 +129,7 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
                     await client.inverter()
             except OmnikInverterError:
                 errors["base"] = "cannot_connect"
-            except Exception as error:  # pylint: disable=broad-except
+            except Exception as error:  # pylint: disable=broad-exception-caught
                 errors["base"] = str(error)
             else:
                 return self.async_create_entry(
@@ -117,7 +156,15 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
     async def async_step_setup_html(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
-        """Handle setup flow for html route."""
+        """
+        Handle setup flow for the HTML`route.
+
+        Args:
+            user_input: The input received from the user or none.
+
+        Returns:
+            The created config entry or a form to re-enter the user input with errors.
+        """
         errors = {}
 
         if user_input is not None:
@@ -132,7 +179,7 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
                     await client.inverter()
             except OmnikInverterError:
                 errors["base"] = "cannot_connect"
-            except Exception as error:  # pylint: disable=broad-except
+            except Exception as error:  # pylint: disable=broad-exception-caught
                 errors["base"] = str(error)
             else:
                 return self.async_create_entry(
@@ -163,7 +210,15 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
     async def async_step_setup_tcp(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
-        """Handle setup flow for TCP route."""
+        """
+        Handle setup flow for the TCP route.
+
+        Args:
+            user_input: The input received from the user or none.
+
+        Returns:
+            The created config entry or a form to re-enter the user input with errors.
+        """
         errors = {}
 
         if user_input is not None:
@@ -208,13 +263,26 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
     """Handle options."""
 
     def __init__(self, config_entry: ConfigEntry) -> None:
-        """Initialize options flow."""
+        """
+        Initialize options flow.
+
+        Args:
+            config_entry: The ConfigEntry instance.
+        """
         self.config_entry = config_entry
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
-        """Mange the options."""
+        """
+        Handle a flow initialized by the user.
+
+        Args:
+            user_input: The input received from the user or none.
+
+        Returns:
+            The created config entry.
+        """
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
@@ -228,6 +296,7 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
                             CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
                         ),
                     ): vol.All(vol.Coerce(int), vol.Range(min=1)),
+                    vol.Optional(CONF_USE_CACHE, default=False): bool,
                 }
             ),
         )

@@ -36,7 +36,8 @@
       "init": {
         "description": "Change the way the integration fetches your Omnik Inverter.",
         "data": {
-          "scan_interval": "Minimum time between entity updates [m]"
+          "scan_interval": "Minimum time between entity updates [m]",
+          "use_cache": "Cache the total power of today"
         }
       }
     }
