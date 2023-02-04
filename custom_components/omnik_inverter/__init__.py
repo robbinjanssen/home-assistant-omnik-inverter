@@ -48,8 +48,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 async def async_migrate_entry(
-    hass: HomeAssistant, config_entry: ConfigEntry
-):  # pylint: disable=unused-argument
+    hass: HomeAssistant, # pylint: disable=unused-argument
+    config_entry: ConfigEntry
+):
     """
     Migrate an old entry.
 
