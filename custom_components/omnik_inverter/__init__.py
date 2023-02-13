@@ -6,7 +6,7 @@ from homeassistant.core import HomeAssistant
 from .const import CONFIGFLOW_VERSION, DOMAIN, LOGGER
 from .coordinator import OmnikInverterDataUpdateCoordinator
 
-PLATFORMS = [Platform.SENSOR]
+PLATFORMS = [Platform.SENSOR, Platform.BINARY_SENSOR]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

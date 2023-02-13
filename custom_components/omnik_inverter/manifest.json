@@ -9,6 +9,8 @@
     "@robbinjanssen",
     "@klaasnicolaas"
   ],
-  "requirements": ["omnikinverter==0.8.1"],
+  "requirements": [
+    "omnikinverter==0.9.0"
+  ],
   "iot_class": "local_polling"
 }
