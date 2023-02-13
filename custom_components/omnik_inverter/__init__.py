@@ -6,7 +6,7 @@ from homeassistant.core import HomeAssistant
 from .const import CONFIGFLOW_VERSION, DOMAIN, LOGGER
 from .coordinator import OmnikInverterDataUpdateCoordinator
 
-PLATFORMS = [Platform.SENSOR]
+PLATFORMS = [Platform.SENSOR, Platform.BINARY_SENSOR]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -48,8 +48,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 async def async_migrate_entry(
-    hass: HomeAssistant, # pylint: disable=unused-argument
-    config_entry: ConfigEntry
+    hass: HomeAssistant, config_entry: ConfigEntry  # pylint: disable=unused-argument
 ):
     """
     Migrate an old entry.
