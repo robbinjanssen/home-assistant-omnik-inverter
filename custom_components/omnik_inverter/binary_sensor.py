@@ -1,4 +1,4 @@
-"""Support for Omnik Inverter Binary sensors."""
+"""Support for Omnik Inverter binary sensors."""
 from __future__ import annotations
 
 from typing import Any
