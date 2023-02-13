@@ -43,7 +43,6 @@ async def async_setup_entry(
     """
     coordinator = hass.data[DOMAIN][entry.entry_id]
 
-    """Set up the Goal Zero Yeti sensor."""
     async_add_entities(
         OmnikInverterBinarySensor(
             coordinator,
@@ -76,7 +75,6 @@ class OmnikInverterBinarySensor(OmnikInverterEntity, BinarySensorEntity):
             name: The identifier for this entity.
             description: The entity description for the binary sensor.
             service: The service to create the binary sensor for.
-            options: The options provided by the user.
         """
         super().__init__(coordinator=coordinator, name=name, service=service)
 
@@ -88,5 +86,11 @@ class OmnikInverterBinarySensor(OmnikInverterEntity, BinarySensorEntity):
 
     @property
     def is_on(self) -> bool:
-        """Return True if the service is on."""
+        """
+        Return True if the service is on.
+
+        Returns:
+            True if the device is on.
+
+        """
         return self.coordinator.last_update_success
