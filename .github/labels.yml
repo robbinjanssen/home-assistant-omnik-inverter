@@ -33,12 +33,6 @@
 - name: "in-progress"
   color: fbca04
   description: "Issue is currently being resolved by a developer."
-- name: "stale"
-  color: fef2c0
-  description: "There has not been activity on this issue or PR for quite some time."
-- name: "no-stale"
-  color: fef2c0
-  description: "This issue or PR is exempted from the stale bot."
 
 - name: "security"
   color: ee0701
@@ -50,36 +44,16 @@
   color: fef2c0
   description: "Marks a PR or issue that is missing information."
 
-- name: "beginner-friendly"
-  color: 0e8a16
-  description: "Good first issue for people wanting to contribute to the project."
-- name: "help-wanted"
-  color: 0e8a16
-  description: "We need some extra helping hands or expertise in order to resolve this."
-
-- name: "hacktoberfest"
-  description: "Issues/PRs are participating in the Hacktoberfest."
-  color: fbca04
-- name: "hacktoberfest-accepted"
-  description: "Issues/PRs are participating in the Hacktoberfest."
-  color: fbca04
-
-- name: "priority-critical"
-  color: ee0701
-  description: "This should be dealt with ASAP. Not fixing this issue would be a serious error."
-- name: "priority-high"
-  color: b60205
-  description: "After critical issues are fixed, these should be dealt with before any further issues."
-- name: "priority-medium"
-  color: 0e8a16
-  description: "This issue may be useful, and needs some attention."
-- name: "priority-low"
-  color: e4ea8a
-  description: "Nice addition, maybe... someday..."
-
 - name: "major"
   color: b60205
   description: "This PR causes a major version bump in the version number."
 - name: "minor"
   color: 0e8a16
   description: "This PR causes a minor version bump in the version number."
+
+- name: "skip-changelog"
+  color: fef2c0
+  description: "This issue or PR is exempted from the release notes."
+- name: "automerge"
+  color: fef2c0
+  description: "Merge this PR automatically when there are no conflicts and all required checks are passed."

@@ -1,12 +1,11 @@
 """Support for Omnik Inverter sensors."""
 from __future__ import annotations
-from dataclasses import dataclass
+
 import dataclasses
+from typing import Any, Literal
 
-from typing import Literal
-
+from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.sensor import (
-    DOMAIN as SENSOR_DOMAIN,
     SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
@@ -14,138 +13,24 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
-    ELECTRIC_CURRENT_AMPERE,
-    ELECTRIC_POTENTIAL_VOLT,
-    ENERGY_KILO_WATT_HOUR,
     PERCENTAGE,
-    POWER_WATT,
-    TEMP_CELSIUS,
-    FREQUENCY_HERTZ,
-    TIME_HOURS,
+    UnitOfElectricCurrent,
+    UnitOfElectricPotential,
+    UnitOfEnergy,
+    UnitOfFrequency,
+    UnitOfPower,
+    UnitOfTemperature,
+    UnitOfTime,
 )
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.device_registry import DeviceEntryType
-from homeassistant.helpers.entity import DeviceInfo, EntityCategory
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.typing import StateType
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import OmnikInverterDataUpdateCoordinator
-from .const import DOMAIN, MANUFACTURER, SERVICE_DEVICE, SERVICE_INVERTER, SERVICES
-
-
-@dataclass
-class ArraySensorEntityDescription(SensorEntityDescription):
-    range: range | None = None
-    data_key: str | None = None
+from .const import DOMAIN, SERVICE_DEVICE, SERVICE_INVERTER
+from .coordinator import OmnikInverterDataUpdateCoordinator
+from .models import OmnikInverterEntity, RangedSensorEntityDescription
 
 SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]] = {
-    SERVICE_INVERTER: (
-        SensorEntityDescription(
-            key="solar_current_power",
-            name="Current Power Production",
-            icon="mdi:weather-sunny",
-            native_unit_of_measurement=POWER_WATT,
-            device_class=SensorDeviceClass.POWER,
-            state_class=SensorStateClass.MEASUREMENT,
-        ),
-        SensorEntityDescription(
-            key="solar_energy_today",
-            name="Solar Production - Today",
-            native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
-            device_class=SensorDeviceClass.ENERGY,
-            state_class=SensorStateClass.TOTAL_INCREASING,
-        ),
-        SensorEntityDescription(
-            key="solar_energy_total",
-            name="Solar Production - Total",
-            icon="mdi:chart-line",
-            native_unit_of_measurement=ENERGY_KILO_WATT_HOUR,
-            device_class=SensorDeviceClass.ENERGY,
-            state_class=SensorStateClass.TOTAL_INCREASING,
-        ),
-        SensorEntityDescription(
-            key="solar_hours_total",
-            name="Solar Production - Uptime",
-            icon="mdi:clock",
-            native_unit_of_measurement=TIME_HOURS,
-            state_class=SensorStateClass.TOTAL_INCREASING,
-        ),
-        SensorEntityDescription(
-            key="temperature",
-            name="Inverter temperature",
-            icon="mdi:thermometer",
-            native_unit_of_measurement=TEMP_CELSIUS,
-            device_class=SensorDeviceClass.TEMPERATURE,
-            state_class=SensorStateClass.MEASUREMENT,
-        ),
-        ArraySensorEntityDescription(
-            key="dc_input_{}_voltage",
-            data_key="dc_input_voltage",
-            range=range(3),
-            name="DC Input {} - Voltage",
-            entity_registry_enabled_default=False,
-            icon="mdi:lightning-bolt",
-            native_unit_of_measurement=ELECTRIC_POTENTIAL_VOLT,
-            device_class=SensorDeviceClass.VOLTAGE,
-            state_class=SensorStateClass.MEASUREMENT,
-        ),
-        ArraySensorEntityDescription(
-            key="dc_input_{}_current",
-            data_key="dc_input_current",
-            range=range(3),
-            name="DC Input {} - Current",
-            entity_registry_enabled_default=False,
-            icon="mdi:current-dc",
-            native_unit_of_measurement=ELECTRIC_CURRENT_AMPERE,
-            device_class=SensorDeviceClass.CURRENT,
-            state_class=SensorStateClass.MEASUREMENT,
-        ),
-        ArraySensorEntityDescription(
-            key="ac_output_{}_voltage",
-            data_key="ac_output_voltage",
-            range=range(3),
-            name="AC Output {} - Voltage",
-            entity_registry_enabled_default=False,
-            icon="mdi:lightning-bolt",
-            native_unit_of_measurement=ELECTRIC_POTENTIAL_VOLT,
-            device_class=SensorDeviceClass.VOLTAGE,
-            state_class=SensorStateClass.MEASUREMENT,
-        ),
-        ArraySensorEntityDescription(
-            key="ac_output_{}_current",
-            data_key="ac_output_current",
-            range=range(3),
-            name="AC Output {} - Current",
-            entity_registry_enabled_default=False,
-            icon="mdi:current-ac",
-            native_unit_of_measurement=ELECTRIC_CURRENT_AMPERE,
-            device_class=SensorDeviceClass.CURRENT,
-            state_class=SensorStateClass.MEASUREMENT,
-        ),
-        ArraySensorEntityDescription(
-            key="ac_output_{}_power",
-            data_key="ac_output_power",
-            range=range(3),
-            name="AC Output {} - Power",
-            entity_registry_enabled_default=False,
-            icon="mdi:lightning-bolt",
-            native_unit_of_measurement=POWER_WATT,
-            device_class=SensorDeviceClass.POWER,
-            state_class=SensorStateClass.MEASUREMENT,
-        ),
-        ArraySensorEntityDescription(
-            key="ac_output_{}_frequency",
-            data_key="ac_output_frequency",
-            range=range(3),
-            name="AC Output {} - Frequency",
-            entity_registry_enabled_default=False,
-            icon="mdi:sine-wave",
-            native_unit_of_measurement=FREQUENCY_HERTZ,
-            device_class=SensorDeviceClass.FREQUENCY,
-            state_class=SensorStateClass.MEASUREMENT,
-        ),
-    ),
     SERVICE_DEVICE: (
         SensorEntityDescription(
             key="signal_quality",
@@ -161,123 +46,268 @@ SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]
             entity_category=EntityCategory.DIAGNOSTIC,
         ),
     ),
+    SERVICE_INVERTER: (
+        SensorEntityDescription(
+            key="solar_current_power",
+            name="Current Power Production",
+            icon="mdi:weather-sunny",
+            native_unit_of_measurement=UnitOfPower.WATT,
+            device_class=SensorDeviceClass.POWER,
+            state_class=SensorStateClass.MEASUREMENT,
+        ),
+        SensorEntityDescription(
+            key="solar_energy_today",
+            name="Solar Production - Today",
+            native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+            device_class=SensorDeviceClass.ENERGY,
+            state_class=SensorStateClass.TOTAL_INCREASING,
+        ),
+        SensorEntityDescription(
+            key="solar_energy_total",
+            name="Solar Production - Total",
+            icon="mdi:chart-line",
+            native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+            device_class=SensorDeviceClass.ENERGY,
+            state_class=SensorStateClass.TOTAL_INCREASING,
+        ),
+        SensorEntityDescription(
+            key="solar_hours_total",
+            name="Solar Production - Uptime",
+            icon="mdi:clock",
+            native_unit_of_measurement=UnitOfTime.HOURS,
+            state_class=SensorStateClass.TOTAL_INCREASING,
+        ),
+        SensorEntityDescription(
+            key="temperature",
+            name="Inverter temperature",
+            entity_registry_enabled_default=False,
+            icon="mdi:thermometer",
+            native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+            device_class=SensorDeviceClass.TEMPERATURE,
+            state_class=SensorStateClass.MEASUREMENT,
+        ),
+        RangedSensorEntityDescription(  # pylint: disable=unexpected-keyword-arg
+            key="dc_input_{}_voltage",
+            size=range(3),
+            data_key="dc_input_voltage",
+            name="DC Input {} - Voltage",
+            entity_registry_enabled_default=False,
+            icon="mdi:lightning-bolt",
+            native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+            device_class=SensorDeviceClass.VOLTAGE,
+            state_class=SensorStateClass.MEASUREMENT,
+        ),
+        RangedSensorEntityDescription(  # pylint: disable=unexpected-keyword-arg
+            key="dc_input_{}_current",
+            size=range(3),
+            data_key="dc_input_current",
+            name="DC Input {} - Current",
+            entity_registry_enabled_default=False,
+            icon="mdi:current-dc",
+            native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
+            device_class=SensorDeviceClass.CURRENT,
+            state_class=SensorStateClass.MEASUREMENT,
+        ),
+        RangedSensorEntityDescription(  # pylint: disable=unexpected-keyword-arg
+            key="ac_output_{}_voltage",
+            size=range(3),
+            data_key="ac_output_voltage",
+            name="AC Output {} - Voltage",
+            entity_registry_enabled_default=False,
+            icon="mdi:lightning-bolt",
+            native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+            device_class=SensorDeviceClass.VOLTAGE,
+            state_class=SensorStateClass.MEASUREMENT,
+        ),
+        RangedSensorEntityDescription(  # pylint: disable=unexpected-keyword-arg
+            key="ac_output_{}_current",
+            size=range(3),
+            data_key="ac_output_current",
+            name="AC Output {} - Current",
+            entity_registry_enabled_default=False,
+            icon="mdi:current-ac",
+            native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
+            device_class=SensorDeviceClass.CURRENT,
+            state_class=SensorStateClass.MEASUREMENT,
+        ),
+        RangedSensorEntityDescription(  # pylint: disable=unexpected-keyword-arg
+            key="ac_output_{}_power",
+            size=range(3),
+            data_key="ac_output_power",
+            name="AC Output {} - Power",
+            entity_registry_enabled_default=False,
+            icon="mdi:lightning-bolt",
+            native_unit_of_measurement=UnitOfPower.WATT,
+            device_class=SensorDeviceClass.POWER,
+            state_class=SensorStateClass.MEASUREMENT,
+        ),
+        RangedSensorEntityDescription(  # pylint: disable=unexpected-keyword-arg
+            key="ac_output_{}_frequency",
+            size=range(3),
+            data_key="ac_output_frequency",
+            name="AC Output {} - Frequency",
+            entity_registry_enabled_default=False,
+            icon="mdi:sine-wave",
+            native_unit_of_measurement=UnitOfFrequency.HERTZ,
+            device_class=SensorDeviceClass.FREQUENCY,
+            state_class=SensorStateClass.MEASUREMENT,
+        ),
+    ),
 }
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up Omnik Inverter Sensors based on a config entry."""
+    """
+    Load all Omnik Inverter sensors.
 
-    def create_sensor_entities(description, service_key):
-        if isinstance(description, ArraySensorEntityDescription):
-            for i in description.range:
-                yield OmnikInverterArraySensorEntity(
-                    coordinator=hass.data[DOMAIN][entry.entry_id],
+    Args:
+        hass: The HomeAssistant instance.
+        entry: The ConfigEntry containing the user input.
+        async_add_entities: The callback to provide the created entities to.
+    """
+    coordinator = hass.data[DOMAIN][entry.entry_id]
+    options = entry.options
+
+    def create_sensor_entities(description, service):
+        if isinstance(description, RangedSensorEntityDescription):
+            for i in description.size:
+                yield OmnikInverterRangedSensor(
+                    coordinator=coordinator,
                     index=i,
-                    description=description,
-                    service_key=service_key,
                     name=entry.title,
-                    service=SERVICES[service_key],
+                    description=description,
+                    service=service,
+                    options=options,
                 )
         else:
-            yield OmnikInverterSensorEntity(
-                coordinator=hass.data[DOMAIN][entry.entry_id],
-                description=description,
-                service_key=service_key,
+            yield OmnikInverterSensor(
+                coordinator=coordinator,
                 name=entry.title,
-                service=SERVICES[service_key],
+                description=description,
+                service=service,
+                options=options,
             )
 
-    async_add_entities(
+    entities = (
         sensor_entity
-        for service_key, service_sensors in SENSORS.items()
+        for service, service_sensors in SENSORS.items()
         for description in service_sensors
-        for sensor_entity in create_sensor_entities(description, service_key)
+        for sensor_entity in create_sensor_entities(description, service)
     )
 
+    async_add_entities(entities)
 
-class OmnikInverterSensorEntity(CoordinatorEntity, SensorEntity):
-    """Defines an Omnik Inverter sensor."""
 
-    coordinater: OmnikInverterDataUpdateCoordinator
+class OmnikInverterSensor(OmnikInverterEntity, SensorEntity):
+    """Defines an Omnik Inverter Sensor."""
 
-    def __init__(
+    entity_description: SensorEntityDescription
+    _options: dict[Any]
+
+    def __init__(  # pylint: disable=too-many-arguments
         self,
-        *,
         coordinator: OmnikInverterDataUpdateCoordinator,
-        description: SensorEntityDescription,
-        service_key: Literal["inverter", "device"],
         name: str,
+        description: SensorEntityDescription,
         service: str,
-    ) -> None:
-        """Initialize Omnik Inverter sensor."""
-        super().__init__(coordinator=coordinator)
-        self._service_key = service_key
+        options: dict[Any],
+    ):
+        """
+        Initialise the entity.
 
-        self.entity_id = f"{SENSOR_DOMAIN}.{name}_{description.key}"
+        Args:
+            coordinator: The data coordinator updating the models.
+            name: The identifier for this entity.
+            description: The entity description for the sensor.
+            service: The service to create the sensor for.
+            options: The options provided by the user.
+        """
+        super().__init__(coordinator=coordinator, name=name, service=service)
+
         self.entity_description = description
-        self._attr_unique_id = (
-            f"{coordinator.config_entry.entry_id}_{service_key}_{description.key}"
-        )
+        self._options = options
 
-        self._attr_device_info = DeviceInfo(
-            identifiers={
-                (DOMAIN, f"{coordinator.config_entry.entry_id}_{service_key}")
-            },
-            name=service,
-            manufacturer=MANUFACTURER,
-            entry_type=DeviceEntryType.SERVICE,
-            sw_version=coordinator.data[service_key].firmware,
-            model=coordinator.data["inverter"].model,
-            configuration_url=f'http://{coordinator.data["device"].ip_address}',
+        self.entity_id = (
+            f"{SENSOR_DOMAIN}.{self._name}_{self.entity_description.key}"  # noqa: E501
         )
+        self._attr_unique_id = f"{self._name}_{service}_{self.entity_description.key}"
+        self._attr_name = self.entity_description.name
 
     @property
-    def native_value(self) -> StateType:
-        """Return the state of the sensor."""
+    def native_value(self) -> Any | None:
+        """
+        Return the state of the sensor.
+
+        Returns:
+            The current state value of the sensor.
+        """
         value = getattr(
-            self.coordinator.data[self._service_key], self.entity_description.key
+            self.coordinator.data[self.service], self.entity_description.key
         )
+
         if isinstance(value, str):
             return value.lower()
+
         return value
 
 
-class OmnikInverterArraySensorEntity(OmnikInverterSensorEntity):
-    """Defines an Omnik Inverter sensor reading from an array."""
+class OmnikInverterRangedSensor(OmnikInverterSensor):
+    """Defines an Omnik Inverter Sensor."""
 
-    def __init__(
+    _index: int
+    _data_key: str
+
+    def __init__(  # pylint: disable=too-many-arguments
         self,
-        *,
         coordinator: OmnikInverterDataUpdateCoordinator,
         index: int,
-        description: ArraySensorEntityDescription,
-        service_key: Literal["inverter", "device"],
         name: str,
+        description: RangedSensorEntityDescription,
         service: str,
-    ) -> None:
-        self.index = index
-        self.data_key = description.data_key
-        human_index = index + 1
+        options: dict[Any],
+    ):
+        """
+        Initialise the entity.
 
+        Args:
+            coordinator: The data coordinator updating the models.
+            index: The index for the ranged sensor.
+            name: The identifier for this entity.
+            description: The entity description for the sensor.
+            service: The service to create the sensor for.
+            options: The options provided by the user.
+        """
+        self._index = index
+        self._data_key = description.data_key
         description = dataclasses.replace(
             description,
-            key=description.key.format(human_index),
-            name=description.name.format(human_index),
+            key=description.key.format(index + 1),
+            name=description.name.format(index + 1),
         )
 
         super().__init__(
             coordinator=coordinator,
-            description=description,
-            service_key=service_key,
             name=name,
+            description=description,
             service=service,
+            options=options,
         )
 
     @property
-    def native_value(self) -> StateType:
-        """Return the state of the sensor."""
-        value = getattr(self.coordinator.data[self._service_key], self.data_key)
+    def native_value(self) -> Any | None:
+        """
+        Return the state of the sensor.
+
+        Returns:
+            The current state value of the sensor.
+        """
+        value = getattr(self.coordinator.data[self.service], self._data_key)
+
         if value is not None:
-            return value[self.index]
+            return value[self._index]
+
+        return None

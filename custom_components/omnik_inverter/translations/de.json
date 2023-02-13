@@ -45,7 +45,8 @@
         "step": {
             "init": {
                 "data": {
-                    "scan_interval": "Aktualisierungsintervall der Daten (Minuten)"
+                    "scan_interval": "Aktualisierungsintervall der Daten (Minuten)",
+                    "use_cache": "Den gesamten Tagesumsatz zwischenspeichern"
                 },
                 "description": "Ändere deine Omnik Inverter Integration."
             }

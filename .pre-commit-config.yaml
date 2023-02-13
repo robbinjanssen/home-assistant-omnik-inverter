@@ -1,0 +1,150 @@
+---
+repos:
+  - repo: local
+    hooks:
+      - id: bandit
+        name: Checking using bandit
+        language: system
+        types: [python]
+        entry: poetry run bandit
+        files: ^customer_components/omnik_inverter/
+        require_serial: true
+      - id: black
+        name: Format using black
+        language: system
+        types: [python]
+        entry: poetry run black
+        require_serial: true
+      - id: blacken-docs
+        name: Format documentation examples using black
+        language: system
+        files: '\.(rst|md|markdown|py|tex)$'
+        entry: poetry run blacken-docs
+        require_serial: true
+      - id: check-ast
+        name: Check Python AST
+        language: system
+        types: [python]
+        entry: poetry run check-ast
+      - id: check-case-conflict
+        name: Check for case conflicts
+        language: system
+        entry: poetry run check-case-conflict
+      - id: check-docstring-first
+        name: Check docstring is first
+        language: system
+        types: [python]
+        entry: poetry run check-docstring-first
+      - id: check-executables-have-shebangs
+        name: Check that executables have shebangs
+        language: system
+        types: [text, executable]
+        entry: poetry run check-executables-have-shebangs
+        stages: [commit, push, manual]
+      - id: check-json
+        name: Check JSON files
+        language: system
+        types: [json]
+        entry: poetry run check-json
+      - id: check-merge-conflict
+        name: Check for merge conflicts
+        language: system
+        types: [text]
+        entry: poetry run check-merge-conflict
+      - id: check-symlinks
+        name: Check for broken symlinks
+        language: system
+        types: [symlink]
+        entry: poetry run check-symlinks
+      - id: check-toml
+        name: Check TOML files
+        language: system
+        types: [toml]
+        entry: poetry run check-toml
+      - id: check-yaml
+        name: Check YAML files
+        language: system
+        types: [yaml]
+        entry: poetry run check-yaml
+      - id: codespell
+        name: Check code for common misspellings
+        language: system
+        types: [text]
+        exclude: ^poetry\.lock$
+        entry: poetry run codespell
+        args: [--ignore-words=.codespell-ignore]
+      - id: debug-statements
+        name: Debug Statements and imports (Python)
+        language: system
+        types: [python]
+        entry: poetry run debug-statement-hook
+      - id: detect-private-key
+        name: Detect Private Keys
+        language: system
+        types: [text]
+        entry: poetry run detect-private-key
+      - id: end-of-file-fixer
+        name: Fix End of Files
+        language: system
+        types: [text]
+        entry: poetry run end-of-file-fixer
+        stages: [commit, push, manual]
+      - id: fix-byte-order-marker
+        name: Fix UTF-8 byte order marker
+        language: system
+        types: [text]
+        entry: poetry run fix-byte-order-marker
+      - id: flake8
+        name: Enforcing style guide with flake8
+        language: system
+        types: [python]
+        entry: poetry run flake8
+        require_serial: true
+      - id: isort
+        name: Sort all imports with isort
+        language: system
+        types: [python]
+        entry: poetry run isort
+      - id: no-commit-to-branch
+        name: Don't commit to main branch
+        language: system
+        entry: poetry run no-commit-to-branch
+        pass_filenames: false
+        always_run: true
+        args:
+          - --branch=main
+      - id: poetry
+        name: Check pyproject with Poetry
+        language: system
+        entry: poetry check
+        pass_filenames: false
+        always_run: true
+      - id: pylint
+        name: Starring code with pylint
+        language: system
+        types: [python]
+        entry: poetry run pylint
+      - id: pyupgrade
+        name: Checking for upgradable syntax with pyupgrade
+        language: system
+        types: [python]
+        entry: poetry run pyupgrade
+        args: [--py39-plus, --keep-runtime-typing]
+      - id: trailing-whitespace
+        name: Trim Trailing Whitespace
+        language: system
+        types: [text]
+        entry: poetry run trailing-whitespace-fixer
+        stages: [commit, push, manual]
+      - id: vulture
+        name: Find unused Python code with Vulture
+        language: system
+        types: [python]
+        entry: poetry run vulture
+        pass_filenames: false
+        require_serial: true
+      - id: yamllint
+        name: Check YAML files with yamllint
+        language: system
+        types: [yaml]
+        entry: poetry run yamllint

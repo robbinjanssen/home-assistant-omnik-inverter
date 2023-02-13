@@ -1,130 +1,69 @@
-"""The Omnik Inverter integration."""
-from __future__ import annotations
-
-from datetime import timedelta
-from typing import TypedDict
-
-from omnikinverter import Device, Inverter, OmnikInverter
-from omnikinverter.exceptions import OmnikInverterError
-
-from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
+"""Omnik Inverter platform configuration."""
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import (
-    CONF_SCAN_INTERVAL,
-    CONF_SERIAL,
-    CONF_SOURCE_TYPE,
-    CONFIGFLOW_VERSION,
-    DEFAULT_SCAN_INTERVAL,
-    DOMAIN,
-    LOGGER,
-    SERVICE_DEVICE,
-    SERVICE_INVERTER,
-)
+from .const import CONFIGFLOW_VERSION, DOMAIN, LOGGER
+from .coordinator import OmnikInverterDataUpdateCoordinator
 
-PLATFORMS = (SENSOR_DOMAIN,)
+PLATFORMS = [Platform.SENSOR]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up Omnik Inverter from a config entry."""
+    """
+    Set up OmnikInverter as config entry.
 
-    scan_interval = timedelta(
-        minutes=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
-    )
-    coordinator = OmnikInverterDataUpdateCoordinator(hass, scan_interval)
-    try:
-        await coordinator.async_config_entry_first_refresh()
-    except ConfigEntryNotReady:
-        raise
+    Args:
+        hass: The HomeAssistant instance.
+        entry: The ConfigEntry containing the user input.
 
+    Returns:
+        Return true after setting up.
+    """
     hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN][entry.entry_id] = coordinator
 
-    hass.config_entries.async_setup_platforms(entry, PLATFORMS)
-    entry.async_on_unload(entry.add_update_listener(async_update_options))
+    coordinator = OmnikInverterDataUpdateCoordinator(hass, entry)
+    await coordinator.async_config_entry_first_refresh()
+
+    hass.data[DOMAIN][entry.entry_id] = coordinator
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Unload a config entry."""
-    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
-    if unload_ok:
-        coordinator = hass.data[DOMAIN].pop(entry.entry_id)
+    """
+    Unload a config entry.
 
+    Args:
+        hass: The HomeAssistant instance.
+        entry: The ConfigEntry containing the user input.
+
+    Returns:
+        Return true if unload was successful, false otherwise.
+    """
+    if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
+        hass.data[DOMAIN].pop(entry.entry_id)
     return unload_ok
 
 
-async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
-    """Migrate old entry."""
+async def async_migrate_entry(
+    hass: HomeAssistant, config_entry: ConfigEntry  # pylint: disable=unused-argument
+):
+    """
+    Migrate an old entry.
+
+    Args:
+        hass: The HomeAssistant instance.
+        config_entry: The ConfigEntry containing the user input.
+
+    Returns:
+        Return false, not possible.
+    """
     if config_entry.version <= 2:
         LOGGER.warning(
-            "Impossible to migrate config version from version %s to version %s.\r\nPlease consider to delete and re-add the integration.",
+            "Impossible to migrate config version from version %s to version %s.\r\nPlease consider to delete and re-add the integration.",  # noqa: E501
             config_entry.version,
             CONFIGFLOW_VERSION,
         )
         return False
-
-
-async def async_update_options(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    """Update options."""
-    await hass.config_entries.async_reload(entry.entry_id)
-
-
-class OmnikInverterData(TypedDict):
-    """Class for defining data in dict."""
-
-    inverter: Inverter
-    device: Device
-
-
-class OmnikInverterDataUpdateCoordinator(DataUpdateCoordinator[OmnikInverterData]):
-    """Class to manage fetching Omnik Inverter data from single endpoint."""
-
-    config_entry: ConfigEntry
-
-    def __init__(
-        self,
-        hass: HomeAssistant,
-        scan_interval: timedelta,
-    ) -> None:
-        """Initialize global Omnik Inverter data updater."""
-        super().__init__(
-            hass,
-            LOGGER,
-            name=DOMAIN,
-            update_interval=scan_interval,
-        )
-
-        if self.config_entry.data[CONF_SOURCE_TYPE] == "html":
-            self.omnikinverter = OmnikInverter(
-                host=self.config_entry.data[CONF_HOST],
-                source_type=self.config_entry.data[CONF_SOURCE_TYPE],
-                username=self.config_entry.data[CONF_USERNAME],
-                password=self.config_entry.data[CONF_PASSWORD],
-            )
-        elif self.config_entry.data[CONF_SOURCE_TYPE] == "tcp":
-            self.omnikinverter = OmnikInverter(
-                host=self.config_entry.data[CONF_HOST],
-                source_type=self.config_entry.data[CONF_SOURCE_TYPE],
-                serial_number=self.config_entry.data[CONF_SERIAL],
-            )
-        else:
-            self.omnikinverter = OmnikInverter(
-                host=self.config_entry.data[CONF_HOST],
-                source_type=self.config_entry.data[CONF_SOURCE_TYPE],
-            )
-
-    async def _async_update_data(self) -> OmnikInverterData:
-        """Fetch data from Omnik Inverter."""
-        try:
-            data: OmnikInverterData = {
-                SERVICE_INVERTER: await self.omnikinverter.inverter(),
-                SERVICE_DEVICE: await self.omnikinverter.device(),
-            }
-            return data
-        except OmnikInverterError as err:
-            raise UpdateFailed(err) from err

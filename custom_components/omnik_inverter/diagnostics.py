@@ -18,7 +18,16 @@ TO_REDACT = {CONF_HOST, CONF_IP_ADDRESS, CONF_SERIAL}
 async def async_get_config_entry_diagnostics(
     hass: HomeAssistant, entry: ConfigEntry
 ) -> dict[str, Any]:
-    """Return diagnostics for a config entry."""
+    """
+    Return diagnostics for a config entry.
+
+    Args:
+        hass: The HomeAssistant instance.
+        entry: The ConfigEntry containing the user input.
+
+    Returns:
+        The created diagnostics object.
+    """
     coordinator: OmnikInverterDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
 
     return {

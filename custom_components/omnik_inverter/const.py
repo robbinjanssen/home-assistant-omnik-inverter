@@ -13,6 +13,7 @@ DEFAULT_SCAN_INTERVAL = 4
 CONF_SOURCE_TYPE = "source_type"
 CONF_SCAN_INTERVAL = "scan_interval"
 CONF_SERIAL = "serial"
+CONF_USE_CACHE = "use_cache"
 
 ATTR_ENTRY_TYPE: Final = "entry_type"
 ENTRY_TYPE_SERVICE: Final = "service"

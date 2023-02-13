@@ -1,0 +1,99 @@
+[tool.poetry]
+name = "home-assistant-omnik-inverter"
+version = "1.1.0"
+description = "Read data from your Omnik Inverter using home assistant."
+authors = ["Robbin Janssen <robbinjanssen@gmail.com>"]
+maintainers = ["Robbin Janssen <robbinjanssen@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/robbinjanssen/home-assistant-omnik-inverter"
+repository = "https://github.com/robbinjanssen/home-assistant-omnik-inverter"
+documentation = "https://github.com/robbinjanssen/home-assistant-omnik-inverter"
+classifiers = [
+    "Framework :: AsyncIO",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+omnikinverter = { git = "https://github.com/klaasnicolaas/python-omnikinverter.git", branch = "main" }
+
+[tool.poetry.group.dev.dependencies]
+bandit = "^1.7.4"
+black = "^22.10"
+blacken-docs = "^1.13.0"
+codespell = "^2.2.2"
+darglint = "^1.8.1"
+flake8 = "^4.0.1"
+flake8-bandit = "^3.0.0"
+flake8-bugbear = "^22.10.27"
+flake8-builtins = "^2.0.1"
+flake8-comprehensions = "^3.10.1"
+flake8-docstrings = "^1.7.0"
+flake8-eradicate = "^1.4.0"
+flake8-markdown = "^0.3.0"
+flake8-simplify = "^0.19.3"
+isort = "^5.10.1"
+pre-commit = "^2.20.0"
+pre-commit-hooks = "^4.4.0"
+pylint = "^2.15.10"
+pyupgrade = "^3.2.2"
+vulture = "^2.7"
+yamllint = "^1.29.0"
+types-cachetools = "^5.2.1"
+
+[tool.black]
+target-version = ['py39']
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.pylint.BASIC]
+good-names = [
+    "_",
+    "ex",
+    "fp",
+    "i",
+    "id",
+    "j",
+    "k",
+    "on",
+    "Run",
+    "T",
+]
+
+[tool.pylint."MESSAGES CONTROL"]
+disable= [
+    "too-few-public-methods",
+    "duplicate-code",
+    "format",
+    "unsubscriptable-object",
+    "import-error",
+    "no-name-in-module",
+    "cyclic-import",
+]
+
+[tool.pylint.SIMILARITIES]
+ignore-imports = true
+
+[tool.pylint.FORMAT]
+max-line-length=88
+
+[tool.pylint.DESIGN]
+max-attributes=20
+
+[tool.vulture]
+min_confidence = 80
+paths = ["custom_components/omnik_inverter"]
+verbose = true
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

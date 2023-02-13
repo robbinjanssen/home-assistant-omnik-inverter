@@ -45,7 +45,8 @@
         "step": {
             "init": {
                 "data": {
-                    "scan_interval": "Minimale tijd tussen entiteitsupdates [m]"
+                    "scan_interval": "Minimale tijd tussen entiteitsupdates [m]",
+                    "use_cache": "Cache de dagopbrengst"
                 },
                 "description": "Verander de manier waarop de integratie uw Omnik-omvormer data ophaalt."
             }

@@ -1,0 +1,3 @@
+---
+exclude_dirs: ['.venv']
+targets: ['custom_components/omnik_inverter']
