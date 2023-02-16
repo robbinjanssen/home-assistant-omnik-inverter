@@ -239,7 +239,9 @@ class OmnikInverterSensor(OmnikInverterEntity, SensorEntity):
         self.entity_id = (
             f"{SENSOR_DOMAIN}.{self._name}_{self.entity_description.key}"  # noqa: E501
         )
-        self._attr_unique_id = f"{self._name}_{service}_{self.entity_description.key}"
+        self._attr_unique_id = (
+            f"{self.entry_id}_{service}_{self.entity_description.key}"
+        )
         self._attr_name = self.entity_description.name
 
     @property

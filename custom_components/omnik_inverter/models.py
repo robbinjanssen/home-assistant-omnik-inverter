@@ -20,6 +20,7 @@ class OmnikInverterEntity(
     _name: str
     coordinator: OmnikInverterDataUpdateCoordinator
     service: str
+    entry_id: str
 
     def __init__(
         self,
@@ -39,6 +40,7 @@ class OmnikInverterEntity(
         self._name = name
         self.coordinator = coordinator
         self.service = service
+        self.entry_id = coordinator.config_entry.entry_id
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -50,7 +52,7 @@ class OmnikInverterEntity(
             to the correct device.
         """
         return DeviceInfo(
-            identifiers={(DOMAIN, f"{self._name}_{self.service}")},
+            identifiers={(DOMAIN, f"{self.entry_id}_{self.service}")},
             name=self.service.title(),
             manufacturer=MANUFACTURER,
             entry_type=DeviceEntryType.SERVICE,
