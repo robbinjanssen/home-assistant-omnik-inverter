@@ -7,7 +7,6 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
-from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from omnikinverter import Device, Inverter, OmnikInverter
 from omnikinverter.exceptions import OmnikInverterAuthError, OmnikInverterError
@@ -60,20 +59,17 @@ class OmnikInverterDataUpdateCoordinator(DataUpdateCoordinator):
                 source_type=self.config_entry.data[CONF_SOURCE_TYPE],
                 username=self.config_entry.data[CONF_USERNAME],
                 password=self.config_entry.data[CONF_PASSWORD],
-                session=async_create_clientsession(hass),
             )
         elif self.config_entry.data[CONF_SOURCE_TYPE] == "tcp":
             self.omnikinverter = OmnikInverter(
                 host=self.config_entry.data[CONF_HOST],
                 source_type=self.config_entry.data[CONF_SOURCE_TYPE],
                 serial_number=self.config_entry.data[CONF_SERIAL],
-                session=async_create_clientsession(hass),
             )
         else:
             self.omnikinverter = OmnikInverter(
                 host=self.config_entry.data[CONF_HOST],
                 source_type=self.config_entry.data[CONF_SOURCE_TYPE],
-                session=async_create_clientsession(hass),
             )
 
     async def _async_update_data(self) -> OmnikInverterData:
