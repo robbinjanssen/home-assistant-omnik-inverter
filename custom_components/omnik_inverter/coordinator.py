@@ -89,9 +89,10 @@ class OmnikInverterDataUpdateCoordinator(DataUpdateCoordinator):
             UpdateFailed: An error occurred when updating the data.
         """
         try:
+            request = await self.omnikinverter.perform_request()
             data: OmnikInverterData = {
-                SERVICE_INVERTER: await self.omnikinverter.inverter(),
-                SERVICE_DEVICE: await self.omnikinverter.device(),
+                SERVICE_INVERTER: request.inverter(),
+                SERVICE_DEVICE: request.device(),
             }
             return data
         except OmnikInverterAuthError as error:
