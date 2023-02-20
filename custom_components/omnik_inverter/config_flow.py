@@ -25,6 +25,7 @@ from .const import (
     CONFIGFLOW_VERSION,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
+    LOGGER,
 )
 
 
@@ -128,6 +129,7 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
                 ) as client:
                     await client.inverter()
             except OmnikInverterError:
+                LOGGER.exception("Failed to connect to the Omnik")
                 errors["base"] = "cannot_connect"
             except Exception as error:  # pylint: disable=broad-exception-caught
                 errors["base"] = str(error)
@@ -178,6 +180,7 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
                 ) as client:
                     await client.inverter()
             except OmnikInverterError:
+                LOGGER.exception("Failed to connect to the Omnik")
                 errors["base"] = "cannot_connect"
             except Exception as error:  # pylint: disable=broad-exception-caught
                 errors["base"] = str(error)
@@ -231,6 +234,7 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
                 ) as client:
                     await client.inverter()
             except OmnikInverterError:
+                LOGGER.exception("Failed to connect to the Omnik")
                 errors["base"] = "cannot_connect"
             except Exception as error:  # pylint: disable=broad-except
                 errors["base"] = str(error)
