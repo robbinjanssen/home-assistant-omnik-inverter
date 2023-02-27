@@ -1,16 +1,16 @@
 {
   "domain": "omnik_inverter",
   "name": "Omnik Inverter",
-  "config_flow": true,
-  "version": "2.5.1",
-  "documentation": "https://github.com/robbinjanssen/home-assistant-omnik-inverter",
-  "issue_tracker": "https://github.com/robbinjanssen/home-assistant-omnik-inverter/issues",
   "codeowners": [
     "@robbinjanssen",
     "@klaasnicolaas"
   ],
+  "config_flow": true,
+  "documentation": "https://github.com/robbinjanssen/home-assistant-omnik-inverter",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/robbinjanssen/home-assistant-omnik-inverter/issues",
   "requirements": [
     "omnikinverter==0.9.0"
   ],
-  "iot_class": "local_polling"
+  "version": "2.5.3"
 }
