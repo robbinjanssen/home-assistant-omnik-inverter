@@ -25,7 +25,7 @@ python = "^3.10"
 omnikinverter = { git = "https://github.com/klaasnicolaas/python-omnikinverter.git", branch = "main" }
 
 [tool.poetry.group.dev.dependencies]
-bandit = "^1.7.4"
+bandit = "^1.7.5"
 black = "^23.1"
 blacken-docs = "^1.13.0"
 codespell = "^2.2.4"
