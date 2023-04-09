@@ -296,7 +296,7 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
             return self.async_create_entry(title="", data=user_input)
 
         fields = {}
-        if self.source_type == "HTML":
+        if self.source_type == "html":
             fields[vol.Required(CONF_HOST,
                 default=self.config_entry.options.get(CONF_HOST))] = str
             fields[vol.Required(CONF_USERNAME,
