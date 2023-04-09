@@ -295,29 +295,20 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
+        fields = {}
+        if self.source_type == "HTML":
+            fields[vol.Required(CONF_HOST,
+                default=self.config_entry.options.get(CONF_HOST))] = str
+            fields[vol.Required(CONF_USERNAME,
+                default=self.config_entry.options.get(CONF_USERNAME))] = str
+            fields[vol.Required(CONF_PASSWORD,
+                default=self.config_entry.options.get(CONF_PASSWORD))] = TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD))
+
+        fields[vol.Optional(CONF_SCAN_INTERVAL,
+            default=self.config_entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))] = vol.All(vol.Coerce(int), vol.Range(min=1))
+        fields[vol.Optional(CONF_USE_CACHE, default=False)] = bool
+
         return self.async_show_form(
             step_id="init",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(
-                        CONF_HOST,
-                        default=self.config_entry.options.get(CONF_HOST),
-                    ): str,
-                    vol.Required(
-                        CONF_USERNAME,
-                        default=self.config_entry.options.get(CONF_USERNAME),
-                    ): str,
-                    vol.Required(
-                        CONF_PASSWORD,
-                        default=self.config_entry.options.get(CONF_PASSWORD),
-                    ): TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD)),
-                    vol.Optional(
-                        CONF_SCAN_INTERVAL,
-                        default=self.config_entry.options.get(
-                            CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
-                        ),
-                    ): vol.All(vol.Coerce(int), vol.Range(min=1)),
-                    vol.Optional(CONF_USE_CACHE, default=False): bool,
-                }
-            ),
+            data_schema=vol.Schema(fields),
         )
