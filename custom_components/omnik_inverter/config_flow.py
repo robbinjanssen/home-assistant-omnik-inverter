@@ -15,6 +15,11 @@ from homeassistant.const import (
 )
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
+from homeassistant.helpers.selector import (
+    TextSelector,
+    TextSelectorConfig,
+    TextSelectorType,
+)
 from omnikinverter import OmnikInverter, OmnikInverterError
 
 from .const import (
@@ -294,6 +299,18 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
             step_id="init",
             data_schema=vol.Schema(
                 {
+                    vol.Required(
+                        CONF_HOST,
+                        default=self.config_entry.options.get(CONF_HOST),
+                    ): str,
+                    vol.Required(
+                        CONF_USERNAME,
+                        default=self.config_entry.options.get(CONF_USERNAME),
+                    ): str,
+                    vol.Required(
+                        CONF_PASSWORD,
+                        default=self.config_entry.options.get(CONF_PASSWORD),
+                    ): TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD)),
                     vol.Optional(
                         CONF_SCAN_INTERVAL,
                         default=self.config_entry.options.get(
