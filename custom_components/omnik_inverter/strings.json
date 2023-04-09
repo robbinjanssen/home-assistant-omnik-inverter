@@ -36,6 +36,9 @@
       "init": {
         "description": "Change the way the integration fetches your Omnik Inverter.",
         "data": {
+          "host": "[%key:common::config_flow::data::host%]",
+          "username": "[%key:common::config_flow::data::username%]",
+          "password": "[%key:common::config_flow::data::password%]",
           "scan_interval": "Minimum time between entity updates [m]",
           "use_cache": "Cache the total power of today"
         }
