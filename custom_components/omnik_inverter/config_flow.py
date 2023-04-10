@@ -280,7 +280,7 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
         """
         self.config_entry = config_entry
         self.options = config_entry.options
-        self.source_type = config_entry.options[CONF_TYPE]
+        self.source_type = config_entry.data[CONF_SOURCE_TYPE]
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
@@ -296,16 +296,30 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
         """
         if user_input is not None:
             await validate_input(user_input)
-            return self.async_create_entry(title="", data=user_input)
+
+            updated_config = {}
+            for key in (CONF_HOST, CONF_USERNAME, CONF_PASSWORD):
+                updated_config[key] = user_input[key]
+
+            self.hass.config_entries.async_update_entry(
+                self.config_entry,
+                data=updated_config,
+                title=str(updated_config[CONF_HOST]),
+            )
+
+            options = {}
+            for key in (CONF_SCAN_INTERVAL, CONF_USE_CACHE):
+                options[key] = user_input[key]
+            return self.async_create_entry(title="", data=options)
 
         fields = {}
         if self.source_type == "html":
             fields[vol.Required(CONF_HOST,
-                default=self.config_entry.options.get(CONF_HOST))] = str
+                default=self.config_entry.data.get(CONF_HOST))] = str
             fields[vol.Required(CONF_USERNAME,
-                default=self.config_entry.options.get(CONF_USERNAME))] = str
+                default=self.config_entry.data.get(CONF_USERNAME))] = str
             fields[vol.Required(CONF_PASSWORD,
-                default=self.config_entry.options.get(CONF_PASSWORD))] = TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD))
+                default=self.config_entry.data.get(CONF_PASSWORD))] = TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD))
 
         fields[vol.Optional(CONF_SCAN_INTERVAL,
             default=self.config_entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))] = vol.All(vol.Coerce(int), vol.Range(min=1))
