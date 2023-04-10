@@ -294,6 +294,7 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
             The created config entry.
         """
         if user_input is not None:
+            await validate_input(user_input)
             return self.async_create_entry(title="", data=user_input)
 
         fields = {}
