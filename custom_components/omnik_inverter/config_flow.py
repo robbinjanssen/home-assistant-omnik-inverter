@@ -309,7 +309,7 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
                     if key in user_input:
                         updated_config[key] = user_input[key]
 
-                new_title = str(user_input[CONF_NAME]) if user_input[CONF_NAME] else None
+                new_title = str(user_input[CONF_NAME]) if user_input.get(CONF_NAME) else None
                 self.hass.config_entries.async_update_entry(
                     self.config_entry,
                     data=updated_config,
