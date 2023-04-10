@@ -312,6 +312,7 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
                 self.hass.config_entries.async_update_entry(
                     self.config_entry,
                     data=updated_config,
+                    title=str(user_input[CONF_NAME]),
                 )
 
                 options = {}
@@ -319,9 +320,14 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
                     options[key] = user_input[key]
                 return self.async_create_entry(title="", data=options)
 
-        fields = {}
-        fields[vol.Required(CONF_HOST,
-            default=self.config_entry.data.get(CONF_HOST))] = str
+        fields = {
+                vol.Optional(
+                    CONF_NAME, default=self.hass.config.location_name
+                ): str,
+                vol.Required(
+                    CONF_HOST, default=self.config_entry.data.get(CONF_HOST)
+                ): = str
+        }
 
         if self.source_type == "html":
             fields[vol.Required(CONF_USERNAME,
