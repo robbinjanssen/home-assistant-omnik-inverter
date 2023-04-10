@@ -326,7 +326,7 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
                 ): str,
                 vol.Required(
                     CONF_HOST, default=self.config_entry.data.get(CONF_HOST)
-                ): = str
+                ): str
         }
 
         if self.source_type == "html":
