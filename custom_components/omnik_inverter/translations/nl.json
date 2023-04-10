@@ -45,6 +45,7 @@
         "step": {
             "init": {
                 "data": {
+                    "name": "Naam",
                     "host": "Host",
                     "username": "Gebruikersnaam",
                     "password": "Wachtwoord",
