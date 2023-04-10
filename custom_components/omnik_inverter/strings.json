@@ -36,6 +36,7 @@
       "init": {
         "description": "Change the way the integration fetches your Omnik Inverter.",
         "data": {
+          "name": "[%key:common::config_flow::data::name%]",
           "host": "[%key:common::config_flow::data::host%]",
           "username": "[%key:common::config_flow::data::username%]",
           "password": "[%key:common::config_flow::data::password%]",
