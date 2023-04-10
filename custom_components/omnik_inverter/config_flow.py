@@ -297,7 +297,7 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
         if user_input is not None:
             await validate_input(user_input)
 
-            updated_config = {}
+            updated_config = {CONF_SOURCE_TYPE: self.source_type}
             for key in (CONF_HOST, CONF_USERNAME, CONF_PASSWORD, CONF_SERIAL):
                 if key in user_input:
                     updated_config[key] = user_input[key]
