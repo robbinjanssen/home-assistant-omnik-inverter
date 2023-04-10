@@ -294,23 +294,31 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
         Returns:
             The created config entry.
         """
+        errors = {}
+
         if user_input is not None:
-            await validate_input(user_input)
+            try:
+                await validate_input(user_input)
+            except OmnikInverterError:
+                LOGGER.exception("Failed to connect to the Omnik")
+                errors["base"] = "cannot_connect"
+            except Exception as error:  # pylint: disable=broad-except
+                errors["base"] = str(error)
+            else:
+                updated_config = {CONF_SOURCE_TYPE: self.source_type}
+                for key in (CONF_HOST, CONF_USERNAME, CONF_PASSWORD, CONF_SERIAL):
+                    if key in user_input:
+                        updated_config[key] = user_input[key]
 
-            updated_config = {CONF_SOURCE_TYPE: self.source_type}
-            for key in (CONF_HOST, CONF_USERNAME, CONF_PASSWORD, CONF_SERIAL):
-                if key in user_input:
-                    updated_config[key] = user_input[key]
+                self.hass.config_entries.async_update_entry(
+                    self.config_entry,
+                    data=updated_config,
+                )
 
-            self.hass.config_entries.async_update_entry(
-                self.config_entry,
-                data=updated_config,
-            )
-
-            options = {}
-            for key in (CONF_SCAN_INTERVAL, CONF_USE_CACHE):
-                options[key] = user_input[key]
-            return self.async_create_entry(title="", data=options)
+                options = {}
+                for key in (CONF_SCAN_INTERVAL, CONF_USE_CACHE):
+                    options[key] = user_input[key]
+                return self.async_create_entry(title="", data=options)
 
         fields = {}
         fields[vol.Required(CONF_HOST,
@@ -327,9 +335,10 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
 
         fields[vol.Optional(CONF_SCAN_INTERVAL,
             default=self.config_entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))] = vol.All(vol.Coerce(int), vol.Range(min=1))
-        fields[vol.Optional(CONF_USE_CACHE, default=False)] = bool
+        fields[vol.Operrorstional(CONF_USE_CACHE, default=False)] = bool
 
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema(fields),
+            errors=errors,
         )
