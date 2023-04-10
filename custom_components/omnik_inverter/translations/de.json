@@ -45,7 +45,7 @@
         "step": {
             "init": {
                 "data": {
-                    "name": "Name",
+                    "name": "Neuer Name (leer = keine Änderung)",
                     "host": "Host",
                     "username": "Benutzername",
                     "password": "Passwort",      
