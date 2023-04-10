@@ -298,8 +298,9 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
             await validate_input(user_input)
 
             updated_config = {}
-            for key in (CONF_HOST, CONF_USERNAME, CONF_PASSWORD):
-                updated_config[key] = user_input[key]
+            for key in (CONF_HOST, CONF_USERNAME, CONF_PASSWORD, CONF_SERIAL):
+                if key in user_input:
+                    updated_config[key] = user_input[key]
 
             self.hass.config_entries.async_update_entry(
                 self.config_entry,
@@ -313,13 +314,17 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
             return self.async_create_entry(title="", data=options)
 
         fields = {}
+        fields[vol.Required(CONF_HOST,
+            default=self.config_entry.data.get(CONF_HOST))] = str
+
         if self.source_type == "html":
-            fields[vol.Required(CONF_HOST,
-                default=self.config_entry.data.get(CONF_HOST))] = str
             fields[vol.Required(CONF_USERNAME,
                 default=self.config_entry.data.get(CONF_USERNAME))] = str
             fields[vol.Required(CONF_PASSWORD,
                 default=self.config_entry.data.get(CONF_PASSWORD))] = TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD))
+        elif self.source_type == "tcp":
+            fields[vol.Required(CONF_SERIAL,
+                default=self.config_entry.data.get(CONF_SERIAL))] = str
 
         fields[vol.Optional(CONF_SCAN_INTERVAL,
             default=self.config_entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))] = vol.All(vol.Coerce(int), vol.Range(min=1))
