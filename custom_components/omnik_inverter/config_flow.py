@@ -322,11 +322,11 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
 
         fields = {
                 vol.Optional(
-                    CONF_NAME, default=self.hass.config.location_name
+                    CONF_NAME, default=self.hass.config.location_name,
                 ): str,
                 vol.Required(
-                    CONF_HOST, default=self.config_entry.data.get(CONF_HOST)
-                ): str
+                    CONF_HOST, default=self.config_entry.data.get(CONF_HOST),
+                ): str,
         }
 
         if self.source_type == "html":
@@ -340,7 +340,7 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
 
         fields[vol.Optional(CONF_SCAN_INTERVAL,
             default=self.config_entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))] = vol.All(vol.Coerce(int), vol.Range(min=1))
-        fields[vol.Operrorstional(CONF_USE_CACHE, default=False)] = bool
+        fields[vol.Optional(CONF_USE_CACHE, default=False)] = bool
 
         return self.async_show_form(
             step_id="init",
