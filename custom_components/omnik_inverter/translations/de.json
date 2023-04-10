@@ -45,6 +45,10 @@
         "step": {
             "init": {
                 "data": {
+                    "host": "Host",
+                    "username": "Benutzername",
+                    "password": "Passwort",      
+                    "serial": "Seriennummer",
                     "scan_interval": "Aktualisierungsintervall der Daten (Minuten)",
                     "use_cache": "Den gesamten Tagesumsatz zwischenspeichern"
                 },
