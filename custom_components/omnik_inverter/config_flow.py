@@ -309,18 +309,11 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
                     if key in user_input:
                         updated_config[key] = user_input[key]
 
-                new_title = user_input.get(CONF_NAME)
-                if new_title:
-                    self.hass.config_entries.async_update_entry(
-                        self.config_entry,
-                        data=updated_config,
-                        title=new_title,
-                    )
-                else:
-                    self.hass.config_entries.async_update_entry(
-                        self.config_entry,
-                        data=updated_config,
-                    )
+                self.hass.config_entries.async_update_entry(
+                    self.config_entry,
+                    data=updated_config,
+                    title=user_input.get(CONF_NAME),
+                )
 
                 options = {}
                 for key in (CONF_SCAN_INTERVAL, CONF_USE_CACHE):
@@ -329,7 +322,7 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
 
         fields = {
                 vol.Optional(
-                    CONF_NAME,
+                    CONF_NAME, default=self.config_entry.title,
                 ): str,
                 vol.Required(
                     CONF_HOST, default=self.config_entry.data.get(CONF_HOST),
