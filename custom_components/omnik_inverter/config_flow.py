@@ -305,7 +305,6 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
             self.hass.config_entries.async_update_entry(
                 self.config_entry,
                 data=updated_config,
-                title=str(updated_config[CONF_HOST]),
             )
 
             options = {}
