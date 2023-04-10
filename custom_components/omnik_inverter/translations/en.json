@@ -45,6 +45,7 @@
         "step": {
             "init": {
                 "data": {
+                    "name": "Name",
                     "host": "Host",
                     "username": "Username",
                     "password": "Password",
