@@ -321,25 +321,42 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
                 return self.async_create_entry(title="", data=options)
 
         fields = {
-                vol.Optional(
-                    CONF_NAME, default=self.config_entry.title,
-                ): str,
-                vol.Required(
-                    CONF_HOST, default=self.config_entry.data.get(CONF_HOST),
-                ): str,
+            vol.Optional(
+                CONF_NAME,
+                default=self.config_entry.title,
+            ): str,
+            vol.Required(
+                CONF_HOST,
+                default=self.config_entry.data.get(CONF_HOST),
+            ): str,
         }
 
         if self.source_type == "html":
-            fields[vol.Required(CONF_USERNAME,
-                default=self.config_entry.data.get(CONF_USERNAME))] = str
-            fields[vol.Required(CONF_PASSWORD,
-                default=self.config_entry.data.get(CONF_PASSWORD))] = TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD))
+            fields[
+                vol.Required(
+                    CONF_USERNAME, default=self.config_entry.data.get(CONF_USERNAME)
+                )
+            ] = str
+            fields[
+                vol.Required(
+                    CONF_PASSWORD, default=self.config_entry.data.get(CONF_PASSWORD)
+                )
+            ] = TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD))
         elif self.source_type == "tcp":
-            fields[vol.Required(CONF_SERIAL,
-                default=self.config_entry.data.get(CONF_SERIAL))] = str
+            fields[
+                vol.Required(
+                    CONF_SERIAL, default=self.config_entry.data.get(CONF_SERIAL)
+                )
+            ] = str
 
-        fields[vol.Optional(CONF_SCAN_INTERVAL,
-            default=self.config_entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))] = vol.All(vol.Coerce(int), vol.Range(min=1))
+        fields[
+            vol.Optional(
+                CONF_SCAN_INTERVAL,
+                default=self.config_entry.options.get(
+                    CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
+                ),
+            )
+        ] = vol.All(vol.Coerce(int), vol.Range(min=1))
         fields[vol.Optional(CONF_USE_CACHE, default=False)] = bool
 
         return self.async_show_form(
