@@ -45,6 +45,11 @@
         "step": {
             "init": {
                 "data": {
+                    "name": "Naam",
+                    "host": "Host",
+                    "username": "Gebruikersnaam",
+                    "password": "Wachtwoord",
+                    "serial": "Serienummer",
                     "scan_interval": "Minimale tijd tussen entiteitsupdates [m]",
                     "use_cache": "Cache de dagopbrengst"
                 },

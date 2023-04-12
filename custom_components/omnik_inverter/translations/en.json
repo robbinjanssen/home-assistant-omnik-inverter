@@ -45,6 +45,11 @@
         "step": {
             "init": {
                 "data": {
+                    "name": "Name",
+                    "host": "Host",
+                    "username": "Username",
+                    "password": "Password",
+                    "serial": "Serial Number",
                     "scan_interval": "Minimum time between entity updates [m]",
                     "use_cache": "Cache the total power of today"
                 },
