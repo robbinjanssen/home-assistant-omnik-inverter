@@ -1,7 +1,7 @@
 ---
 name-template: 'v$RESOLVED_VERSION'
 tag-template: 'v$RESOLVED_VERSION'
-change-template: '- [#$NUMBER]($URL) $TITLE [@$AUTHOR](https://github.com/$AUTHOR)'
+change-template: '- [#$NUMBER]($URL) $TITLE ([@$AUTHOR](https://github.com/$AUTHOR))'
 sort-direction: ascending
 
 exclude-labels:
