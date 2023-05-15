@@ -347,7 +347,7 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
                 vol.Required(
                     CONF_SERIAL, default=self.config_entry.data.get(CONF_SERIAL)
                 )
-            ] = str
+            ] = int
 
         fields[
             vol.Optional(
