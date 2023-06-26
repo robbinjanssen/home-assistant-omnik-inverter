@@ -49,12 +49,17 @@ This is how your custom_components directory should be:
 custom_components
 ├── omnik_inverter
 │   ├── translations
+│   │   ├── de.json
 │   │   ├── en.json
 │   │   └── nl.json
 │   ├── __init__.py
+│   ├── binary_sensor.py
 │   ├── config_flow.py
 │   ├── const.py
+│   ├── coordinator.py
+│   ├── diagnostics.py
 │   ├── manifest.json
+│   ├── models.py
 │   ├── sensor.py
 │   └── strings.json
 ```
