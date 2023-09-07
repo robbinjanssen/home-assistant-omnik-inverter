@@ -33,8 +33,8 @@ Add this component using HACS by searching for `Omnik Inverter Solar Sensor (No 
 
 ## Manual installation
 
-Create a directory called `omnik_inverter` in the `<config directory>/custom_components/` directory on your Home Assistant instance.
-Install this component by copying all files in `/custom_components/omnik_inverter/` folder from this repo into the new `<config directory>/custom_components/omnik_inverter/` directory you just created.
+Create a directory called `omnik_inverter` in the `<config directory>/custom_components/` directory on your Home Assistant instance. In many installations, the <config directory> is where the configuration.yaml file is located. Create the directory custom_components first if it does not exist yet.
+Install this component by copying all files in `/custom_components/omnik_inverter/` folder from this repo into the new `<config directory>/custom_components/omnik_inverter/` directory you just created. 
 
 This is how your custom_components directory should be:
 ```bash
@@ -50,6 +50,7 @@ custom_components
 │   ├── sensor.py
 │   └── strings.json
 ```
+Make sure to set the permissions and ownership so that hass has proper access. Restart the hass service so the integration can be installed.
 
 ## Configuration
 
@@ -57,7 +58,7 @@ custom_components
 
 To configure the component, add it using [Home Assistant integrations][ha-add-url]. This will provide you with a configuration screen where you can first select the data source. Again, most inverters use JS. Some use JSON and in some rare cases HTML is used.
 
-After selecting the data source, enter a name and IP address and you're good to go!
+After selecting the data source, enter a name, IP address and -if required- the Serial Number, and you're good to go!
 
 _Optionally you can update the scan interval in the integration settings._
 
