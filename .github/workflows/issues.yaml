@@ -26,7 +26,7 @@ jobs:
 
     steps:
       - name: Run stale
-        uses: actions/stale@v8
+        uses: actions/stale@v9
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           days-before-stale: 30
