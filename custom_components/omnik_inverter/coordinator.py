@@ -94,9 +94,9 @@ class OmnikInverterDataUpdateCoordinator(DataUpdateCoordinator):
             }
             return data
         except OmnikInverterAuthError as error:
-            _LOGGER.exception("Failed to authenticate with the Omnik")
+            _LOGGER.debug("Failed to authenticate with the Omnik", exc_info=True)
             raise ConfigEntryAuthFailed from error
 
         except OmnikInverterError as error:
-            _LOGGER.exception("Failed to connect to the Omnik")
+            _LOGGER.debug("Failed to connect to the Omnik", exc_info=True)
             raise UpdateFailed(error) from error
