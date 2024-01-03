@@ -10,7 +10,7 @@
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/robbinjanssen/home-assistant-omnik-inverter/issues",
   "requirements": [
-    "omnikinverter==0.9.0"
+    "omnikinverter==0.9.1"
   ],
-  "version": "2.5.3"
+  "version": "2.6.3"
 }
