@@ -132,7 +132,7 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
                     host=user_input[CONF_HOST],
                     source_type=self.source_type,
                 ) as client:
-                    await client.inverter()
+                    await client.perform_request()
             except OmnikInverterError:
                 LOGGER.exception("Failed to connect to the Omnik")
                 errors["base"] = "cannot_connect"
@@ -183,7 +183,7 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
                     username=user_input[CONF_USERNAME],
                     password=user_input[CONF_PASSWORD],
                 ) as client:
-                    await client.inverter()
+                    await client.perform_request()
             except OmnikInverterError:
                 LOGGER.exception("Failed to connect to the Omnik")
                 errors["base"] = "cannot_connect"
@@ -237,7 +237,7 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
                     source_type=self.source_type,
                     serial_number=user_input[CONF_SERIAL],
                 ) as client:
-                    await client.inverter()
+                    await client.perform_request()
             except OmnikInverterError:
                 LOGGER.exception("Failed to connect to the Omnik")
                 errors["base"] = "cannot_connect"
