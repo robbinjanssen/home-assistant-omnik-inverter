@@ -1,4 +1,5 @@
 """Omnik Inverter platform configuration."""
+
 import logging
 from datetime import timedelta
 from typing import TypedDict
