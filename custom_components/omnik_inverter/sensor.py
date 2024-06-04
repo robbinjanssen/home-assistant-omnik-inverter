@@ -1,4 +1,5 @@
 """Support for Omnik Inverter sensors."""
+
 from __future__ import annotations
 
 import dataclasses
