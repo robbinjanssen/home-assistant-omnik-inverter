@@ -1207,13 +1207,13 @@ files = [
 
 [[package]]
 name = "types-cachetools"
-version = "5.4.0.20240717"
+version = "5.5.0.20240820"
 description = "Typing stubs for cachetools"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "types-cachetools-5.4.0.20240717.tar.gz", hash = "sha256:1eae90c48760bac44ab89108be938e8ce1d740910f2d4b68446dcdc82763f186"},
-    {file = "types_cachetools-5.4.0.20240717-py3-none-any.whl", hash = "sha256:67c84c26df988039be68344b162afd2dd7cd3741dc08e7d67aa1954782fd2d2a"},
+    {file = "types-cachetools-5.5.0.20240820.tar.gz", hash = "sha256:b888ab5c1a48116f7799cd5004b18474cd82b5463acb5ffb2db2fc9c7b053bc0"},
+    {file = "types_cachetools-5.5.0.20240820-py3-none-any.whl", hash = "sha256:efb2ed8bf27a4b9d3ed70d33849f536362603a90b8090a328acf0cd42fda82e2"},
 ]
 
 [[package]]
@@ -1371,4 +1371,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "0ed5d9e74fa2e4a0852a5b252c13df1b9a2956da4459d8a445a917535569d900"
+content-hash = "664abe45989a784610defba8a8fcb33f9b98e7f216f7f129f48e15233a7eab4c"
