@@ -44,7 +44,7 @@ pre-commit = "^3.8.0"
 pre-commit-hooks = "^4.6.0"
 pylint = "^3.2.6"
 pyupgrade = "^3.17.0"
-vulture = "^2.11"
+vulture = "^2.13"
 yamllint = "^1.35.1"
 types-cachetools = "^5.4.0"
 
