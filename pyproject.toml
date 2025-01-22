@@ -28,7 +28,7 @@ omnikinverter = { git = "https://github.com/klaasnicolaas/python-omnikinverter.g
 bandit = "^1.7.9"
 black = "^24.8"
 blacken-docs = "^1.18.0"
-codespell = "^2.3.0"
+codespell = "^2.4.0"
 darglint = "^1.8.1"
 flake8 = "^4.0.1"
 flake8-bandit = "^3.0.0"
