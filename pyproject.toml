@@ -46,7 +46,7 @@ pylint = "^3.3.8"
 pyupgrade = "^3.19.1"
 vulture = "^2.14"
 yamllint = "^1.37.1"
-types-cachetools = "^6.1.0"
+types-cachetools = "^6.2.0"
 
 [tool.black]
 target-version = ['py311']
