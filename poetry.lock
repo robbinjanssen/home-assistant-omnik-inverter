@@ -1042,14 +1042,14 @@ testutils = ["gitpython (>3)"]
 
 [[package]]
 name = "pyupgrade"
-version = "3.19.1"
+version = "3.21.2"
 description = "A tool to automatically upgrade syntax for newer versions."
 optional = false
-python-versions = ">=3.9"
+python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "pyupgrade-3.19.1-py2.py3-none-any.whl", hash = "sha256:8c5b0bfacae5ff30fa136a53eb7f22c34ba007450d4099e9da8089dabb9e67c9"},
-    {file = "pyupgrade-3.19.1.tar.gz", hash = "sha256:d10e8c5f54b8327211828769e98d95d95e4715de632a3414f1eef3f51357b9e2"},
+    {file = "pyupgrade-3.21.2-py2.py3-none-any.whl", hash = "sha256:2ac7b95cbd176475041e4dfe8ef81298bd4654a244f957167bd68af37d52be9f"},
+    {file = "pyupgrade-3.21.2.tar.gz", hash = "sha256:1a361bea39deda78d1460f65d9dd548d3a36ff8171d2482298539b9dc11c9c06"},
 ]
 
 [package.dependencies]
@@ -1437,4 +1437,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "ee1f8bf98b6f4522bd713154898a9b6b7da162cd224c1aaad5e36684296e885d"
+content-hash = "65a3386c4747809af3a983ea9fdfc8b334256dd27a030bebce8a277d75dc80ad"
