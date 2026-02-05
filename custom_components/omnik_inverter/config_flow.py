@@ -80,7 +80,7 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
         Returns:
             The created config flow.
         """
-        return OmnikInverterOptionsFlowHandler(config_entry)
+        return OmnikInverterOptionsFlowHandler()
 
     async def async_step_user(
         self, user_input=None, errors: dict[str, str] | None = None
@@ -272,15 +272,6 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):
 class OmnikInverterOptionsFlowHandler(OptionsFlow):
     """Handle options."""
 
-    def __init__(self, config_entry: ConfigEntry) -> None:
-        """
-        Initialize options flow.
-
-        Args:
-            config_entry: The ConfigEntry instance.
-        """
-        self.source_type = config_entry.data[CONF_SOURCE_TYPE]
-
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
@@ -295,6 +286,8 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
         """
         errors = {}
 
+        source_type = config_entry.data[CONF_SOURCE_TYPE]
+
         if user_input is not None:
             try:
                 await validate_input(user_input)
@@ -304,7 +297,7 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
             except Exception as error:  # pylint: disable=broad-except
                 errors["base"] = str(error)
             else:
-                updated_config = {CONF_SOURCE_TYPE: self.source_type}
+                updated_config = {CONF_SOURCE_TYPE: source_type}
                 for key in (CONF_HOST, CONF_USERNAME, CONF_PASSWORD, CONF_SERIAL):
                     if key in user_input:
                         updated_config[key] = user_input[key]
@@ -331,7 +324,7 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
             ): str,
         }
 
-        if self.source_type == "html":
+        if source_type == "html":
             fields[
                 vol.Required(
                     CONF_USERNAME, default=self.config_entry.data.get(CONF_USERNAME)
@@ -342,7 +335,7 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
                     CONF_PASSWORD, default=self.config_entry.data.get(CONF_PASSWORD)
                 )
             ] = TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD))
-        elif self.source_type == "tcp":
+        elif source_type == "tcp":
             fields[
                 vol.Required(
                     CONF_SERIAL, default=self.config_entry.data.get(CONF_SERIAL)
