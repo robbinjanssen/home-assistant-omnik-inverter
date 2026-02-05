@@ -279,7 +279,6 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
         Args:
             config_entry: The ConfigEntry instance.
         """
-        self.config_entry = config_entry
         self.source_type = config_entry.data[CONF_SOURCE_TYPE]
 
     async def async_step_init(
