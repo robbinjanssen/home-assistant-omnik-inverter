@@ -286,7 +286,7 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
         """
         errors = {}
 
-        source_type = config_entry.data[CONF_SOURCE_TYPE]
+        source_type = self.config_entry.data[CONF_SOURCE_TYPE]
 
         if user_input is not None:
             try:
