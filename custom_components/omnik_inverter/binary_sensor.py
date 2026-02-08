@@ -83,7 +83,6 @@ class OmnikInverterBinarySensor(OmnikInverterEntity, BinarySensorEntity):
         self._attr_has_entity_name = True
 
         self._attr_unique_id = f"{self._name}_{service}_{self.entity_description.key}"
-        self._attr_name = self.entity_description.name
 
     @property
     def is_on(self) -> bool:
