@@ -56,5 +56,27 @@
                 "description": "Ändere deine Omnik Inverter Integration."
             }
         }
-    }
+    },
+    "sensor": {
+        "signal_quality": { "name": "Signalqualität" },
+        "ip_address": { "name": "IP-Adresse" },
+
+        "solar_current_power": { "name": "Aktuelle Leistungsproduktion" },
+        "solar_energy_today": { "name": "Solarproduktion heute" },
+        "solar_energy_total": { "name": "Solarproduktion gesamt" },
+        "solar_hours_total": { "name": "Solarproduktion Betriebsstunden" },
+        "temperature": { "name": "Wechselrichtertemperatur" },
+        "alarm_code": { "name": "Alarmcode" },
+
+        "dc_input_{}_voltage": { "name": "DC-Eingang {} Spannung" },
+        "dc_input_{}_current": { "name": "DC-Eingang {} Strom" },
+
+        "ac_output_{}_voltage": { "name": "AC-Ausgang {} Spannung" },
+        "ac_output_{}_current": { "name": "AC-Ausgang {} Strom" },
+        "ac_output_{}_power": { "name": "AC-Ausgang {} Leistung" },
+        "ac_output_{}_frequency": { "name": "AC-Ausgang {} Frequenz" }
+    },
+    "binary_sensor": {
+        "online": { "name": "Online" }
+    }    
 }

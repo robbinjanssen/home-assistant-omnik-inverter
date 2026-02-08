@@ -56,5 +56,27 @@
                 "description": "Verander de manier waarop de integratie uw Omnik-omvormer data ophaalt."
             }
         }
-    }
+    },
+    "sensor": {
+        "signal_quality": { "name": "Signaalkwaliteit" },
+        "ip_address": { "name": "IP-adres" },
+
+        "solar_current_power": { "name": "Huidige vermogensproductie" },
+        "solar_energy_today": { "name": "Zonneproductie vandaag" },
+        "solar_energy_total": { "name": "Zonneproductie totaal" },
+        "solar_hours_total": { "name": "Zonneproductie bedrijfsuren" },
+        "temperature": { "name": "Omvormertemperatuur" },
+        "alarm_code": { "name": "Alarmcode" },
+
+        "dc_input_{}_voltage": { "name": "DC-ingang {} spanning" },
+        "dc_input_{}_current": { "name": "DC-ingang {} stroom" },
+
+        "ac_output_{}_voltage": { "name": "AC-uitgang {} spanning" },
+        "ac_output_{}_current": { "name": "AC-uitgang {} stroom" },
+        "ac_output_{}_power": { "name": "AC-uitgang {} vermogen" },
+        "ac_output_{}_frequency": { "name": "AC-uitgang {} frequentie" }
+    },
+    "binary_sensor": {
+        "online": { "name": "Online" }
+    }    
 }
