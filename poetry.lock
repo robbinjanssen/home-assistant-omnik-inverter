@@ -125,18 +125,6 @@ files = [
 frozenlist = ">=1.1.0"
 
 [[package]]
-name = "astor"
-version = "0.8.1"
-description = "Read/rewrite/write Python ASTs"
-optional = false
-python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.7"
-groups = ["dev"]
-files = [
-    {file = "astor-0.8.1-py2.py3-none-any.whl", hash = "sha256:070a54e890cefb5b3739d19f30f5a5ec840ffc9c50ffa7d23cc9fc1a38ebbfc5"},
-    {file = "astor-0.8.1.tar.gz", hash = "sha256:6a6effda93f4e1ce9f618779b2dd1d9d84f1e32812c23a29b3fff6fd7f63fa5e"},
-]
-
-[[package]]
 name = "astroid"
 version = "3.3.8"
 description = "An abstract syntax tree for Python with inference support."
@@ -532,18 +520,17 @@ flake8 = "*"
 
 [[package]]
 name = "flake8-simplify"
-version = "0.21.0"
+version = "0.30.0"
 description = "flake8 plugin which checks for code that can be simplified"
 optional = false
-python-versions = ">=3.6.1"
+python-versions = ">=3.9.0"
 groups = ["dev"]
 files = [
-    {file = "flake8_simplify-0.21.0-py3-none-any.whl", hash = "sha256:439391e762a9370b371208add0b5c5c40c3d25a98e1f5421d263215d08194183"},
-    {file = "flake8_simplify-0.21.0.tar.gz", hash = "sha256:c95ff1dcc1de5949af47e0087cbf1164445881131b15bcd7a71252670f492f4d"},
+    {file = "flake8_simplify-0.30.0-py3-none-any.whl", hash = "sha256:c9f54a50d24780832a3f2bb7a687ef465b91f10d7cb4ea0845dff4b65d9c91f4"},
+    {file = "flake8_simplify-0.30.0.tar.gz", hash = "sha256:61bff74fab73884e1ec12e472d67e7e789043028ff858e5f9af389d392d65b82"},
 ]
 
 [package.dependencies]
-astor = ">=0.1"
 flake8 = ">=3.7"
 
 [[package]]
@@ -1437,4 +1424,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "ee1f8bf98b6f4522bd713154898a9b6b7da162cd224c1aaad5e36684296e885d"
+content-hash = "02f81d23e49be772c0fc28a3cf4db89af7ee483e3252cf1b8b891e237192ba00"
