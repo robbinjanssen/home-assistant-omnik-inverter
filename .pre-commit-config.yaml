@@ -2,25 +2,20 @@
 repos:
   - repo: local
     hooks:
-      - id: bandit
-        name: Checking using bandit
+      - id: ruff-check
+        name: Ruff Linter
         language: system
         types: [python]
-        entry: poetry run bandit
-        files: ^customer_components/omnik_inverter/
+        entry: poetry run ruff check --fix
         require_serial: true
-      - id: black
-        name: Format using black
+        stages: [pre-commit, pre-push, manual]
+      - id: ruff-format
+        name: Ruff Formatter
         language: system
         types: [python]
-        entry: poetry run black
+        entry: poetry run ruff format
         require_serial: true
-      - id: blacken-docs
-        name: Format documentation examples using black
-        language: system
-        files: '\.(rst|md|markdown|py|tex)$'
-        entry: poetry run blacken-docs
-        require_serial: true
+        stages: [pre-commit, pre-push, manual]
       - id: check-ast
         name: Check Python AST
         language: system
@@ -40,7 +35,7 @@ repos:
         language: system
         types: [text, executable]
         entry: poetry run check-executables-have-shebangs
-        stages: [commit, push, manual]
+        stages: [pre-commit, pre-push, manual]
       - id: check-json
         name: Check JSON files
         language: system
@@ -61,6 +56,11 @@ repos:
         language: system
         types: [toml]
         entry: poetry run check-toml
+      - id: check-xml
+        name: Check XML files
+        entry: poetry run check-xml
+        language: system
+        types: [xml]
       - id: check-yaml
         name: Check YAML files
         language: system
@@ -70,14 +70,9 @@ repos:
         name: Check code for common misspellings
         language: system
         types: [text]
-        exclude: ^poetry\.lock$
+        exclude: ^(poetry\.lock$|custom_components/omnik_inverter/translations/)
+        args: [--ignore-words=.codespell-ignore, --skip=./custom_components/omnik_inverter/translations]
         entry: poetry run codespell
-        args: [--ignore-words=.codespell-ignore]
-      - id: debug-statements
-        name: Debug Statements and imports (Python)
-        language: system
-        types: [python]
-        entry: poetry run debug-statement-hook
       - id: detect-private-key
         name: Detect Private Keys
         language: system
@@ -88,23 +83,12 @@ repos:
         language: system
         types: [text]
         entry: poetry run end-of-file-fixer
-        stages: [commit, push, manual]
-      - id: fix-byte-order-marker
-        name: Fix UTF-8 byte order marker
-        language: system
-        types: [text]
-        entry: poetry run fix-byte-order-marker
-      - id: flake8
-        name: Enforcing style guide with flake8
+        stages: [pre-commit, pre-push, manual]
+      - id: mypy
+        name: Static type checking using mypy
         language: system
         types: [python]
-        entry: poetry run flake8
-        require_serial: true
-      - id: isort
-        name: Sort all imports with isort
-        language: system
-        types: [python]
-        entry: poetry run isort
+        entry: poetry run mypy
       - id: no-commit-to-branch
         name: Don't commit to main branch
         language: system
@@ -124,25 +108,12 @@ repos:
         language: system
         types: [python]
         entry: poetry run pylint
-      - id: pyupgrade
-        name: Checking for upgradable syntax with pyupgrade
-        language: system
-        types: [python]
-        entry: poetry run pyupgrade
-        args: [--py39-plus, --keep-runtime-typing]
       - id: trailing-whitespace
         name: Trim Trailing Whitespace
         language: system
         types: [text]
         entry: poetry run trailing-whitespace-fixer
-        stages: [commit, push, manual]
-      - id: vulture
-        name: Find unused Python code with Vulture
-        language: system
-        types: [python]
-        entry: poetry run vulture
-        pass_filenames: false
-        require_serial: true
+        stages: [pre-commit, pre-push, manual]
       - id: yamllint
         name: Check YAML files with yamllint
         language: system
