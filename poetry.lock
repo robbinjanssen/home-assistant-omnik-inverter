@@ -1248,22 +1248,22 @@ files = [
 
 [[package]]
 name = "yamllint"
-version = "1.37.1"
+version = "1.38.0"
 description = "A linter for YAML files."
 optional = false
-python-versions = ">=3.9"
+python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "yamllint-1.37.1-py3-none-any.whl", hash = "sha256:364f0d79e81409f591e323725e6a9f4504c8699ddf2d7263d8d2b539cd66a583"},
-    {file = "yamllint-1.37.1.tar.gz", hash = "sha256:81f7c0c5559becc8049470d86046b36e96113637bcbe4753ecef06977c00245d"},
+    {file = "yamllint-1.38.0-py3-none-any.whl", hash = "sha256:fc394a5b3be980a4062607b8fdddc0843f4fa394152b6da21722f5d59013c220"},
+    {file = "yamllint-1.38.0.tar.gz", hash = "sha256:09e5f29531daab93366bb061e76019d5e91691ef0a40328f04c927387d1d364d"},
 ]
 
 [package.dependencies]
-pathspec = ">=0.5.3"
+pathspec = ">=1.0.0"
 pyyaml = "*"
 
 [package.extras]
-dev = ["doc8", "flake8", "flake8-import-order", "rstcheck[sphinx]", "sphinx"]
+dev = ["doc8", "flake8", "flake8-import-order", "rstcheck[sphinx]", "ruff", "sphinx"]
 
 [[package]]
 name = "yarl"
@@ -1413,4 +1413,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.13"
-content-hash = "ec8b3293d24319366f3b6d6b2d40eeeaa056d37e1bd8d2b6dec41915ef4784ae"
+content-hash = "d8a49e18ab698fc95100c05d15da68b75236d7156b53d30245df276bc97b73f5"
