@@ -52,7 +52,7 @@ class OmnikInverterEntity(CoordinatorEntity[OmnikInverterDataUpdateCoordinator])
         """
         return DeviceInfo(
             identifiers={(DOMAIN, f"{self.entry_id}_{self.service}")},
-            name=self.service.title(),
+            name=f"{self._name} {self.service.title()}",
             manufacturer=MANUFACTURER,
             entry_type=DeviceEntryType.SERVICE,
             model=self.coordinator.data[SERVICE_INVERTER].model,

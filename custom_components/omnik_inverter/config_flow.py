@@ -11,7 +11,6 @@ from homeassistant.config_entries import (
     ConfigFlow,
     ConfigFlowResult,
     OptionsFlow,
-    OptionsFlowResult,
 )
 from homeassistant.const import (
     CONF_HOST,
@@ -285,7 +284,7 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
-    ) -> OptionsFlowResult:
+    ) -> ConfigFlowResult:
         """Handle a flow initialized by the user.
 
         Args:
