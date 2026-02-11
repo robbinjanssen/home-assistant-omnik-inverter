@@ -25,7 +25,7 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.13"
 omnikinverter = { git = "https://github.com/klaasnicolaas/python-omnikinverter.git", branch = "main" }
-voluptuous = "^0.15.0"
+voluptuous = "^0.16.0"
 
 [tool.poetry.group.dev.dependencies]
 codespell = "2.4.1"

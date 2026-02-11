@@ -1236,14 +1236,14 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 
 [[package]]
 name = "voluptuous"
-version = "0.15.2"
+version = "0.16.0"
 description = "Python data validation library"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "voluptuous-0.15.2-py3-none-any.whl", hash = "sha256:016348bc7788a9af9520b1764ebd4de0df41fe2138ebe9e06fa036bf86a65566"},
-    {file = "voluptuous-0.15.2.tar.gz", hash = "sha256:6ffcab32c4d3230b4d2af3a577c87e1908a714a11f6f95570456b1849b0279aa"},
+    {file = "voluptuous-0.16.0-py3-none-any.whl", hash = "sha256:ee342095263e1b5afbd4d418cb5adc92810eebfd07696bb033a261210df33db4"},
+    {file = "voluptuous-0.16.0.tar.gz", hash = "sha256:006535e22fed944aec17bef6e8725472476194743c87bd233e912eb463f8ff05"},
 ]
 
 [[package]]
@@ -1413,4 +1413,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.13"
-content-hash = "d05ffab55d93ac19a61b98dcc877f66f86cfc8f02e318547405a63f228e91965"
+content-hash = "ec8b3293d24319366f3b6d6b2d40eeeaa056d37e1bd8d2b6dec41915ef4784ae"
