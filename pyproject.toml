@@ -95,7 +95,7 @@ max-attributes = 20
 
 [tool.pylint.TYPECHECK]
 ignored-modules = [
-  "ojmicroline_thermostat",
+  "omnik_inverter",
   "homeassistant",
 ]
 
