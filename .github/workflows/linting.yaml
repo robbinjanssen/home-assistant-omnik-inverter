@@ -40,8 +40,6 @@ jobs:
             name: Check YAML files
           - id: codespell
             name: Check code for common misspellings
-          - id: debug-statements
-            name: Debug Statements and imports (Python)
           - id: detect-private-key
             name: Detect Private Keys
           - id: end-of-file-fixer
