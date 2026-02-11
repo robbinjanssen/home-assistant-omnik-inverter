@@ -3,24 +3,25 @@
 from __future__ import annotations
 
 from dataclasses import asdict
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from homeassistant.components.diagnostics import async_redact_data
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_IP_ADDRESS
-from homeassistant.core import HomeAssistant
 
-from . import OmnikInverterDataUpdateCoordinator
-from .const import CONF_SERIAL, DOMAIN, SERVICE_DEVICE, SERVICE_INVERTER
+from .const import CONF_SERIAL, SERVICE_DEVICE, SERVICE_INVERTER
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
+
+    from . import OmnikInverterConfigEntry
 
 TO_REDACT = {CONF_HOST, CONF_IP_ADDRESS, CONF_SERIAL}
 
 
 async def async_get_config_entry_diagnostics(
-    hass: HomeAssistant, entry: ConfigEntry
+    _hass: HomeAssistant, entry: OmnikInverterConfigEntry
 ) -> dict[str, Any]:
-    """
-    Return diagnostics for a config entry.
+    """Return diagnostics for a config entry.
 
     Args:
         hass: The HomeAssistant instance.
@@ -28,8 +29,9 @@ async def async_get_config_entry_diagnostics(
 
     Returns:
         The created diagnostics object.
+
     """
-    coordinator: OmnikInverterDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator = entry.runtime_data
 
     return {
         "entry": {

@@ -4,6 +4,7 @@ name: Draft Release
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   update-release-draft:
@@ -12,6 +13,6 @@ jobs:
 
     steps:
       - name: Run release drafter
-        uses: release-drafter/release-drafter@v6
+        uses: release-drafter/release-drafter@v6.1.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

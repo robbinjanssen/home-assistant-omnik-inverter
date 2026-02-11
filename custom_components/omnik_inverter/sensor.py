@@ -3,16 +3,14 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import Any, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
-from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     PERCENTAGE,
     UnitOfElectricCurrent,
@@ -23,13 +21,20 @@ from homeassistant.const import (
     UnitOfTemperature,
     UnitOfTime,
 )
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityCategory
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.util import slugify
 
-from .const import DOMAIN, SERVICE_DEVICE, SERVICE_INVERTER
-from .coordinator import OmnikInverterDataUpdateCoordinator
+from .const import SERVICE_DEVICE, SERVICE_INVERTER
 from .models import OmnikInverterEntity, RangedSensorEntityDescription
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+    from . import OmnikInverterConfigEntry
+    from .coordinator import OmnikInverterDataUpdateCoordinator
 
 SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]] = {
     SERVICE_DEVICE: (
@@ -163,23 +168,28 @@ SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,
-    entry: ConfigEntry,
+    _hass: HomeAssistant,
+    entry: OmnikInverterConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """
-    Load all Omnik Inverter sensors.
+    """Load all Omnik Inverter sensors.
 
     Args:
-        hass: The HomeAssistant instance.
+        _hass: The HomeAssistant instance.
         entry: The ConfigEntry containing the user input.
         async_add_entities: The callback to provide the created entities to.
+
     """
-    coordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator = entry.runtime_data
     options = entry.options
 
-    def create_sensor_entities(description, service):
-        if isinstance(description, RangedSensorEntityDescription):
+    def create_sensor_entities(
+        description: SensorEntityDescription, service: str
+    ) -> Iterator[OmnikInverterSensor]:
+        if (
+            isinstance(description, RangedSensorEntityDescription)
+            and description.size is not None
+        ):
             for i in description.size:
                 yield OmnikInverterRangedSensor(
                     coordinator=coordinator,
@@ -212,7 +222,7 @@ class OmnikInverterSensor(OmnikInverterEntity, SensorEntity):
     """Defines an Omnik Inverter Sensor."""
 
     entity_description: SensorEntityDescription
-    _options: dict[Any]
+    _options: dict[str, Any]
 
     def __init__(  # pylint: disable=too-many-arguments
         self,
@@ -220,10 +230,9 @@ class OmnikInverterSensor(OmnikInverterEntity, SensorEntity):
         name: str,
         description: SensorEntityDescription,
         service: str,
-        options: dict[Any],
-    ):
-        """
-        Initialise the entity.
+        options: dict[str, Any],
+    ) -> None:
+        """Initialise the entity.
 
         Args:
             coordinator: The data coordinator updating the models.
@@ -231,27 +240,25 @@ class OmnikInverterSensor(OmnikInverterEntity, SensorEntity):
             description: The entity description for the sensor.
             service: The service to create the sensor for.
             options: The options provided by the user.
+
         """
         super().__init__(coordinator=coordinator, name=name, service=service)
 
         self.entity_description = description
         self._options = options
 
-        self.entity_id = (
-            f"{SENSOR_DOMAIN}.{self._name}_{self.entity_description.key}"  # noqa: E501
-        )
-        self._attr_unique_id = (
+        self._attr_unique_id = slugify(
             f"{self.entry_id}_{service}_{self.entity_description.key}"
         )
-        self._attr_name = self.entity_description.name
+        self._attr_name = f"{name} {self.entity_description.name}"
 
     @property
     def native_value(self) -> Any | None:
-        """
-        Return the state of the sensor.
+        """Return the state of the sensor.
 
         Returns:
             The current state value of the sensor.
+
         """
         value = getattr(
             self.coordinator.data[self.service], self.entity_description.key
@@ -269,17 +276,16 @@ class OmnikInverterRangedSensor(OmnikInverterSensor):
     _index: int
     _data_key: str
 
-    def __init__(  # pylint: disable=too-many-arguments
+    def __init__(  # noqa: PLR0913  # pylint: disable=too-many-arguments
         self,
         coordinator: OmnikInverterDataUpdateCoordinator,
         index: int,
         name: str,
         description: RangedSensorEntityDescription,
         service: str,
-        options: dict[Any],
-    ):
-        """
-        Initialise the entity.
+        options: dict[str, Any],
+    ) -> None:
+        """Initialise the entity.
 
         Args:
             coordinator: The data coordinator updating the models.
@@ -288,10 +294,14 @@ class OmnikInverterRangedSensor(OmnikInverterSensor):
             description: The entity description for the sensor.
             service: The service to create the sensor for.
             options: The options provided by the user.
+
         """
         self._index = index
+        if description.data_key is None:
+            msg = "data_key is required for RangedSensorEntityDescription"
+            raise TypeError(msg)
         self._data_key = description.data_key
-        description = dataclasses.replace(
+        description = dataclasses.replace(  # type: ignore[call-arg]
             description,
             key=description.key.format(index + 1),
             name=description.name.format(index + 1),
@@ -307,11 +317,11 @@ class OmnikInverterRangedSensor(OmnikInverterSensor):
 
     @property
     def native_value(self) -> Any | None:
-        """
-        Return the state of the sensor.
+        """Return the state of the sensor.
 
         Returns:
             The current state value of the sensor.
+
         """
         value = getattr(self.coordinator.data[self.service], self._data_key)
 

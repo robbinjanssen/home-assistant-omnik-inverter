@@ -1,3 +1,4 @@
+---
 name: HACS Action
 
 on:
@@ -11,8 +12,10 @@ jobs:
     name: HACS Action
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v6"
+      - name: Checkout repository
+        uses: actions/checkout@v5.0.0
+
       - name: HACS Action
-        uses: "hacs/action@main"
+        uses: hacs/action@main
         with:
           category: "integration"
