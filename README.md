@@ -4,7 +4,6 @@
 
 ![Project Maintenance][maintenance-shield]
 [![Maintainability][maintainability-shield]][maintainability-url]
-[![Code Quality][code-quality-shield]][code-quality-url]
 
 # Omnik Inverter Integration for Home Assistant
 
@@ -109,11 +108,9 @@ Special thank you to [@klaasnicolaas](https://github.com/klaasnicolaas) for taki
 - https://github.com/sincze/Domoticz-Omnik-Local-Web-Plugin
 - https://github.com/klaasnicolaas/python-omnikinverter
 
-[code-quality-shield]: https://img.shields.io/lgtm/grade/python/g/robbinjanssen/home-assistant-omnik-inverter.svg
-[code-quality-url]: https://lgtm.com/projects/g/robbinjanssen/home-assistant-omnik-inverter/context:python
-[maintainability-shield]: https://api.codeclimate.com/v1/badges/08d56a884fe1971d1c12/maintainability
-[maintainability-url]: https://codeclimate.com/github/robbinjanssen/home-assistant-omnik-inverter/maintainability
-[maintenance-shield]: https://img.shields.io/maintenance/yes/2024.svg
+[maintainability-shield]: https://qlty.sh/gh/robbinjanssen/projects/home-assistant-omnik-inverter/maintainability.svg
+[maintainability-url]: https://qlty.sh/gh/robbinjanssen/projects/home-assistant-omnik-inverter
+[maintenance-shield]: https://img.shields.io/maintenance/yes/2026.svg
 [project-stage-shield]: https://img.shields.io/badge/project%20stage-stable-brightgreen.svg?style=for-the-badge
 
 [hacs-url]: https://github.com/hacs/integration
