@@ -28,7 +28,7 @@ omnikinverter = { git = "https://github.com/klaasnicolaas/python-omnikinverter.g
 voluptuous = "^0.16.0"
 
 [tool.poetry.group.dev.dependencies]
-codespell = "2.4.1"
+codespell = "2.4.2"
 mypy = "1.19.1"
 pre-commit = "4.5.1"
 pre-commit-hooks = "6.0.0"
