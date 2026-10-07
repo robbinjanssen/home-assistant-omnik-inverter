@@ -26,7 +26,6 @@ from homeassistant.helpers.selector import (
     TextSelectorConfig,
     TextSelectorType,
 )
-
 from omnikinverter import Inverter, OmnikInverter, OmnikInverterError
 
 from .const import (

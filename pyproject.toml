@@ -1,35 +1,20 @@
-[tool.poetry]
+[project]
 name = "home-assistant-omnik-inverter"
 version = "4.0.0"
 description = "Read data from your Omnik Inverter using home assistant."
-authors = ["Robbin Janssen <robbinjanssen@gmail.com>"]
-maintainers = ["Robbin Janssen <robbinjanssen@gmail.com>"]
+authors = [{ name = "Robbin Janssen", email = "robbinjanssen@gmail.com" }]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/robbinjanssen/home-assistant-omnik-inverter"
-repository = "https://github.com/robbinjanssen/home-assistant-omnik-inverter"
-documentation = "https://github.com/robbinjanssen/home-assistant-omnik-inverter"
-classifiers = [
-    "Framework :: AsyncIO",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Natural Language :: English",
-    "Programming Language :: Python :: 3.14",
-    "Programming Language :: Python :: 3",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-]
-packages = [
-    { include = "custom_components" },
-]
+requires-python = ">=3.14.2,<3.15"
+dependencies = ["omnikinverter==1.0.0"]
 
-[tool.poetry.dependencies]
-python = ">=3.14.2,<3.15"
-omnikinverter = "1.0.0"
+[tool.poetry]
+# This repository is a Home Assistant integration, not a Python package.
+package-mode = false
 
 [tool.poetry.group.dev.dependencies]
 codespell = "2.4.2"
 mypy = "2.4.0"
-pre-commit-hooks = "6.0.0"
 prek = "0.5.5"
 pylint = "4.1.2"
 pytest-homeassistant-custom-component = "0.13.370"
@@ -74,9 +59,6 @@ warn_unused_ignores = true
 # Home Assistant re-exports names, e.g. BinarySensorDeviceClass, without __all__.
 module = "homeassistant.*"
 implicit_reexport = true
-[tool.pylint.MASTER]
-ignore = ["tests"]
-
 [tool.pylint.BASIC]
 good-names = ["_", "ex", "fp", "i", "id", "j", "k", "on", "Run", "T"]
 
@@ -128,11 +110,7 @@ mark-parentheses = false
 fixture-parentheses = false
 
 [tool.ruff.lint.isort]
-known-first-party = ["omnikinverter"]
+known-first-party = ["custom_components"]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 25
-
-[build-system]
-build-backend = "poetry.core.masonry.api"
-requires = ["poetry-core>=2.3.0"]

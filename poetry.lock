@@ -3804,21 +3804,6 @@ dev = ["pre-commit", "tox"]
 testing = ["coverage", "pytest", "pytest-benchmark"]
 
 [[package]]
-name = "pre-commit-hooks"
-version = "6.0.0"
-description = "Some out-of-the-box hooks for pre-commit."
-optional = false
-python-versions = ">=3.9"
-groups = ["dev"]
-files = [
-    {file = "pre_commit_hooks-6.0.0-py2.py3-none-any.whl", hash = "sha256:76161b76d321d2f8ee2a8e0b84c30ee8443e01376121fd1c90851e33e3bd7ee2"},
-    {file = "pre_commit_hooks-6.0.0.tar.gz", hash = "sha256:76d8370c006f5026cdd638a397a678d26dda735a3c88137e05885a020f824034"},
-]
-
-[package.dependencies]
-"ruamel.yaml" = ">=0.15"
-
-[[package]]
 name = "prek"
 version = "0.5.5"
 description = "A fast Git hook manager written in Rust, designed as a drop-in alternative to pre-commit, reimagined."
@@ -5230,24 +5215,6 @@ pygments = ">=2.13.0,<3.0.0"
 jupyter = ["ipywidgets (>=7.5.1,<9)"]
 
 [[package]]
-name = "ruamel-yaml"
-version = "0.19.1"
-description = "ruamel.yaml is a YAML parser/emitter that supports roundtrip preservation of comments, seq/map flow style, and map key order"
-optional = false
-python-versions = ">=3.9"
-groups = ["dev"]
-files = [
-    {file = "ruamel_yaml-0.19.1-py3-none-any.whl", hash = "sha256:27592957fedf6e0b62f281e96effd28043345e0e66001f97683aa9a40c667c93"},
-    {file = "ruamel_yaml-0.19.1.tar.gz", hash = "sha256:53eb66cd27849eff968ebf8f0bf61f46cdac2da1d1f3576dd4ccee9b25c31993"},
-]
-
-[package.extras]
-docs = ["mercurial (>5.7)", "ryd"]
-jinja2 = ["ruamel.yaml.jinja2 (>=0.2)"]
-libyaml = ["ruamel.yaml.clibz (>=0.3.7) ; platform_python_implementation == \"CPython\""]
-oldlibyaml = ["ruamel.yaml.clib ; platform_python_implementation == \"CPython\""]
-
-[[package]]
 name = "ruff"
 version = "0.16.10"
 description = "An extremely fast Python linter and code formatter, written in Rust."
@@ -6440,4 +6407,4 @@ ifaddr = ">=0.1.7"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14.2,<3.15"
-content-hash = "16c184b8b3e53bffae7c1504975c35b50022d1428f92c56786bea8d1ef40e581"
+content-hash = "d9d412cf7b54400f6e114ec1e84af9f5d9344f08d006e36505103540530fcff4"
