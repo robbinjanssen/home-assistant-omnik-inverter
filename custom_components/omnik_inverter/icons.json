@@ -1,0 +1,45 @@
+{
+  "entity": {
+    "sensor": {
+      "signal_quality": {
+        "default": "mdi:wifi"
+      },
+      "ip_address": {
+        "default": "mdi:network"
+      },
+      "solar_current_power": {
+        "default": "mdi:weather-sunny"
+      },
+      "solar_energy_total": {
+        "default": "mdi:chart-line"
+      },
+      "solar_hours_total": {
+        "default": "mdi:clock"
+      },
+      "temperature": {
+        "default": "mdi:thermometer"
+      },
+      "alarm_code": {
+        "default": "mdi:alert"
+      },
+      "dc_input_voltage": {
+        "default": "mdi:lightning-bolt"
+      },
+      "dc_input_current": {
+        "default": "mdi:current-dc"
+      },
+      "ac_output_voltage": {
+        "default": "mdi:lightning-bolt"
+      },
+      "ac_output_current": {
+        "default": "mdi:current-ac"
+      },
+      "ac_output_power": {
+        "default": "mdi:lightning-bolt"
+      },
+      "ac_output_frequency": {
+        "default": "mdi:sine-wave"
+      }
+    }
+  }
+}

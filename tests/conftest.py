@@ -2,7 +2,7 @@
 
 import importlib
 from typing import TYPE_CHECKING
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, PropertyMock, patch
 
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
@@ -65,6 +65,17 @@ def mock_omnikinverter() -> Generator[None]:
             "omnikinverter.OmnikInverter.device",
             AsyncMock(return_value=DEVICE),
         ),
+    ):
+        yield
+
+
+@pytest.fixture
+def entity_registry_enabled_by_default() -> Generator[None]:
+    """Enable all entities, including those disabled by default."""
+    with patch(
+        "homeassistant.helpers.entity.Entity.entity_registry_enabled_default",
+        new_callable=PropertyMock,
+        return_value=True,
     ):
         yield
 
