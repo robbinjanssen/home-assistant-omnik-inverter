@@ -17,7 +17,7 @@
   "packageRules": [
     {
       "matchManagers": [
-        "poetry"
+        "pep621"
       ],
       "addLabels": [
         "python"
@@ -25,16 +25,16 @@
     },
     {
       "matchManagers": [
-        "poetry"
+        "pep621"
       ],
       "matchDepTypes": [
-        "dev"
+        "dependency-groups"
       ],
       "rangeStrategy": "pin"
     },
     {
       "matchManagers": [
-        "poetry"
+        "pep621"
       ],
       "matchUpdateTypes": [
         "minor",

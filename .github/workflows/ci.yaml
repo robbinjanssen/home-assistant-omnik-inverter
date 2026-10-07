@@ -25,22 +25,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7.0.0
 
-      - name: Set up Poetry
-        run: pipx install poetry
-
-      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
-        uses: actions/setup-python@v6.3.0
+      - name: Set up uv and Python ${{ env.DEFAULT_PYTHON }}
+        uses: astral-sh/setup-uv@v10.2.0
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
-          cache: "poetry"
+          enable-cache: true
 
       - name: Install dependencies
-        run: |
-          poetry config virtualenvs.in-project true
-          poetry install --no-interaction
+        run: uv sync --locked
 
       - name: Run pre-commit hooks with prek
-        run: poetry run prek run --all-files --show-diff-on-failure
+        run: uv run prek run --all-files --show-diff-on-failure
         env:
           # Commits to main are expected here, the hook guards local commits.
           SKIP: no-commit-to-branch
@@ -52,23 +47,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7.0.0
 
-      - name: Set up Poetry
-        run: pipx install poetry
-
-      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
-        uses: actions/setup-python@v6.3.0
+      - name: Set up uv and Python ${{ env.DEFAULT_PYTHON }}
+        uses: astral-sh/setup-uv@v10.2.0
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
-          cache: "poetry"
+          enable-cache: true
 
       - name: Install dependencies
-        run: |
-          poetry config virtualenvs.in-project true
-          poetry install --no-interaction
+        run: uv sync --locked
 
       - name: Run pytest with coverage
         run: >-
-          poetry run pytest
+          uv run pytest
           --cov=custom_components.omnik_inverter
           --cov-report=term-missing
           --cov-fail-under=90
