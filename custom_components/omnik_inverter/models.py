@@ -5,11 +5,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from homeassistant.components.sensor import SensorEntityDescription
-from homeassistant.helpers.device_registry import DeviceEntryType
-from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN, MANUFACTURER, SERVICE_DEVICE, SERVICE_INVERTER
+from .const import DOMAIN, MANUFACTURER, SERVICE_DEVICE, SERVICE_INVERTER, Service
 from .coordinator import OmnikInverterDataUpdateCoordinator
 
 
@@ -18,14 +17,14 @@ class OmnikInverterEntity(CoordinatorEntity[OmnikInverterDataUpdateCoordinator])
 
     _name: str
     coordinator: OmnikInverterDataUpdateCoordinator
-    service: str
+    service: Service
     entry_id: str
 
     def __init__(
         self,
         coordinator: OmnikInverterDataUpdateCoordinator,
         name: str,
-        service: str,
+        service: Service,
     ) -> None:
         """Initialise the entity.
 
@@ -61,7 +60,7 @@ class OmnikInverterEntity(CoordinatorEntity[OmnikInverterDataUpdateCoordinator])
         )
 
 
-@dataclass
+@dataclass(frozen=True, kw_only=True)
 class RangedSensorEntityDescription(SensorEntityDescription):
     """An extended sensor entity description."""
 

@@ -1,12 +1,12 @@
 """Omnik Inverter platform configuration."""
 
+from __future__ import annotations
+
 import logging
 from datetime import timedelta
-from typing import Any, TypedDict
+from typing import TYPE_CHECKING, Any, TypedDict
 
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
-from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
@@ -24,6 +24,10 @@ from .const import (
     SERVICE_INVERTER,
 )
 
+if TYPE_CHECKING:
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
+
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -34,7 +38,7 @@ class OmnikInverterData(TypedDict):
     device: Device
 
 
-class OmnikInverterDataUpdateCoordinator(DataUpdateCoordinator):
+class OmnikInverterDataUpdateCoordinator(DataUpdateCoordinator[OmnikInverterData]):
     """Class to manage fetching Omnik Inverter data from single endpoint."""
 
     config_entry: ConfigEntry

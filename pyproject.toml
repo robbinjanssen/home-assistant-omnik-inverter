@@ -14,7 +14,7 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
-    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: 3",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
@@ -23,9 +23,8 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.13"
-omnikinverter = { git = "https://github.com/klaasnicolaas/python-omnikinverter.git", branch = "main" }
-voluptuous = "^0.16.0"
+python = ">=3.14.2,<3.15"
+omnikinverter = "1.0.0"
 
 [tool.poetry.group.dev.dependencies]
 codespell = "2.4.2"
@@ -33,16 +32,17 @@ mypy = "2.4.0"
 pre-commit = "4.6.0"
 pre-commit-hooks = "6.0.0"
 pylint = "4.1.2"
+pytest-homeassistant-custom-component = "0.13.367"
 ruff = "0.16.10"
 yamllint = "1.38.0"
-async-timeout = "5.0.1"
 
 [tool.mypy]
 # Specify the target platform details in config, so your developers are
 # free to run mypy on Windows, Linux, or macOS and get consistent
 # results.
 platform = "linux"
-python_version = "3.13"
+python_version = "3.14"
+explicit_package_bases = true
 # flake8-mypy expects the two following for sensible formatting
 show_column_numbers = true
 
@@ -93,14 +93,13 @@ max-line-length = 88
 [tool.pylint.DESIGN]
 max-attributes = 20
 
-[tool.pylint.TYPECHECK]
-ignored-modules = [
-  "omnik_inverter",
-  "homeassistant",
-]
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
 
 [tool.ruff]
-target-version = "py313"
+target-version = "py314"
 lint.select = ["ALL"]
 lint.ignore = [
   "ANN401",  # Opinioated warning on disallowing dynamically typed expressions
@@ -117,7 +116,7 @@ lint.ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"test_output.py" = ["ERA001", "T201"]
+"tests/*.py" = ["S101", "SLF001"]
 
 [tool.ruff.lint.flake8-pytest-style]
 mark-parentheses = false
