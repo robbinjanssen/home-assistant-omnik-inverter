@@ -29,11 +29,13 @@ It has been tested and developed on the following inverters:
 | Sofar    | 3600TLM          | HTML       |
 | Huayu    | HY-600-Pro       | HTML       |
 
-After installation you can add the inverter through the integration page. The values will be presented by two devices in Home Assistant. One is the inverter containing the actual solar power, and one is the device containing information about the wifi signal.
+After installation you can add the inverter through the integration page. The values are presented by the inverter device in Home Assistant, containing the actual solar power, with the Wi-Fi module as a child device containing information about the wifi signal.
 
 ## Requirements
 
 Your Omnik Inverter needs to be connected to your local network, as this custom integration will utilise the web interface of the Omnik inverter to read data. All you need to know is the IP address of the Omnik inverter and you are good to go.
+
+This integration requires Home Assistant 2026.10 or newer.
 
 ## HACS installation
 
@@ -72,7 +74,7 @@ To configure the integration, add it using [Home Assistant integrations][ha-add-
 
 After selecting the data source, enter a **name** and IP address as **host** and you're good to go!
 
-_Optionally you can update the scan interval in the integration settings._
+_Optionally you can update the scan interval in the integration settings. To change the host or credentials later, use **Reconfigure** in the integration menu._
 
 ## Examples
 

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 from homeassistant.config_entries import ConfigEntryState
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from pytest_homeassistant_custom_component.common import MockConfigEntry
@@ -131,3 +132,79 @@ async def test_migrate_skips_existing_unique_id(
     entry = entity_registry.async_get(old.entity_id)
     assert entry is not None
     assert entry.unique_id == "01JABCDEF_inverter_solar_energy_today"
+
+
+@pytest.mark.usefixtures("mock_omnikinverter")
+async def test_device_entry_type_cleared(
+    hass: HomeAssistant, mock_config_entry: MockConfigEntry
+) -> None:
+    """Test devices created as a service become a regular device."""
+    mock_config_entry.add_to_hass(hass)
+    device_registry = dr.async_get(hass)
+    device = device_registry.async_get_or_create(
+        config_entry_id=mock_config_entry.entry_id,
+        identifiers={(DOMAIN, f"{mock_config_entry.entry_id}_inverter")},
+        entry_type=dr.DeviceEntryType.SERVICE,
+    )
+
+    assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    updated = device_registry.async_get(device.id)
+    assert isinstance(updated, dr.DeviceEntry)
+    assert updated.entry_type is None
+
+
+@pytest.mark.usefixtures("mock_omnikinverter")
+async def test_wifi_module_becomes_child_device(
+    hass: HomeAssistant, mock_config_entry: MockConfigEntry
+) -> None:
+    """Test the existing Wi-Fi module device becomes a child of the inverter."""
+    mock_config_entry.add_to_hass(hass)
+    device_registry = dr.async_get(hass)
+    entity_registry = er.async_get(hass)
+    old_device = device_registry.async_get_or_create(
+        config_entry_id=mock_config_entry.entry_id,
+        identifiers={(DOMAIN, "01JABCDEF_device")},
+        name="Home Device",
+        entry_type=dr.DeviceEntryType.SERVICE,
+    )
+    old_entity = entity_registry.async_get_or_create(
+        "sensor",
+        DOMAIN,
+        "01jabcdef_device_signal_quality",
+        config_entry=mock_config_entry,
+        device_id=old_device.id,
+        suggested_object_id="home_device_signal_quality",
+    )
+    # Simulate a restart: the old device was loaded from storage, not registered
+    # during this run, which is required to convert it to a child device.
+    device_registry.async_config_entry_unloaded(mock_config_entry.entry_id)
+
+    assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    inverter_id = dr.async_get_device_id_by_identifier(
+        hass,
+        (DOMAIN, "01JABCDEF_inverter"),
+        config_entry_id=mock_config_entry.entry_id,
+    )
+    children = dr.async_child_entries_for_config_entry(
+        device_registry, mock_config_entry.entry_id
+    )
+    assert [child.id for child in children] == [old_device.id]
+    assert children[0].parent_device_id == inverter_id
+
+    entity = entity_registry.async_get(old_entity.entity_id)
+    assert entity is not None
+    assert entity.device_id == old_device.id
+    assert hass.states.get("sensor.home_device_signal_quality") is not None
+
+
+async def test_migrate_old_version_fails(hass: HomeAssistant) -> None:
+    """Test config entries of version 1 cannot be migrated."""
+    entry = MockConfigEntry(domain=DOMAIN, title="Home", version=1, data=HTML_DATA)
+    entry.add_to_hass(hass)
+
+    assert not await hass.config_entries.async_setup(entry.entry_id)
+    assert entry.state is ConfigEntryState.MIGRATION_ERROR

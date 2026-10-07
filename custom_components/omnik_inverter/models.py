@@ -5,11 +5,34 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from homeassistant.components.sensor import SensorEntityDescription
-from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
+from homeassistant.helpers.device_registry import ChildDeviceInfo, DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN, MANUFACTURER, SERVICE_DEVICE, SERVICE_INVERTER, Service
 from .coordinator import OmnikInverterDataUpdateCoordinator
+
+
+def inverter_device_info(coordinator: OmnikInverterDataUpdateCoordinator) -> DeviceInfo:
+    """Return the device info of the inverter.
+
+    Args:
+        coordinator: The data coordinator holding the inverter data.
+
+    Returns:
+        The device info of the inverter.
+
+    """
+    entry = coordinator.config_entry
+    return DeviceInfo(
+        identifiers={(DOMAIN, f"{entry.entry_id}_{SERVICE_INVERTER}")},
+        name=f"{entry.title} Inverter",
+        manufacturer=MANUFACTURER,
+        # Explicitly clear the service type set by earlier versions.
+        entry_type=None,
+        model=coordinator.data[SERVICE_INVERTER].model,
+        sw_version=coordinator.data[SERVICE_INVERTER].firmware,
+        configuration_url=f"http://{coordinator.data[SERVICE_DEVICE].ip_address}",
+    )
 
 
 class OmnikInverterEntity(CoordinatorEntity[OmnikInverterDataUpdateCoordinator]):
@@ -42,22 +65,21 @@ class OmnikInverterEntity(CoordinatorEntity[OmnikInverterDataUpdateCoordinator])
         self.entry_id = coordinator.config_entry.entry_id
 
     @property
-    def device_info(self) -> DeviceInfo:
+    def device_info(self) -> DeviceInfo | ChildDeviceInfo:
         """Return information to link this entity with the correct device.
 
+        The Wi-Fi module is registered as a child device of the inverter.
+
         Returns:
-            The device identifiers to make sure the entity is attached
-            to the correct device.
+            The device info of the inverter or the Wi-Fi module.
 
         """
-        return DeviceInfo(
-            identifiers={(DOMAIN, f"{self.entry_id}_{self.service}")},
-            name=f"{self._name} {self.service.title()}",
-            manufacturer=MANUFACTURER,
-            entry_type=DeviceEntryType.SERVICE,
-            model=self.coordinator.data[SERVICE_INVERTER].model,
-            sw_version=self.coordinator.data[self.service].firmware,
-            configuration_url=f"http://{self.coordinator.data[SERVICE_DEVICE].ip_address}",
+        if self.service == SERVICE_INVERTER:
+            return inverter_device_info(self.coordinator)
+        return ChildDeviceInfo(
+            identifiers={(DOMAIN, f"{self.entry_id}_{SERVICE_DEVICE}")},
+            parent_device_id=self.coordinator.inverter_device_id,
+            translation_key="wifi_module",
         )
 
 

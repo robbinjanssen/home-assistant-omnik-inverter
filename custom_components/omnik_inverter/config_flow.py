@@ -5,12 +5,12 @@ from __future__ import annotations
 import socket
 from typing import Any
 
-import voluptuous as vol
+import probatio
 from homeassistant.config_entries import (
     ConfigEntry,
     ConfigFlow,
     ConfigFlowResult,
-    OptionsFlow,
+    OptionsFlowWithReload,
 )
 from homeassistant.const import (
     CONF_HOST,
@@ -33,12 +33,13 @@ from .const import (
     CONF_SCAN_INTERVAL,
     CONF_SERIAL,
     CONF_SOURCE_TYPE,
-    CONF_USE_CACHE,
     CONFIGFLOW_VERSION,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     LOGGER,
 )
+
+PASSWORD_SELECTOR = TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD))
 
 
 class InvalidHostError(Exception):
@@ -144,7 +145,9 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # pylint: disable=ab
 
         list_of_types = ["Javascript", "JSON", "HTML", "TCP"]
 
-        schema = vol.Schema({vol.Required(CONF_TYPE): vol.In(list_of_types)})
+        schema = probatio.Schema(
+            {probatio.Required(CONF_TYPE): probatio.In(list_of_types)}
+        )
         return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
 
     async def async_step_setup(
@@ -185,12 +188,12 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # pylint: disable=ab
 
         return self.async_show_form(
             step_id="setup",
-            data_schema=vol.Schema(
+            data_schema=probatio.Schema(
                 {
-                    vol.Optional(
+                    probatio.Optional(
                         CONF_NAME, default=self.hass.config.location_name
                     ): str,
-                    vol.Required(CONF_HOST): str,
+                    probatio.Required(CONF_HOST): str,
                 }
             ),
             errors=errors,
@@ -238,14 +241,14 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # pylint: disable=ab
 
         return self.async_show_form(
             step_id="setup_html",
-            data_schema=vol.Schema(
+            data_schema=probatio.Schema(
                 {
-                    vol.Optional(
+                    probatio.Optional(
                         CONF_NAME, default=self.hass.config.location_name
                     ): str,
-                    vol.Required(CONF_HOST): str,
-                    vol.Required(CONF_USERNAME): str,
-                    vol.Required(CONF_PASSWORD): str,
+                    probatio.Required(CONF_HOST): str,
+                    probatio.Required(CONF_USERNAME): str,
+                    probatio.Required(CONF_PASSWORD): PASSWORD_SELECTOR,
                 }
             ),
             errors=errors,
@@ -291,14 +294,75 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # pylint: disable=ab
 
         return self.async_show_form(
             step_id="setup_tcp",
-            data_schema=vol.Schema(
+            data_schema=probatio.Schema(
                 {
-                    vol.Optional(
+                    probatio.Optional(
                         CONF_NAME, default=self.hass.config.location_name
                     ): str,
-                    vol.Required(CONF_HOST): str,
-                    vol.Required(CONF_SERIAL): int,
+                    probatio.Required(CONF_HOST): str,
+                    probatio.Required(CONF_SERIAL): int,
                 }
+            ),
+            errors=errors,
+        )
+
+    async def async_step_reconfigure(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Handle reconfiguration of the connection settings.
+
+        Args:
+            user_input: The input received from the user or none.
+
+        Returns:
+            An abort result after updating the entry or a form with errors.
+
+        """
+        entry = self._get_reconfigure_entry()
+        source_type = entry.data[CONF_SOURCE_TYPE]
+        errors = {}
+
+        if user_input is not None:
+            client_kwargs: dict[str, Any] = {}
+            if source_type == "html":
+                client_kwargs = {
+                    "username": user_input[CONF_USERNAME],
+                    "password": user_input[CONF_PASSWORD],
+                }
+            elif source_type == "tcp":
+                client_kwargs = {"serial_number": user_input[CONF_SERIAL]}
+
+            try:
+                inverter = await async_get_inverter(
+                    self.hass,
+                    user_input,
+                    source_type=source_type,
+                    **client_kwargs,
+                )
+            except OmnikInverterError:
+                LOGGER.exception("Failed to connect to the Omnik")
+                errors["base"] = "cannot_connect"
+            except InvalidHostError as error:
+                errors["base"] = str(error)
+            else:
+                if entry.unique_id and inverter.serial_number:
+                    await self.async_set_unique_id(inverter.serial_number)
+                    self._abort_if_unique_id_mismatch(reason="wrong_device")
+                return self.async_update_reload_and_abort(
+                    entry, data_updates=user_input
+                )
+
+        fields: dict[Any, Any] = {probatio.Required(CONF_HOST): str}
+        if source_type == "html":
+            fields[probatio.Required(CONF_USERNAME)] = str
+            fields[probatio.Required(CONF_PASSWORD)] = PASSWORD_SELECTOR
+        elif source_type == "tcp":
+            fields[probatio.Required(CONF_SERIAL)] = int
+
+        return self.async_show_form(
+            step_id="reconfigure",
+            data_schema=self.add_suggested_values_to_schema(
+                probatio.Schema(fields), user_input or entry.data
             ),
             errors=errors,
         )
@@ -315,7 +379,7 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # pylint: disable=ab
             self._abort_if_unique_id_configured()
 
 
-class OmnikInverterOptionsFlowHandler(OptionsFlow):
+class OmnikInverterOptionsFlowHandler(OptionsFlowWithReload):
     """Handle options."""
 
     async def async_step_init(
@@ -327,76 +391,22 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
             user_input: The input received from the user or none.
 
         Returns:
-            The created config entry.
+            The created options or the options form.
 
         """
-        errors = {}
-
         if user_input is not None:
-            try:
-                await validate_input(self.hass, user_input)
-            except InvalidHostError as error:
-                errors["base"] = str(error)
-            else:
-                updated_config = {
-                    CONF_SOURCE_TYPE: self.config_entry.data[CONF_SOURCE_TYPE]
-                }
-                for key in (CONF_HOST, CONF_USERNAME, CONF_PASSWORD, CONF_SERIAL):
-                    if key in user_input:
-                        updated_config[key] = user_input[key]
-
-                self.hass.config_entries.async_update_entry(
-                    self.config_entry,
-                    data=updated_config,
-                    title=user_input.get(CONF_NAME, self.config_entry.title),
-                )
-
-                options = {}
-                for key in (CONF_SCAN_INTERVAL, CONF_USE_CACHE):
-                    options[key] = user_input[key]
-                return self.async_create_entry(title="", data=options)
-
-        fields: dict[Any, Any] = {
-            vol.Optional(
-                CONF_NAME,
-                default=self.config_entry.title,
-            ): str,
-            vol.Required(
-                CONF_HOST,
-                default=self.config_entry.data.get(CONF_HOST),
-            ): str,
-        }
-
-        if self.config_entry.data[CONF_SOURCE_TYPE] == "html":
-            fields[
-                vol.Required(
-                    CONF_USERNAME, default=self.config_entry.data.get(CONF_USERNAME)
-                )
-            ] = str
-            fields[
-                vol.Required(
-                    CONF_PASSWORD, default=self.config_entry.data.get(CONF_PASSWORD)
-                )
-            ] = TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD))
-        elif self.config_entry.data[CONF_SOURCE_TYPE] == "tcp":
-            fields[
-                vol.Required(
-                    CONF_SERIAL, default=self.config_entry.data.get(CONF_SERIAL)
-                )
-            ] = int
-
-        fields[
-            vol.Optional(
-                CONF_SCAN_INTERVAL,
-                default=self.config_entry.options.get(
-                    CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
-                ),
-            )
-        ] = vol.All(vol.Coerce(int), vol.Range(min=1))
-        fields[vol.Optional(CONF_USE_CACHE, default=False)] = bool
+            return self.async_create_entry(data=user_input)
 
         return self.async_show_form(
             step_id="init",
-            data_schema=vol.Schema(fields),
-            errors=errors,
+            data_schema=probatio.Schema(
+                {
+                    probatio.Optional(
+                        CONF_SCAN_INTERVAL,
+                        default=self.config_entry.options.get(
+                            CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
+                        ),
+                    ): probatio.All(probatio.Coerce(int), probatio.Range(min=1)),
+                }
+            ),
         )

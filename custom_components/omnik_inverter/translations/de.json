@@ -33,6 +33,16 @@
                 "data": {
                     "type": "Datenquelle"
                 }
+            },
+            "reconfigure": {
+                "title": "Omnik Inverter neu konfigurieren",
+                "description": "Aktualisiere die Verbindungseinstellungen deines Omnik Inverters.",
+                "data": {
+                    "host": "Host",
+                    "username": "Benutzername",
+                    "password": "Passwort",
+                    "serial": "Seriennummer"
+                }
             }
         },
         "error": {
@@ -41,22 +51,18 @@
             "invalid_host": "Ungültiger Hostname oder ungültige IP-Adresse (verwenden Sie nicht die Webbrowser-URL)"
         },
         "abort": {
-            "already_configured": "Dieser Wechselrichter ist bereits konfiguriert"
+            "already_configured": "Dieser Wechselrichter ist bereits konfiguriert",
+            "reconfigure_successful": "Die Verbindungseinstellungen wurden aktualisiert",
+            "wrong_device": "Dies ist ein anderer Wechselrichter als der konfigurierte"
         }
     },
     "options": {
         "step": {
             "init": {
+                "description": "Ändere, wie oft die Integration deinen Omnik Inverter abfragt.",
                 "data": {
-                    "name": "Name",
-                    "host": "Host",
-                    "username": "Benutzername",
-                    "password": "Passwort",
-                    "serial": "Seriennummer",
-                    "scan_interval": "Aktualisierungsintervall der Daten (Minuten)",
-                    "use_cache": "Den gesamten Tagesumsatz zwischenspeichern"
-                },
-                "description": "Ändere deine Omnik Inverter Integration."
+                    "scan_interval": "Minimale Zeit zwischen Aktualisierungen [m]"
+                }
             }
         }
     },
@@ -109,6 +115,16 @@
             "ac_output_frequency": {
                 "name": "AC-Ausgang {index} Frequenz"
             }
+        }
+    },
+    "device": {
+        "wifi_module": {
+            "name": "WLAN-Modul"
+        }
+    },
+    "exceptions": {
+        "migration_not_supported": {
+            "message": "Die Konfigurationsversion {version} kann nicht migriert werden. Bitte entferne die Integration und füge sie erneut hinzu."
         }
     }
 }

@@ -7,10 +7,14 @@
   ],
   "config_flow": true,
   "documentation": "https://github.com/robbinjanssen/home-assistant-omnik-inverter",
+  "integration_type": "device",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/robbinjanssen/home-assistant-omnik-inverter/issues",
+  "loggers": [
+    "omnikinverter"
+  ],
   "requirements": [
     "omnikinverter==1.0.0"
   ],
-  "version": "3.0.1"
+  "version": "4.0.0"
 }

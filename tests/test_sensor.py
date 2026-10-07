@@ -14,9 +14,21 @@ if TYPE_CHECKING:
 @pytest.mark.parametrize(
     ("entity_id", "name", "state"),
     [
-        ("binary_sensor.home_device_online", "Home Device Online", "on"),
-        ("sensor.home_device_ip_address", "Home Device IP address", "192.168.1.10"),
-        ("sensor.home_device_signal_quality", "Home Device Signal quality", "90"),
+        (
+            "binary_sensor.home_inverter_wi_fi_module_online",
+            "Wi-Fi module Online",
+            "on",
+        ),
+        (
+            "sensor.home_inverter_wi_fi_module_ip_address",
+            "Wi-Fi module IP address",
+            "192.168.1.10",
+        ),
+        (
+            "sensor.home_inverter_wi_fi_module_signal_quality",
+            "Wi-Fi module Signal quality",
+            "90",
+        ),
         (
             "sensor.home_inverter_current_power_production",
             "Home Inverter Current power production",
