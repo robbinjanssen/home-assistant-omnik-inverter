@@ -80,7 +80,6 @@ class OmnikInverterEntity(CoordinatorEntity[OmnikInverterDataUpdateCoordinator])
             identifiers={(DOMAIN, f"{self.entry_id}_{SERVICE_DEVICE}")},
             parent_device_id=self.coordinator.inverter_device_id,
             translation_key="wifi_module",
-            translation_placeholders={"name": self.coordinator.config_entry.title},
         )
 
 

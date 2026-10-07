@@ -35,7 +35,7 @@ After installation you can add the inverter through the integration page. The va
 
 Your Omnik Inverter needs to be connected to your local network, as this custom integration will utilise the web interface of the Omnik inverter to read data. All you need to know is the IP address of the Omnik inverter and you are good to go.
 
-This integration requires Home Assistant 2026.9 or newer.
+This integration requires Home Assistant 2026.10 or newer.
 
 ## HACS installation
 

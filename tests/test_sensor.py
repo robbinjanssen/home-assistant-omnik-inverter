@@ -15,18 +15,18 @@ if TYPE_CHECKING:
     ("entity_id", "name", "state"),
     [
         (
-            "binary_sensor.home_wi_fi_module_online",
-            "Home Wi-Fi module Online",
+            "binary_sensor.home_inverter_wi_fi_module_online",
+            "Wi-Fi module Online",
             "on",
         ),
         (
-            "sensor.home_wi_fi_module_ip_address",
-            "Home Wi-Fi module IP address",
+            "sensor.home_inverter_wi_fi_module_ip_address",
+            "Wi-Fi module IP address",
             "192.168.1.10",
         ),
         (
-            "sensor.home_wi_fi_module_signal_quality",
-            "Home Wi-Fi module Signal quality",
+            "sensor.home_inverter_wi_fi_module_signal_quality",
+            "Wi-Fi module Signal quality",
             "90",
         ),
         (

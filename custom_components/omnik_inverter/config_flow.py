@@ -5,7 +5,7 @@ from __future__ import annotations
 import socket
 from typing import Any
 
-import voluptuous as vol
+import probatio
 from homeassistant.config_entries import (
     ConfigEntry,
     ConfigFlow,
@@ -145,7 +145,9 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # pylint: disable=ab
 
         list_of_types = ["Javascript", "JSON", "HTML", "TCP"]
 
-        schema = vol.Schema({vol.Required(CONF_TYPE): vol.In(list_of_types)})
+        schema = probatio.Schema(
+            {probatio.Required(CONF_TYPE): probatio.In(list_of_types)}
+        )
         return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
 
     async def async_step_setup(
@@ -186,12 +188,12 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # pylint: disable=ab
 
         return self.async_show_form(
             step_id="setup",
-            data_schema=vol.Schema(
+            data_schema=probatio.Schema(
                 {
-                    vol.Optional(
+                    probatio.Optional(
                         CONF_NAME, default=self.hass.config.location_name
                     ): str,
-                    vol.Required(CONF_HOST): str,
+                    probatio.Required(CONF_HOST): str,
                 }
             ),
             errors=errors,
@@ -239,14 +241,14 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # pylint: disable=ab
 
         return self.async_show_form(
             step_id="setup_html",
-            data_schema=vol.Schema(
+            data_schema=probatio.Schema(
                 {
-                    vol.Optional(
+                    probatio.Optional(
                         CONF_NAME, default=self.hass.config.location_name
                     ): str,
-                    vol.Required(CONF_HOST): str,
-                    vol.Required(CONF_USERNAME): str,
-                    vol.Required(CONF_PASSWORD): PASSWORD_SELECTOR,
+                    probatio.Required(CONF_HOST): str,
+                    probatio.Required(CONF_USERNAME): str,
+                    probatio.Required(CONF_PASSWORD): PASSWORD_SELECTOR,
                 }
             ),
             errors=errors,
@@ -292,13 +294,13 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # pylint: disable=ab
 
         return self.async_show_form(
             step_id="setup_tcp",
-            data_schema=vol.Schema(
+            data_schema=probatio.Schema(
                 {
-                    vol.Optional(
+                    probatio.Optional(
                         CONF_NAME, default=self.hass.config.location_name
                     ): str,
-                    vol.Required(CONF_HOST): str,
-                    vol.Required(CONF_SERIAL): int,
+                    probatio.Required(CONF_HOST): str,
+                    probatio.Required(CONF_SERIAL): int,
                 }
             ),
             errors=errors,
@@ -350,17 +352,17 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # pylint: disable=ab
                     entry, data_updates=user_input
                 )
 
-        fields: dict[Any, Any] = {vol.Required(CONF_HOST): str}
+        fields: dict[Any, Any] = {probatio.Required(CONF_HOST): str}
         if source_type == "html":
-            fields[vol.Required(CONF_USERNAME)] = str
-            fields[vol.Required(CONF_PASSWORD)] = PASSWORD_SELECTOR
+            fields[probatio.Required(CONF_USERNAME)] = str
+            fields[probatio.Required(CONF_PASSWORD)] = PASSWORD_SELECTOR
         elif source_type == "tcp":
-            fields[vol.Required(CONF_SERIAL)] = int
+            fields[probatio.Required(CONF_SERIAL)] = int
 
         return self.async_show_form(
             step_id="reconfigure",
             data_schema=self.add_suggested_values_to_schema(
-                vol.Schema(fields), user_input or entry.data
+                probatio.Schema(fields), user_input or entry.data
             ),
             errors=errors,
         )
@@ -397,14 +399,14 @@ class OmnikInverterOptionsFlowHandler(OptionsFlowWithReload):
 
         return self.async_show_form(
             step_id="init",
-            data_schema=vol.Schema(
+            data_schema=probatio.Schema(
                 {
-                    vol.Optional(
+                    probatio.Optional(
                         CONF_SCAN_INTERVAL,
                         default=self.config_entry.options.get(
                             CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
                         ),
-                    ): vol.All(vol.Coerce(int), vol.Range(min=1)),
+                    ): probatio.All(probatio.Coerce(int), probatio.Range(min=1)),
                 }
             ),
         )

@@ -119,7 +119,7 @@
     },
     "device": {
         "wifi_module": {
-            "name": "{name} WLAN-Modul"
+            "name": "WLAN-Modul"
         }
     },
     "exceptions": {
