@@ -94,9 +94,10 @@ class OmnikInverterDataUpdateCoordinator(DataUpdateCoordinator[OmnikInverterData
 
         """
         try:
+            response = await self.omnikinverter.data()
             data: OmnikInverterData = {
-                SERVICE_INVERTER: await self.omnikinverter.inverter(),
-                SERVICE_DEVICE: await self.omnikinverter.device(),
+                SERVICE_INVERTER: response.inverter,
+                SERVICE_DEVICE: response.device,
             }
         except OmnikInverterAuthError as error:
             _LOGGER.exception("Failed to authenticate with the Omnik")
