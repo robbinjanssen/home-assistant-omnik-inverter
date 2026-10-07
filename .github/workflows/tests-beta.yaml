@@ -1,0 +1,46 @@
+---
+name: Tests against Home Assistant beta
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  DEFAULT_PYTHON: "3.14"
+
+jobs:
+  pytest:
+    name: Tests (Home Assistant beta)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.0
+
+      - name: Set up Poetry
+        run: pipx install poetry
+
+      - name: Set up Python ${{ env.DEFAULT_PYTHON }}
+        uses: actions/setup-python@v6.3.0
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+          cache: "poetry"
+
+      - name: Install dependencies
+        run: |
+          poetry config virtualenvs.in-project true
+          poetry install --no-interaction
+
+      - name: Install the latest Home Assistant (beta) test package
+        run: >-
+          poetry run pip install --upgrade --pre
+          pytest-homeassistant-custom-component
+
+      - name: Show the Home Assistant version
+        run: poetry run python -c "from homeassistant.const import __version__; print(__version__)"
+
+      - name: Run pytest
+        run: poetry run pytest

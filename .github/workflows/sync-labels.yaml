@@ -8,6 +8,10 @@ on:
     paths:
       - .github/labels.yml
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   labels:
     name: Sync labels

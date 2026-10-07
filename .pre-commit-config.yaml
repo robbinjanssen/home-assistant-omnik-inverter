@@ -89,6 +89,7 @@ repos:
         language: system
         types: [python]
         entry: poetry run mypy
+        require_serial: true
       - id: no-commit-to-branch
         name: Don't commit to main branch
         language: system
