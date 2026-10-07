@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, PropertyMock, patch
 
 import pytest
-from omnikinverter import Device, Inverter
+from omnikinverter import Device, Inverter, OmnikInverterData
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 if TYPE_CHECKING:
@@ -61,8 +61,8 @@ def mock_omnikinverter() -> Generator[None]:
             AsyncMock(return_value=INVERTER),
         ),
         patch(
-            "omnikinverter.OmnikInverter.device",
-            AsyncMock(return_value=DEVICE),
+            "omnikinverter.OmnikInverter.data",
+            AsyncMock(return_value=OmnikInverterData(inverter=INVERTER, device=DEVICE)),
         ),
     ):
         yield

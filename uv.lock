@@ -1146,7 +1146,7 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "omnikinverter", specifier = "==1.0.0" }]
+requires-dist = [{ name = "omnikinverter", specifier = "==2.0.0" }]
 
 [package.metadata.requires-dev]
 dev = [
@@ -1718,15 +1718,15 @@ wheels = [
 
 [[package]]
 name = "omnikinverter"
-version = "1.0.0"
+version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "yarl" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/5d/d0/22352cd1a3ba3422e7152f26806cb883d75563c2187f0d142d57ca47f2be/omnikinverter-1.0.0.tar.gz", hash = "sha256:7c36b409c00f2657505c9bf06d0dcc50b5888dfcfc56d5ebf2896f9f877a208f", size = 16171, upload-time = "2024-01-03T14:23:00.404Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e4/99/9de7428cdadc2707f31e1838f8b1ef5ddc8c8be6d0ddc5646e8195dd4a1f/omnikinverter-2.0.0.tar.gz", hash = "sha256:4305e259c6fd1e9d894761f1fa37b26790a528d19e1f3a3b1fe010b78d5349bc", size = 13581, upload-time = "2026-10-07T20:08:15.97Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/51/8e/81fbc120b6d497a29d12644dc92ed567e275ad6abee0069f5d67f14736c9/omnikinverter-1.0.0-py3-none-any.whl", hash = "sha256:3ee09b7c1fda8c343b3f79d74c0ddb56739c27e63c14aa780e25e226189c54c8", size = 14494, upload-time = "2024-01-03T14:22:57.416Z" },
+    { url = "https://files.pythonhosted.org/packages/84/ec/00da8a6aeb5cd55c61086b4168f63e692d77ff120d62f7f5e81ee492a0b7/omnikinverter-2.0.0-py3-none-any.whl", hash = "sha256:bfbf7a125b8fc058b15d9bd858b9f784d36b77a1340ee5608aeb7df76064124e", size = 16002, upload-time = "2026-10-07T20:08:14.81Z" },
 ]
 
 [[package]]
