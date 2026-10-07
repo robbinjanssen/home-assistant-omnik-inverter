@@ -39,8 +39,8 @@ jobs:
           poetry config virtualenvs.in-project true
           poetry install --no-interaction
 
-      - name: Run pre-commit hooks
-        run: poetry run pre-commit run --all-files --show-diff-on-failure
+      - name: Run pre-commit hooks with prek
+        run: poetry run prek run --all-files --show-diff-on-failure
         env:
           # Commits to main are expected here, the hook guards local commits.
           SKIP: no-commit-to-branch

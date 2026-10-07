@@ -5,9 +5,8 @@ from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, PropertyMock, patch
 
 import pytest
-from pytest_homeassistant_custom_component.common import MockConfigEntry
-
 from omnikinverter import Device, Inverter
+from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 if TYPE_CHECKING:
     from collections.abc import Generator
