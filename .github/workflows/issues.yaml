@@ -6,6 +6,10 @@ on:
     - cron: "0 17 * * *"
   workflow_dispatch:
 
+permissions:
+  issues: write
+  pull-requests: write
+
 jobs:
   lock:
     name: Lock closed issues and PRs

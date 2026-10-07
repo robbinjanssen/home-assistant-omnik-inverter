@@ -3,9 +3,17 @@ name: HACS Action
 
 on:
   push:
+    branches: [main]
   pull_request:
   schedule:
     - cron: "0 0 * * *"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   hacs:
