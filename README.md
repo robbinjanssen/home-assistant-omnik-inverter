@@ -23,10 +23,12 @@ It has been tested and developed on the following inverters:
 | Omnik    | Omniksol 4000TL2 | JS         |
 | Ginlong  | Solis-DLS-WiFi   | JSON/HTML  |
 | Hosola   | 1500TL           | JS         |
-| Hosola   | 1600T            | ?          |
+| Hosola   | 1600T            | JS         |
+| Hosola   | Bright 2500MTL-S | JS         |
 | Bosswerk | BW-MI300         | HTML       |
 | Bosswerk | BW-MI600         | HTML       |
 | Sofar    | 3600TLM          | HTML       |
+| Sofar    | 2200TL           | JS         |
 | Huayu    | HY-600-Pro       | HTML       |
 
 After installation you can add the inverter through the integration page. The values are presented by the inverter device in Home Assistant, containing the actual solar power, with the Wi-Fi module as a child device containing information about the wifi signal.
