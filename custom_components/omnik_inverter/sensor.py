@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -40,70 +40,62 @@ SENSORS: dict[Service, tuple[SensorEntityDescription, ...]] = {
     SERVICE_DEVICE: (
         SensorEntityDescription(
             key="signal_quality",
-            name="Signal Quality",
-            icon="mdi:wifi",
+            translation_key="signal_quality",
             native_unit_of_measurement=PERCENTAGE,
             entity_category=EntityCategory.DIAGNOSTIC,
         ),
         SensorEntityDescription(
             key="ip_address",
-            name="IP Address",
-            icon="mdi:network",
+            translation_key="ip_address",
             entity_category=EntityCategory.DIAGNOSTIC,
         ),
     ),
     SERVICE_INVERTER: (
         SensorEntityDescription(
             key="solar_current_power",
-            name="Current Power Production",
-            icon="mdi:weather-sunny",
+            translation_key="solar_current_power",
             native_unit_of_measurement=UnitOfPower.WATT,
             device_class=SensorDeviceClass.POWER,
             state_class=SensorStateClass.MEASUREMENT,
         ),
         SensorEntityDescription(
             key="solar_energy_today",
-            name="Solar Production - Today",
+            translation_key="solar_energy_today",
             native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
             device_class=SensorDeviceClass.ENERGY,
             state_class=SensorStateClass.TOTAL_INCREASING,
         ),
         SensorEntityDescription(
             key="solar_energy_total",
-            name="Solar Production - Total",
-            icon="mdi:chart-line",
+            translation_key="solar_energy_total",
             native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
             device_class=SensorDeviceClass.ENERGY,
             state_class=SensorStateClass.TOTAL_INCREASING,
         ),
         SensorEntityDescription(
             key="solar_hours_total",
-            name="Solar Production - Uptime",
-            icon="mdi:clock",
+            translation_key="solar_hours_total",
             native_unit_of_measurement=UnitOfTime.HOURS,
             state_class=SensorStateClass.TOTAL_INCREASING,
         ),
         SensorEntityDescription(
             key="temperature",
-            name="Inverter temperature",
+            translation_key="temperature",
             entity_registry_enabled_default=False,
-            icon="mdi:thermometer",
             native_unit_of_measurement=UnitOfTemperature.CELSIUS,
             device_class=SensorDeviceClass.TEMPERATURE,
             state_class=SensorStateClass.MEASUREMENT,
         ),
         SensorEntityDescription(
             key="alarm_code",
-            name="Alarm Code",
-            icon="mdi:alert",
+            translation_key="alarm_code",
         ),
         RangedSensorEntityDescription(  # pylint: disable=unexpected-keyword-arg
             key="dc_input_{}_voltage",
             size=range(3),
             data_key="dc_input_voltage",
-            name="DC Input {} - Voltage",
+            translation_key="dc_input_voltage",
             entity_registry_enabled_default=False,
-            icon="mdi:lightning-bolt",
             native_unit_of_measurement=UnitOfElectricPotential.VOLT,
             device_class=SensorDeviceClass.VOLTAGE,
             state_class=SensorStateClass.MEASUREMENT,
@@ -112,9 +104,8 @@ SENSORS: dict[Service, tuple[SensorEntityDescription, ...]] = {
             key="dc_input_{}_current",
             size=range(3),
             data_key="dc_input_current",
-            name="DC Input {} - Current",
+            translation_key="dc_input_current",
             entity_registry_enabled_default=False,
-            icon="mdi:current-dc",
             native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
             device_class=SensorDeviceClass.CURRENT,
             state_class=SensorStateClass.MEASUREMENT,
@@ -123,9 +114,8 @@ SENSORS: dict[Service, tuple[SensorEntityDescription, ...]] = {
             key="ac_output_{}_voltage",
             size=range(3),
             data_key="ac_output_voltage",
-            name="AC Output {} - Voltage",
+            translation_key="ac_output_voltage",
             entity_registry_enabled_default=False,
-            icon="mdi:lightning-bolt",
             native_unit_of_measurement=UnitOfElectricPotential.VOLT,
             device_class=SensorDeviceClass.VOLTAGE,
             state_class=SensorStateClass.MEASUREMENT,
@@ -134,9 +124,8 @@ SENSORS: dict[Service, tuple[SensorEntityDescription, ...]] = {
             key="ac_output_{}_current",
             size=range(3),
             data_key="ac_output_current",
-            name="AC Output {} - Current",
+            translation_key="ac_output_current",
             entity_registry_enabled_default=False,
-            icon="mdi:current-ac",
             native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
             device_class=SensorDeviceClass.CURRENT,
             state_class=SensorStateClass.MEASUREMENT,
@@ -145,9 +134,8 @@ SENSORS: dict[Service, tuple[SensorEntityDescription, ...]] = {
             key="ac_output_{}_power",
             size=range(3),
             data_key="ac_output_power",
-            name="AC Output {} - Power",
+            translation_key="ac_output_power",
             entity_registry_enabled_default=False,
-            icon="mdi:lightning-bolt",
             native_unit_of_measurement=UnitOfPower.WATT,
             device_class=SensorDeviceClass.POWER,
             state_class=SensorStateClass.MEASUREMENT,
@@ -156,9 +144,8 @@ SENSORS: dict[Service, tuple[SensorEntityDescription, ...]] = {
             key="ac_output_{}_frequency",
             size=range(3),
             data_key="ac_output_frequency",
-            name="AC Output {} - Frequency",
+            translation_key="ac_output_frequency",
             entity_registry_enabled_default=False,
-            icon="mdi:sine-wave",
             native_unit_of_measurement=UnitOfFrequency.HERTZ,
             device_class=SensorDeviceClass.FREQUENCY,
             state_class=SensorStateClass.MEASUREMENT,
@@ -250,7 +237,6 @@ class OmnikInverterSensor(OmnikInverterEntity, SensorEntity):
         self._attr_unique_id = slugify(
             f"{self.entry_id}_{service}_{self.entity_description.key}"
         )
-        self._attr_name = f"{name} {self.entity_description.name}"
 
     @property
     def native_value(self) -> Any | None:
@@ -298,6 +284,7 @@ class OmnikInverterRangedSensor(OmnikInverterSensor):
 
         """
         self._index = index
+        self._attr_translation_placeholders = {"index": str(index + 1)}
         if description.data_key is None:
             msg = "data_key is required for RangedSensorEntityDescription"
             raise TypeError(msg)
@@ -305,7 +292,6 @@ class OmnikInverterRangedSensor(OmnikInverterSensor):
         description = dataclasses.replace(
             description,
             key=description.key.format(index + 1),
-            name=cast("str", description.name).format(index + 1),
         )
 
         super().__init__(

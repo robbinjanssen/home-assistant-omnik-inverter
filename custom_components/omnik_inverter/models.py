@@ -15,6 +15,7 @@ from .coordinator import OmnikInverterDataUpdateCoordinator
 class OmnikInverterEntity(CoordinatorEntity[OmnikInverterDataUpdateCoordinator]):
     """Defines an Omnik Inverter Entity."""
 
+    _attr_has_entity_name = True
     _name: str
     coordinator: OmnikInverterDataUpdateCoordinator
     service: Service
