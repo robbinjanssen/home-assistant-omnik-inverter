@@ -9,10 +9,10 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
     BinarySensorEntityDescription,
 )
-from homeassistant.helpers.entity import EntityCategory
+from homeassistant.const import EntityCategory
 from homeassistant.util import slugify
 
-from .const import SERVICE_DEVICE
+from .const import SERVICE_DEVICE, Service
 from .models import OmnikInverterEntity
 
 if TYPE_CHECKING:
@@ -69,7 +69,7 @@ class OmnikInverterBinarySensor(OmnikInverterEntity, BinarySensorEntity):
         coordinator: OmnikInverterDataUpdateCoordinator,
         name: str,
         description: BinarySensorEntityDescription,
-        service: str,
+        service: Service,
     ) -> None:
         """Initialise the entity.
 
@@ -87,7 +87,6 @@ class OmnikInverterBinarySensor(OmnikInverterEntity, BinarySensorEntity):
         self._attr_unique_id = slugify(
             f"{self.entry_id}_{service}_{self.entity_description.key}"
         )
-        self._attr_name = self.entity_description.name
 
     @property
     def is_on(self) -> bool:

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Final
+from typing import Final, Literal
 
 DOMAIN: Final = "omnik_inverter"
 MANUFACTURER: Final = "Omnik"
@@ -21,6 +21,8 @@ ENTRY_TYPE_SERVICE: Final = "service"
 
 SERVICE_INVERTER: Final = "inverter"
 SERVICE_DEVICE: Final = "device"
+
+type Service = Literal["inverter", "device"]
 
 SERVICES: dict[str, str] = {
     SERVICE_INVERTER: "Inverter",

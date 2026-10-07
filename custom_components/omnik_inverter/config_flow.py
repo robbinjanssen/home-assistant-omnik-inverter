@@ -90,7 +90,7 @@ async def async_get_inverter(
     return await client.inverter()
 
 
-class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore[call-arg]
+class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # pylint: disable=abstract-method
     """Config flow for Omnik Inverter."""
 
     VERSION = CONFIGFLOW_VERSION
@@ -348,7 +348,7 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
                 self.hass.config_entries.async_update_entry(
                     self.config_entry,
                     data=updated_config,
-                    title=user_input.get(CONF_NAME),
+                    title=user_input.get(CONF_NAME, self.config_entry.title),
                 )
 
                 options = {}

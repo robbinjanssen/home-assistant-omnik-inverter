@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any, cast
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -13,6 +13,7 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.const import (
     PERCENTAGE,
+    EntityCategory,
     UnitOfElectricCurrent,
     UnitOfElectricPotential,
     UnitOfEnergy,
@@ -21,14 +22,13 @@ from homeassistant.const import (
     UnitOfTemperature,
     UnitOfTime,
 )
-from homeassistant.helpers.entity import EntityCategory
 from homeassistant.util import slugify
 
-from .const import SERVICE_DEVICE, SERVICE_INVERTER
+from .const import SERVICE_DEVICE, SERVICE_INVERTER, Service
 from .models import OmnikInverterEntity, RangedSensorEntityDescription
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Iterator, Mapping
 
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -36,7 +36,7 @@ if TYPE_CHECKING:
     from . import OmnikInverterConfigEntry
     from .coordinator import OmnikInverterDataUpdateCoordinator
 
-SENSORS: dict[Literal["inverter", "device"], tuple[SensorEntityDescription, ...]] = {
+SENSORS: dict[Service, tuple[SensorEntityDescription, ...]] = {
     SERVICE_DEVICE: (
         SensorEntityDescription(
             key="signal_quality",
@@ -184,7 +184,7 @@ async def async_setup_entry(
     options = entry.options
 
     def create_sensor_entities(
-        description: SensorEntityDescription, service: str
+        description: SensorEntityDescription, service: Service
     ) -> Iterator[OmnikInverterSensor]:
         if (
             isinstance(description, RangedSensorEntityDescription)
@@ -222,15 +222,15 @@ class OmnikInverterSensor(OmnikInverterEntity, SensorEntity):
     """Defines an Omnik Inverter Sensor."""
 
     entity_description: SensorEntityDescription
-    _options: dict[str, Any]
+    _options: Mapping[str, Any]
 
     def __init__(  # pylint: disable=too-many-arguments
         self,
         coordinator: OmnikInverterDataUpdateCoordinator,
         name: str,
         description: SensorEntityDescription,
-        service: str,
-        options: dict[str, Any],
+        service: Service,
+        options: Mapping[str, Any],
     ) -> None:
         """Initialise the entity.
 
@@ -283,8 +283,8 @@ class OmnikInverterRangedSensor(OmnikInverterSensor):
         index: int,
         name: str,
         description: RangedSensorEntityDescription,
-        service: str,
-        options: dict[str, Any],
+        service: Service,
+        options: Mapping[str, Any],
     ) -> None:
         """Initialise the entity.
 
@@ -302,10 +302,10 @@ class OmnikInverterRangedSensor(OmnikInverterSensor):
             msg = "data_key is required for RangedSensorEntityDescription"
             raise TypeError(msg)
         self._data_key = description.data_key
-        description = dataclasses.replace(  # type: ignore[call-arg]
+        description = dataclasses.replace(
             description,
             key=description.key.format(index + 1),
-            name=description.name.format(index + 1),
+            name=cast("str", description.name).format(index + 1),
         )
 
         super().__init__(
