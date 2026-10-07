@@ -116,5 +116,15 @@
                 "name": "AC-uitgang {index} frequentie"
             }
         }
+    },
+    "device": {
+        "wifi_module": {
+            "name": "{name} wifi-module"
+        }
+    },
+    "exceptions": {
+        "migration_not_supported": {
+            "message": "Configuratieversie {version} kan niet worden gemigreerd. Verwijder de integratie en voeg deze opnieuw toe."
+        }
     }
 }

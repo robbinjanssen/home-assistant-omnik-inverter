@@ -10,7 +10,7 @@ from homeassistant.config_entries import (
     ConfigEntry,
     ConfigFlow,
     ConfigFlowResult,
-    OptionsFlow,
+    OptionsFlowWithReload,
 )
 from homeassistant.const import (
     CONF_HOST,
@@ -346,10 +346,9 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # pylint: disable=ab
                 if entry.unique_id and inverter.serial_number:
                     await self.async_set_unique_id(inverter.serial_number)
                     self._abort_if_unique_id_mismatch(reason="wrong_device")
-                self.hass.config_entries.async_update_entry(
-                    entry, data={**entry.data, **user_input}
+                return self.async_update_reload_and_abort(
+                    entry, data_updates=user_input
                 )
-                return self.async_abort(reason="reconfigure_successful")
 
         fields: dict[Any, Any] = {vol.Required(CONF_HOST): str}
         if source_type == "html":
@@ -378,7 +377,7 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # pylint: disable=ab
             self._abort_if_unique_id_configured()
 
 
-class OmnikInverterOptionsFlowHandler(OptionsFlow):
+class OmnikInverterOptionsFlowHandler(OptionsFlowWithReload):
     """Handle options."""
 
     async def async_step_init(

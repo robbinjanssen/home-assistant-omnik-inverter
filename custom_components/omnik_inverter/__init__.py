@@ -3,11 +3,14 @@
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, callback, valid_entity_id
+from homeassistant.exceptions import ConfigEntryError
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_registry as er
 from homeassistant.util import slugify
 
-from .const import CONFIGFLOW_VERSION, DOMAIN, LOGGER, SERVICE_DEVICE, SERVICE_INVERTER
+from .const import DOMAIN, LOGGER, SERVICE_DEVICE, SERVICE_INVERTER
 from .coordinator import OmnikInverterDataUpdateCoordinator
+from .models import inverter_device_info
 
 type OmnikInverterConfigEntry = ConfigEntry[OmnikInverterDataUpdateCoordinator]
 
@@ -34,24 +37,16 @@ async def async_setup_entry(
 
     _async_set_unique_id(hass, entry, coordinator)
 
+    # Register the inverter first, the Wi-Fi module is added as its child device.
+    inverter_device = dr.async_get(hass).async_get_or_create(
+        config_entry_id=entry.entry_id, **inverter_device_info(coordinator)
+    )
+    coordinator.inverter_device_id = inverter_device.id
+
     entry.runtime_data = coordinator
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-    entry.async_on_unload(entry.add_update_listener(_async_update_listener))
 
     return True
-
-
-async def _async_update_listener(
-    hass: HomeAssistant, entry: OmnikInverterConfigEntry
-) -> None:
-    """Reload the config entry when its data or options change.
-
-    Args:
-        hass: The HomeAssistant instance.
-        entry: The ConfigEntry that was updated.
-
-    """
-    await hass.config_entries.async_reload(entry.entry_id)
 
 
 @callback
@@ -149,16 +144,13 @@ async def async_migrate_entry(
         _hass: The HomeAssistant instance.
         config_entry: The ConfigEntry containing the user input.
 
-    Returns:
-        Return false, not possible.
+    Raises:
+        ConfigEntryError: Entries of version 1 cannot be migrated.
 
     """
-    if config_entry.version <= 2:
-        LOGGER.warning(
-            "Impossible to migrate config version from version %s to version %s."
-            "\r\nPlease consider to delete and re-add the integration.",
-            config_entry.version,
-            CONFIGFLOW_VERSION,
-        )
-        return False
-    return False
+    LOGGER.debug("Cannot migrate config entry version %s", config_entry.version)
+    raise ConfigEntryError(
+        translation_domain=DOMAIN,
+        translation_key="migration_not_supported",
+        translation_placeholders={"version": str(config_entry.version)},
+    )

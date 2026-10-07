@@ -116,5 +116,15 @@
         "name": "AC output {index} frequency"
       }
     }
+  },
+  "device": {
+    "wifi_module": {
+      "name": "{name} Wi-Fi module"
+    }
+  },
+  "exceptions": {
+    "migration_not_supported": {
+      "message": "Config entry version {version} cannot be migrated. Please remove the integration and add it again."
+    }
   }
 }

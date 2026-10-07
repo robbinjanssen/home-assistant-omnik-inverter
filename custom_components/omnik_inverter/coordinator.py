@@ -42,6 +42,7 @@ class OmnikInverterDataUpdateCoordinator(DataUpdateCoordinator[OmnikInverterData
     """Class to manage fetching Omnik Inverter data from single endpoint."""
 
     config_entry: ConfigEntry
+    inverter_device_id: str
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Class to manage fetching Omnik Inverter data.

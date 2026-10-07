@@ -116,5 +116,15 @@
                 "name": "AC-Ausgang {index} Frequenz"
             }
         }
+    },
+    "device": {
+        "wifi_module": {
+            "name": "{name} WLAN-Modul"
+        }
+    },
+    "exceptions": {
+        "migration_not_supported": {
+            "message": "Die Konfigurationsversion {version} kann nicht migriert werden. Bitte entferne die Integration und füge sie erneut hinzu."
+        }
     }
 }

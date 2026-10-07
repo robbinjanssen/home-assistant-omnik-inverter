@@ -1,7 +1,7 @@
 ## Omnik Inverter Sensor Component for Home Assistant.
 
 The Omnik solar sensor component will retrieve data from an Omnik solar inverter.
-The values will be presented by two devices in Home Assistant. One is the inverter containing the actual solar power, and one is the device containing information about the wifi signal.
+The values are presented by the inverter device in Home Assistant, containing the actual solar power, with the Wi-Fi module as a child device containing information about the wifi signal.
 
 Find the full documentation [here](https://github.com/robbinjanssen/home-assistant-omnik-inverter).
 ## Configuration
