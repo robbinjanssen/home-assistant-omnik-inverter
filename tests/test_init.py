@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 from homeassistant.config_entries import ConfigEntryState
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from pytest_homeassistant_custom_component.common import MockConfigEntry
@@ -131,3 +132,24 @@ async def test_migrate_skips_existing_unique_id(
     entry = entity_registry.async_get(old.entity_id)
     assert entry is not None
     assert entry.unique_id == "01JABCDEF_inverter_solar_energy_today"
+
+
+@pytest.mark.usefixtures("mock_omnikinverter")
+async def test_device_entry_type_cleared(
+    hass: HomeAssistant, mock_config_entry: MockConfigEntry
+) -> None:
+    """Test devices created as a service become a regular device."""
+    mock_config_entry.add_to_hass(hass)
+    device_registry = dr.async_get(hass)
+    device = device_registry.async_get_or_create(
+        config_entry_id=mock_config_entry.entry_id,
+        identifiers={(DOMAIN, f"{mock_config_entry.entry_id}_inverter")},
+        entry_type=dr.DeviceEntryType.SERVICE,
+    )
+
+    assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    updated = device_registry.async_get(device.id)
+    assert isinstance(updated, dr.DeviceEntry)
+    assert updated.entry_type is None

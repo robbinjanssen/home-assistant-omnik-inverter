@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from homeassistant.components.sensor import SensorEntityDescription
-from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN, MANUFACTURER, SERVICE_DEVICE, SERVICE_INVERTER, Service
@@ -54,7 +54,8 @@ class OmnikInverterEntity(CoordinatorEntity[OmnikInverterDataUpdateCoordinator])
             identifiers={(DOMAIN, f"{self.entry_id}_{self.service}")},
             name=f"{self._name} {self.service.title()}",
             manufacturer=MANUFACTURER,
-            entry_type=DeviceEntryType.SERVICE,
+            # Explicitly clear the service type set by earlier versions.
+            entry_type=None,
             model=self.coordinator.data[SERVICE_INVERTER].model,
             sw_version=self.coordinator.data[self.service].firmware,
             configuration_url=f"http://{self.coordinator.data[SERVICE_DEVICE].ip_address}",

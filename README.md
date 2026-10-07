@@ -72,7 +72,7 @@ To configure the integration, add it using [Home Assistant integrations][ha-add-
 
 After selecting the data source, enter a **name** and IP address as **host** and you're good to go!
 
-_Optionally you can update the scan interval in the integration settings._
+_Optionally you can update the scan interval in the integration settings. To change the host or credentials later, use **Reconfigure** in the integration menu._
 
 ## Examples
 

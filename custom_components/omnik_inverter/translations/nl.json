@@ -33,6 +33,16 @@
                 "data": {
                     "type": "Verbindingstype"
                 }
+            },
+            "reconfigure": {
+                "title": "Omnik Inverter opnieuw configureren",
+                "description": "Werk de verbindingsinstellingen van je Omnik Inverter bij.",
+                "data": {
+                    "host": "Host",
+                    "username": "Gebruikersnaam",
+                    "password": "Wachtwoord",
+                    "serial": "Serienummer"
+                }
             }
         },
         "error": {
@@ -41,22 +51,18 @@
             "invalid_host": "Ongeldige hostnaam of IP-adres (gebruik niet de webbrowser URL)"
         },
         "abort": {
-            "already_configured": "Deze omvormer is al geconfigureerd"
+            "already_configured": "Deze omvormer is al geconfigureerd",
+            "reconfigure_successful": "De verbindingsinstellingen zijn bijgewerkt",
+            "wrong_device": "Dit is een andere omvormer dan de omvormer die is geconfigureerd"
         }
     },
     "options": {
         "step": {
             "init": {
+                "description": "Wijzig hoe vaak de integratie je Omnik Inverter uitleest.",
                 "data": {
-                    "name": "Naam",
-                    "host": "Host",
-                    "username": "Gebruikersnaam",
-                    "password": "Wachtwoord",
-                    "serial": "Serienummer",
-                    "scan_interval": "Minimale tijd tussen entiteitsupdates [m]",
-                    "use_cache": "Cache de dagopbrengst"
-                },
-                "description": "Verander de manier waarop de integratie uw Omnik-omvormer data ophaalt."
+                    "scan_interval": "Minimale tijd tussen updates [m]"
+                }
             }
         }
     },

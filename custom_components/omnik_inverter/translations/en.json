@@ -33,6 +33,16 @@
                 "data": {
                     "type": "Data source type"
                 }
+            },
+            "reconfigure": {
+                "title": "Reconfigure Omnik Inverter",
+                "description": "Update the connection settings of your Omnik Inverter.",
+                "data": {
+                    "host": "Host",
+                    "username": "Username",
+                    "password": "Password",
+                    "serial": "Serial Number"
+                }
             }
         },
         "error": {
@@ -41,22 +51,18 @@
             "invalid_host": "Invalid hostname or IP address (do not use the web browser URL)"
         },
         "abort": {
-            "already_configured": "This inverter is already configured"
+            "already_configured": "This inverter is already configured",
+            "reconfigure_successful": "The connection settings have been updated",
+            "wrong_device": "This is a different inverter than the one that was configured"
         }
     },
     "options": {
         "step": {
             "init": {
+                "description": "Change how often the integration fetches your Omnik Inverter.",
                 "data": {
-                    "name": "Name",
-                    "host": "Host",
-                    "username": "Username",
-                    "password": "Password",
-                    "serial": "Serial Number",
-                    "scan_interval": "Minimum time between entity updates [m]",
-                    "use_cache": "Cache the total power of today"
-                },
-                "description": "Change the way the integration fetches your Omnik Inverter."
+                    "scan_interval": "Minimum time between entity updates [m]"
+                }
             }
         }
     },

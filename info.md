@@ -8,7 +8,7 @@ Find the full documentation [here](https://github.com/robbinjanssen/home-assista
 
 To configure the component, add it using the integrations page. This will provide you with a configuration screen where you can first select the data source. After selecting the data source, enter a name and IP address (and in case of HTML a username/password) and you're good to go!
 
-_Optionally you can update the scan interval in the integration settings._
+_Optionally you can update the scan interval in the integration settings. To change the host or credentials later, use **Reconfigure** in the integration menu._
 
 ## Examples
 
