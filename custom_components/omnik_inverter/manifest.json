@@ -14,7 +14,7 @@
     "omnikinverter"
   ],
   "requirements": [
-    "omnikinverter==1.0.0"
+    "omnikinverter==2.0.0"
   ],
   "version": "4.0.0"
 }
