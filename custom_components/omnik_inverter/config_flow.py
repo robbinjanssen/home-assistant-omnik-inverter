@@ -19,14 +19,15 @@ from homeassistant.const import (
     CONF_TYPE,
     CONF_USERNAME,
 )
-from homeassistant.core import callback
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.selector import (
     TextSelector,
     TextSelectorConfig,
     TextSelectorType,
 )
 
-from omnikinverter import OmnikInverter, OmnikInverterError
+from omnikinverter import Inverter, OmnikInverter, OmnikInverterError
 
 from .const import (
     CONF_SCAN_INTERVAL,
@@ -44,10 +45,11 @@ class InvalidHostError(Exception):
     """Exception raised when the host is invalid."""
 
 
-async def validate_input(user_input: dict[str, Any]) -> str | None:
+async def validate_input(hass: HomeAssistant, user_input: dict[str, Any]) -> str | None:
     """Validate the given user input.
 
     Args:
+        hass: The HomeAssistant instance.
         user_input: The user input.
 
     Returns:
@@ -59,10 +61,33 @@ async def validate_input(user_input: dict[str, Any]) -> str | None:
     """
     host = user_input[CONF_HOST]
     try:
-        return socket.gethostbyname(host)
+        return await hass.async_add_executor_job(socket.gethostbyname, host)
     except socket.gaierror as exc:
         msg = "invalid_host"
         raise InvalidHostError(msg) from exc
+
+
+async def async_get_inverter(
+    hass: HomeAssistant, user_input: dict[str, Any], **kwargs: Any
+) -> Inverter:
+    """Validate the host and fetch the inverter data.
+
+    Args:
+        hass: The HomeAssistant instance.
+        user_input: The user input.
+        **kwargs: Extra arguments for the Omnik Inverter client.
+
+    Returns:
+        The inverter data.
+
+    """
+    await validate_input(hass, user_input)
+    client = OmnikInverter(
+        host=user_input[CONF_HOST],
+        session=async_get_clientsession(hass),
+        **kwargs,
+    )
+    return await client.inverter()
 
 
 class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore[call-arg]
@@ -138,18 +163,18 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore[call-
 
         if user_input is not None:
             try:
-                await validate_input(user_input)
-                async with OmnikInverter(
-                    host=user_input[CONF_HOST],
-                    source_type=self.source_type,  # type: ignore[arg-type]
-                ) as client:
-                    await client.inverter()
+                inverter = await async_get_inverter(
+                    self.hass,
+                    user_input,
+                    source_type=self.source_type,
+                )
             except OmnikInverterError:
                 LOGGER.exception("Failed to connect to the Omnik")
                 errors["base"] = "cannot_connect"
             except InvalidHostError as error:
                 errors["base"] = str(error)
             else:
+                await self._async_set_unique_id(inverter)
                 return self.async_create_entry(
                     title=user_input[CONF_NAME],
                     data={
@@ -187,20 +212,20 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore[call-
 
         if user_input is not None:
             try:
-                await validate_input(user_input)
-                async with OmnikInverter(
-                    host=user_input[CONF_HOST],
-                    source_type=self.source_type,  # type: ignore[arg-type]
+                inverter = await async_get_inverter(
+                    self.hass,
+                    user_input,
+                    source_type=self.source_type,
                     username=user_input[CONF_USERNAME],
                     password=user_input[CONF_PASSWORD],
-                ) as client:
-                    await client.inverter()
+                )
             except OmnikInverterError:
                 LOGGER.exception("Failed to connect to the Omnik")
                 errors["base"] = "cannot_connect"
             except InvalidHostError as error:
                 errors["base"] = str(error)
             else:
+                await self._async_set_unique_id(inverter)
                 return self.async_create_entry(
                     title=user_input[CONF_NAME],
                     data={
@@ -242,19 +267,19 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore[call-
 
         if user_input is not None:
             try:
-                await validate_input(user_input)
-                async with OmnikInverter(
-                    host=user_input[CONF_HOST],
-                    source_type=self.source_type,  # type: ignore[arg-type]
+                inverter = await async_get_inverter(
+                    self.hass,
+                    user_input,
+                    source_type=self.source_type,
                     serial_number=user_input[CONF_SERIAL],
-                ) as client:
-                    await client.inverter()
+                )
             except OmnikInverterError:
                 LOGGER.exception("Failed to connect to the Omnik")
                 errors["base"] = "cannot_connect"
             except InvalidHostError as error:
                 errors["base"] = str(error)
             else:
+                await self._async_set_unique_id(inverter)
                 return self.async_create_entry(
                     title=user_input[CONF_NAME],
                     data={
@@ -278,6 +303,17 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore[call-
             errors=errors,
         )
 
+    async def _async_set_unique_id(self, inverter: Inverter) -> None:
+        """Abort the flow if this inverter is already configured.
+
+        Args:
+            inverter: The inverter data fetched during the flow.
+
+        """
+        if inverter.serial_number:
+            await self.async_set_unique_id(inverter.serial_number)
+            self._abort_if_unique_id_configured()
+
 
 class OmnikInverterOptionsFlowHandler(OptionsFlow):
     """Handle options."""
@@ -298,10 +334,7 @@ class OmnikInverterOptionsFlowHandler(OptionsFlow):
 
         if user_input is not None:
             try:
-                await validate_input(user_input)
-            except OmnikInverterError:
-                LOGGER.exception("Failed to connect to the Omnik")
-                errors["base"] = "cannot_connect"
+                await validate_input(self.hass, user_input)
             except InvalidHostError as error:
                 errors["base"] = str(error)
             else:

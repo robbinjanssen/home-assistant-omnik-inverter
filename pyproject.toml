@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "home-assistant-omnik-inverter"
-version = "3.0.0"
+version = "3.0.1"
 description = "Read data from your Omnik Inverter using home assistant."
 authors = ["Robbin Janssen <robbinjanssen@gmail.com>"]
 maintainers = ["Robbin Janssen <robbinjanssen@gmail.com>"]

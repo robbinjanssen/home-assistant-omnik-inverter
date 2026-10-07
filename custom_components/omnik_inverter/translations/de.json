@@ -39,6 +39,9 @@
             "cannot_connect": "Verbindung fehlgeschlagen",
             "unknown": "Unerwarteter Fehler",
             "invalid_host": "Ungültiger Hostname oder ungültige IP-Adresse (verwenden Sie nicht die Webbrowser-URL)"
+        },
+        "abort": {
+            "already_configured": "Dieser Wechselrichter ist bereits konfiguriert"
         }
     },
     "options": {

@@ -2,12 +2,13 @@
 
 import logging
 from datetime import timedelta
-from typing import TypedDict
+from typing import Any, TypedDict
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from omnikinverter import Device, Inverter, OmnikInverter
@@ -49,30 +50,29 @@ class OmnikInverterDataUpdateCoordinator(DataUpdateCoordinator):
         super().__init__(
             hass,
             _LOGGER,
+            config_entry=entry,
             name=DOMAIN,
             update_interval=timedelta(
                 minutes=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
             ),
         )
 
-        if self.config_entry.data[CONF_SOURCE_TYPE] == "html":
-            self.omnikinverter = OmnikInverter(
-                host=self.config_entry.data[CONF_HOST],
-                source_type=self.config_entry.data[CONF_SOURCE_TYPE],
-                username=self.config_entry.data[CONF_USERNAME],
-                password=self.config_entry.data[CONF_PASSWORD],
-            )
-        elif self.config_entry.data[CONF_SOURCE_TYPE] == "tcp":
-            self.omnikinverter = OmnikInverter(
-                host=self.config_entry.data[CONF_HOST],
-                source_type=self.config_entry.data[CONF_SOURCE_TYPE],
-                serial_number=self.config_entry.data[CONF_SERIAL],
-            )
-        else:
-            self.omnikinverter = OmnikInverter(
-                host=self.config_entry.data[CONF_HOST],
-                source_type=self.config_entry.data[CONF_SOURCE_TYPE],
-            )
+        data = entry.data
+        kwargs: dict[str, Any] = {}
+        if data[CONF_SOURCE_TYPE] == "html":
+            kwargs = {
+                "username": data[CONF_USERNAME],
+                "password": data[CONF_PASSWORD],
+            }
+        elif data[CONF_SOURCE_TYPE] == "tcp":
+            kwargs = {"serial_number": data[CONF_SERIAL]}
+
+        self.omnikinverter = OmnikInverter(
+            host=data[CONF_HOST],
+            source_type=data[CONF_SOURCE_TYPE],
+            session=async_get_clientsession(hass),
+            **kwargs,
+        )
 
     async def _async_update_data(self) -> OmnikInverterData:
         """Fetch data from the omnik inverter.
