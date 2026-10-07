@@ -279,6 +279,7 @@ class OmnikInverterRangedSensor(OmnikInverterSensor):
     def __init__(  # noqa: PLR0913  # pylint: disable=too-many-arguments
         self,
         coordinator: OmnikInverterDataUpdateCoordinator,
+        *,
         index: int,
         name: str,
         description: RangedSensorEntityDescription,

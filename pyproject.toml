@@ -104,6 +104,7 @@ target-version = "py313"
 lint.select = ["ALL"]
 lint.ignore = [
   "ANN401",  # Opinioated warning on disallowing dynamically typed expressions
+  "CPY001",  # No copyright headers in source files
   "D203",    # Conflicts with other rules
   "D213",    # Conflicts with other rules
   "D417",    # False positives in some occasions
