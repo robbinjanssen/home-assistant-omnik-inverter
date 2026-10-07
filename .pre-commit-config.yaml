@@ -6,45 +6,45 @@ repos:
         name: Ruff Linter
         language: system
         types: [python]
-        entry: poetry run ruff check --fix
+        entry: uv run ruff check --fix
         require_serial: true
         stages: [pre-commit, pre-push, manual]
       - id: ruff-format
         name: Ruff Formatter
         language: system
         types: [python]
-        entry: poetry run ruff format
+        entry: uv run ruff format
         require_serial: true
         stages: [pre-commit, pre-push, manual]
       - id: codespell
         name: Check code for common misspellings
         language: system
         types: [text]
-        exclude: ^(poetry\.lock$|custom_components/omnik_inverter/translations/)
+        exclude: ^(uv\.lock$|custom_components/omnik_inverter/translations/)
         args: [--ignore-words=.codespell-ignore, --skip=./custom_components/omnik_inverter/translations]
-        entry: poetry run codespell
+        entry: uv run codespell
       - id: mypy
         name: Static type checking using mypy
         language: system
         types: [python]
-        entry: poetry run mypy
+        entry: uv run mypy
         require_serial: true
-      - id: poetry
-        name: Check pyproject with Poetry
+      - id: uv-lock
+        name: Check uv.lock is up to date
         language: system
-        entry: poetry check
+        entry: uv lock --check
         pass_filenames: false
         always_run: true
       - id: pylint
         name: Starring code with pylint
         language: system
         types: [python]
-        entry: poetry run pylint
+        entry: uv run pylint
       - id: yamllint
         name: Check YAML files with yamllint
         language: system
         types: [yaml]
-        entry: poetry run yamllint
+        entry: uv run yamllint
   - repo: builtin
     hooks:
       - id: check-case-conflict
