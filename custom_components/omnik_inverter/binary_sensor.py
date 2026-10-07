@@ -85,7 +85,7 @@ class OmnikInverterBinarySensor(OmnikInverterEntity, BinarySensorEntity):
         self.entity_description = description
 
         self._attr_unique_id = slugify(
-            f"{self._name}_{service}_{self.entity_description.key}"
+            f"{self.entry_id}_{service}_{self.entity_description.key}"
         )
         self._attr_name = self.entity_description.name
 

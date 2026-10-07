@@ -6,7 +6,7 @@ from homeassistant.core import HomeAssistant, callback, valid_entity_id
 from homeassistant.helpers import entity_registry as er
 from homeassistant.util import slugify
 
-from .const import CONFIGFLOW_VERSION, DOMAIN, LOGGER
+from .const import CONFIGFLOW_VERSION, DOMAIN, LOGGER, SERVICE_DEVICE, SERVICE_INVERTER
 from .coordinator import OmnikInverterDataUpdateCoordinator
 
 type OmnikInverterConfigEntry = ConfigEntry[OmnikInverterDataUpdateCoordinator]
@@ -32,20 +32,60 @@ async def async_setup_entry(
     coordinator = OmnikInverterDataUpdateCoordinator(hass, entry)
     await coordinator.async_config_entry_first_refresh()
 
+    _async_set_unique_id(hass, entry, coordinator)
+
     entry.runtime_data = coordinator
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    entry.async_on_unload(entry.add_update_listener(_async_update_listener))
 
     return True
+
+
+async def _async_update_listener(
+    hass: HomeAssistant, entry: OmnikInverterConfigEntry
+) -> None:
+    """Reload the config entry when its data or options change.
+
+    Args:
+        hass: The HomeAssistant instance.
+        entry: The ConfigEntry that was updated.
+
+    """
+    await hass.config_entries.async_reload(entry.entry_id)
+
+
+@callback
+def _async_set_unique_id(
+    hass: HomeAssistant,
+    entry: OmnikInverterConfigEntry,
+    coordinator: OmnikInverterDataUpdateCoordinator,
+) -> None:
+    """Set the inverter serial number as unique ID on older config entries.
+
+    Args:
+        hass: The HomeAssistant instance.
+        entry: The ConfigEntry to update.
+        coordinator: The coordinator holding the inverter data.
+
+    """
+    serial_number = coordinator.data[SERVICE_INVERTER].serial_number
+    if entry.unique_id is not None or not serial_number:
+        return
+    if hass.config_entries.async_entry_for_domain_unique_id(DOMAIN, serial_number):
+        return
+    hass.config_entries.async_update_entry(entry, unique_id=serial_number)
 
 
 async def _async_migrate_entities(
     hass: HomeAssistant, entry: OmnikInverterConfigEntry
 ) -> None:
-    """Migrate entity registry entries created by version 2.x.
+    """Migrate entity registry entries created by older versions.
 
     Version 2.x used unique IDs that were not slugified and could set
-    entity IDs containing capitals or spaces. Rewrite those entries so
-    existing entities, including their history, are kept after updating.
+    entity IDs containing capitals or spaces. Up to version 3.0.0 the
+    binary sensor unique ID was based on the entry title instead of the
+    entry ID. Rewrite those entries so existing entities, including their
+    history, are kept after updating.
 
     Args:
         hass: The HomeAssistant instance.
@@ -59,6 +99,9 @@ async def _async_migrate_entities(
         updates: dict[str, str] = {}
 
         new_unique_id = slugify(entity_entry.unique_id)
+        if entity_entry.domain == Platform.BINARY_SENSOR:
+            key = new_unique_id.rsplit(f"_{SERVICE_DEVICE}_", 1)[-1]
+            new_unique_id = slugify(f"{entry.entry_id}_{SERVICE_DEVICE}_{key}")
         if new_unique_id != entity_entry.unique_id:
             if ent_reg.async_get_entity_id(entity_entry.domain, DOMAIN, new_unique_id):
                 LOGGER.warning(

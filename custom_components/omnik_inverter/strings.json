@@ -19,6 +19,15 @@
           "password": "[%key:common::config_flow::data::password%]"
         }
       },
+      "setup_tcp": {
+        "title": "Omnik Inverter - TCP",
+        "description": "Set up Omnik Inverter to integrate with Home Assistant.",
+        "data": {
+          "name": "[%key:common::config_flow::data::name%]",
+          "host": "[%key:common::config_flow::data::host%]",
+          "serial": "Serial Number"
+        }
+      },
       "user": {
         "description": "Choose which data source applies to your Omnik Inverter.",
         "data": {
@@ -28,7 +37,11 @@
     },
     "error": {
       "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
-      "invalid_host": "[%key:common::config_flow::error::invalid_host%]"
+      "invalid_host": "[%key:common::config_flow::error::invalid_host%]",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    },
+    "abort": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
     }
   },
   "options": {
@@ -40,6 +53,7 @@
           "host": "[%key:common::config_flow::data::host%]",
           "username": "[%key:common::config_flow::data::username%]",
           "password": "[%key:common::config_flow::data::password%]",
+          "serial": "Serial Number",
           "scan_interval": "Minimum time between entity updates [m]",
           "use_cache": "Cache the total power of today"
         }
