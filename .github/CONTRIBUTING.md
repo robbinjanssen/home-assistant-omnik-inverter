@@ -2,7 +2,19 @@
 
 Contributions are **welcome** and will be fully **credited**.
 
-We accept contributions via Pull Requests on [Github](https://github.com/exonet/robbinjanssen/home-assistant-omnik-inverter).
+We accept contributions via Pull Requests on [Github](https://github.com/robbinjanssen/home-assistant-omnik-inverter).
+
+## Development environment
+
+This project uses [uv](https://docs.astral.sh/uv/) and
+[prek](https://github.com/j178/prek). Install uv, then:
+
+```sh
+uv sync                        # install Home Assistant and the development tools
+uv run prek install            # run all checks on every commit
+uv run prek run --all-files    # run all checks manually
+uv run pytest                  # run the tests
+```
 
 ## Pull Requests
 
