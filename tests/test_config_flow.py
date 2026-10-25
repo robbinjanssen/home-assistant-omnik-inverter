@@ -65,24 +65,42 @@ async def test_create_entry(
     assert result["type"] is FlowResultType.CREATE_ENTRY
     assert result["title"] == "Home"
     assert result["data"] == {"host": "inverter.local", **data}
-    assert result["result"].unique_id == "NLDN1234"
+    assert result["result"].unique_id == f"NLDN1234_{data['source_type']}"
 
 
 @pytest.mark.usefixtures("mock_omnikinverter", "mock_gethostbyname")
 async def test_already_configured(
     hass: HomeAssistant, mock_config_entry: MockConfigEntry
 ) -> None:
-    """Test the same inverter cannot be added twice."""
+    """Test the same inverter cannot be added twice with the same source type."""
     mock_config_entry.add_to_hass(hass)
-    hass.config_entries.async_update_entry(mock_config_entry, unique_id="NLDN1234")
+    hass.config_entries.async_update_entry(mock_config_entry, unique_id="NLDN1234_html")
 
-    flow_id = await _start_flow(hass, "JSON")
+    flow_id = await _start_flow(hass, "HTML")
     result = await hass.config_entries.flow.async_configure(
-        flow_id, {"name": "Home", "host": "inverter.local"}
+        flow_id,
+        {"name": "Home", "host": "inverter.local", "username": "a", "password": "b"},
     )
 
     assert result["type"] is FlowResultType.ABORT
     assert result["reason"] == "already_configured"
+
+
+@pytest.mark.usefixtures("mock_omnikinverter", "mock_gethostbyname")
+async def test_same_inverter_other_source_type(
+    hass: HomeAssistant, mock_config_entry: MockConfigEntry
+) -> None:
+    """Test the same inverter can be added again with another source type."""
+    mock_config_entry.add_to_hass(hass)
+    hass.config_entries.async_update_entry(mock_config_entry, unique_id="NLDN1234_html")
+
+    flow_id = await _start_flow(hass, "Javascript")
+    result = await hass.config_entries.flow.async_configure(
+        flow_id, {"name": "Home", "host": "inverter.local"}
+    )
+
+    assert result["type"] is FlowResultType.CREATE_ENTRY
+    assert result["result"].unique_id == "NLDN1234_javascript"
 
 
 @pytest.mark.usefixtures("mock_omnikinverter")
@@ -196,7 +214,7 @@ async def test_reconfigure_errors(
 ) -> None:
     """Test reconfiguring shows an error and refuses another inverter."""
     mock_config_entry.add_to_hass(hass)
-    hass.config_entries.async_update_entry(mock_config_entry, unique_id="NLDN1234")
+    hass.config_entries.async_update_entry(mock_config_entry, unique_id="NLDN1234_html")
     user_input = {"host": "192.168.1.11", "username": "admin", "password": "pw"}
 
     result = await mock_config_entry.start_reconfigure_flow(hass)

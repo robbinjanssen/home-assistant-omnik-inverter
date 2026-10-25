@@ -8,9 +8,16 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_registry as er
 from homeassistant.util import slugify
 
-from .const import DOMAIN, LOGGER, SERVICE_DEVICE, SERVICE_INVERTER
+from .const import (
+    CONF_SOURCE_TYPE,
+    CONFIGFLOW_MINOR_VERSION,
+    DOMAIN,
+    LOGGER,
+    SERVICE_DEVICE,
+    SERVICE_INVERTER,
+)
 from .coordinator import OmnikInverterDataUpdateCoordinator
-from .models import inverter_device_info
+from .models import config_entry_unique_id, inverter_device_info
 
 type OmnikInverterConfigEntry = ConfigEntry[OmnikInverterDataUpdateCoordinator]
 
@@ -55,7 +62,7 @@ def _async_set_unique_id(
     entry: OmnikInverterConfigEntry,
     coordinator: OmnikInverterDataUpdateCoordinator,
 ) -> None:
-    """Set the inverter serial number as unique ID on older config entries.
+    """Set the inverter serial number and source type as unique ID on older entries.
 
     Args:
         hass: The HomeAssistant instance.
@@ -66,9 +73,10 @@ def _async_set_unique_id(
     serial_number = coordinator.data[SERVICE_INVERTER].serial_number
     if entry.unique_id is not None or not serial_number:
         return
-    if hass.config_entries.async_entry_for_domain_unique_id(DOMAIN, serial_number):
+    unique_id = config_entry_unique_id(serial_number, entry.data[CONF_SOURCE_TYPE])
+    if hass.config_entries.async_entry_for_domain_unique_id(DOMAIN, unique_id):
         return
-    hass.config_entries.async_update_entry(entry, unique_id=serial_number)
+    hass.config_entries.async_update_entry(entry, unique_id=unique_id)
 
 
 async def _async_migrate_entities(
@@ -135,19 +143,38 @@ async def async_unload_entry(
 
 
 async def async_migrate_entry(
-    _hass: HomeAssistant,
+    hass: HomeAssistant,
     config_entry: ConfigEntry,
 ) -> bool:
     """Migrate an old entry.
 
+    Version 2.1 used the serial number as unique ID, which allowed only
+    one entry per inverter. Version 2.2 adds the source type to it.
+
     Args:
-        _hass: The HomeAssistant instance.
+        hass: The HomeAssistant instance.
         config_entry: The ConfigEntry containing the user input.
+
+    Returns:
+        Return true after migrating.
 
     Raises:
         ConfigEntryError: Entries of version 1 cannot be migrated.
 
     """
+    if config_entry.version == 2 and config_entry.minor_version < 2:
+        unique_id = config_entry.unique_id
+        if unique_id is not None:
+            unique_id = config_entry_unique_id(
+                unique_id, config_entry.data[CONF_SOURCE_TYPE]
+            )
+        hass.config_entries.async_update_entry(
+            config_entry,
+            unique_id=unique_id,
+            minor_version=CONFIGFLOW_MINOR_VERSION,
+        )
+        return True
+
     LOGGER.debug("Cannot migrate config entry version %s", config_entry.version)
     raise ConfigEntryError(
         translation_domain=DOMAIN,

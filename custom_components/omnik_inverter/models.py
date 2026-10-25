@@ -12,6 +12,23 @@ from .const import DOMAIN, MANUFACTURER, SERVICE_DEVICE, SERVICE_INVERTER, Servi
 from .coordinator import OmnikInverterDataUpdateCoordinator
 
 
+def config_entry_unique_id(serial_number: str, source_type: str) -> str:
+    """Return the unique ID of a config entry.
+
+    The same inverter can be added once per source type, for example TCP
+    for the inverter data next to Javascript for the Wi-Fi module data.
+
+    Args:
+        serial_number: The serial number of the inverter.
+        source_type: The source type used to read the inverter.
+
+    Returns:
+        The unique ID of the config entry.
+
+    """
+    return f"{serial_number}_{source_type}"
+
+
 def inverter_device_info(coordinator: OmnikInverterDataUpdateCoordinator) -> DeviceInfo:
     """Return the device info of the inverter.
 
