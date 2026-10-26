@@ -32,11 +32,13 @@ from .const import (
     CONF_SCAN_INTERVAL,
     CONF_SERIAL,
     CONF_SOURCE_TYPE,
+    CONFIGFLOW_MINOR_VERSION,
     CONFIGFLOW_VERSION,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     LOGGER,
 )
+from .models import config_entry_unique_id
 
 PASSWORD_SELECTOR = TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD))
 
@@ -94,6 +96,7 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # pylint: disable=ab
     """Config flow for Omnik Inverter."""
 
     VERSION = CONFIGFLOW_VERSION
+    MINOR_VERSION = CONFIGFLOW_MINOR_VERSION
 
     def __init__(self) -> None:
         """Initialize with empty source type."""
@@ -345,7 +348,9 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # pylint: disable=ab
                 errors["base"] = str(error)
             else:
                 if entry.unique_id and inverter.serial_number:
-                    await self.async_set_unique_id(inverter.serial_number)
+                    await self.async_set_unique_id(
+                        config_entry_unique_id(inverter.serial_number, source_type)
+                    )
                     self._abort_if_unique_id_mismatch(reason="wrong_device")
                 return self.async_update_reload_and_abort(
                     entry, data_updates=user_input
@@ -367,14 +372,16 @@ class OmnikInverterFlowHandler(ConfigFlow, domain=DOMAIN):  # pylint: disable=ab
         )
 
     async def _async_set_unique_id(self, inverter: Inverter) -> None:
-        """Abort the flow if this inverter is already configured.
+        """Abort the flow if this inverter is already configured for this source.
 
         Args:
             inverter: The inverter data fetched during the flow.
 
         """
-        if inverter.serial_number:
-            await self.async_set_unique_id(inverter.serial_number)
+        if inverter.serial_number and self.source_type:
+            await self.async_set_unique_id(
+                config_entry_unique_id(inverter.serial_number, self.source_type)
+            )
             self._abort_if_unique_id_configured()
 
 

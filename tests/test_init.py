@@ -1,15 +1,20 @@
 """Tests for setting up the Omnik Inverter integration."""
 
 from typing import TYPE_CHECKING
+from unittest.mock import AsyncMock, patch
 
 import pytest
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from omnikinverter import OmnikInverterConnectionError
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from .conftest import DOMAIN, HTML_DATA
+
+TCP_DATA = {"host": "192.168.1.10", "source_type": "tcp", "serial": 123456789}
+JAVASCRIPT_DATA = {"host": "192.168.1.10", "source_type": "javascript"}
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -46,7 +51,7 @@ async def test_setup_and_unload(hass: HomeAssistant, data: dict[str, str]) -> No
 async def test_unique_id_backfilled(
     hass: HomeAssistant, mock_config_entry: MockConfigEntry
 ) -> None:
-    """Test older entries get the serial number as unique ID once."""
+    """Test older entries get the serial number and source type as unique ID once."""
     mock_config_entry.add_to_hass(hass)
     other = MockConfigEntry(domain=DOMAIN, title="Home", version=2, data=HTML_DATA)
     other.add_to_hass(hass)
@@ -54,8 +59,65 @@ async def test_unique_id_backfilled(
     assert await hass.config_entries.async_setup(mock_config_entry.entry_id)
     await hass.async_block_till_done()
 
-    assert mock_config_entry.unique_id == "NLDN1234"
+    assert mock_config_entry.unique_id == "NLDN1234_html"
     assert other.unique_id is None
+
+
+@pytest.mark.usefixtures("mock_omnikinverter")
+async def test_unique_id_backfilled_per_source_type(hass: HomeAssistant) -> None:
+    """Test entries for the same inverter with other source types both get one."""
+    tcp = MockConfigEntry(domain=DOMAIN, title="TCP", version=2, data=TCP_DATA)
+    tcp.add_to_hass(hass)
+    javascript = MockConfigEntry(
+        domain=DOMAIN, title="JS", version=2, data=JAVASCRIPT_DATA
+    )
+    javascript.add_to_hass(hass)
+
+    # Setting up the integration sets up both entries.
+    assert await hass.config_entries.async_setup(tcp.entry_id)
+    await hass.async_block_till_done()
+
+    assert tcp.unique_id == "NLDN1234_tcp"
+    assert javascript.unique_id == "NLDN1234_javascript"
+
+
+@pytest.mark.usefixtures("mock_omnikinverter")
+async def test_migrate_entry_unique_id(hass: HomeAssistant) -> None:
+    """Test the source type is added to the unique ID of version 2.1 entries."""
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        title="Home",
+        version=2,
+        minor_version=1,
+        data=TCP_DATA,
+        unique_id="NLDN1234",
+    )
+    entry.add_to_hass(hass)
+
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+
+    assert entry.state is ConfigEntryState.LOADED
+    assert entry.minor_version == 2
+    assert entry.unique_id == "NLDN1234_tcp"
+
+
+@pytest.mark.usefixtures("mock_omnikinverter")
+async def test_migrate_entry_after_failed_setup(
+    hass: HomeAssistant, mock_config_entry: MockConfigEntry
+) -> None:
+    """Test a version 2.1 entry is migrated while the inverter is offline."""
+    mock_config_entry.add_to_hass(hass)
+    hass.config_entries.async_update_entry(mock_config_entry, unique_id="NLDN1234")
+
+    with patch(
+        "omnikinverter.OmnikInverter.data",
+        AsyncMock(side_effect=OmnikInverterConnectionError),
+    ):
+        assert not await hass.config_entries.async_setup(mock_config_entry.entry_id)
+
+    assert mock_config_entry.state is ConfigEntryState.SETUP_RETRY
+    assert mock_config_entry.unique_id == "NLDN1234_html"
 
 
 @pytest.mark.usefixtures("mock_omnikinverter")
